@@ -1,0 +1,14 @@
+import { AxiosResponse } from 'axios';
+import { ProductDto } from '@/dtos/product.dto';
+import { CreateProductModel, UpdateProductModel } from '@/models/product.model';
+import { ProductFilterParams } from '@/params/product.params';
+import { ListResponseDto } from '@/dtos/list-response.dto';
+import Response from '@/dtos/Response';
+
+export default interface IProductService {
+    create(model: CreateProductModel): Promise<AxiosResponse<Response<ProductDto>>>;
+    getAll(params?: ProductFilterParams): Promise<AxiosResponse<Response<ListResponseDto<ProductDto>>>>;
+    getById(id: number | string): Promise<AxiosResponse<Response<ProductDto>>>;
+    update(id: number | string, model: UpdateProductModel): Promise<AxiosResponse<Response<ProductDto>>>;
+    delete(id: number | string): Promise<AxiosResponse<Response<void>>>;
+}

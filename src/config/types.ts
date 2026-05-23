@@ -1,0 +1,20 @@
+export const TYPES = {
+  IUnitOfService: Symbol.for('IUnitOfService'),
+  IHttpService: Symbol.for('IHttpService'),
+  IAccountService: Symbol.for('IAccountService'),
+  IDateTimeService: Symbol.for('IDateTimeService'),
+  INewsletterService: Symbol.for('INewsletterService'),
+  IEmailService: Symbol.for('IEmailService'),
+  IErrorHandlerService: Symbol.for('IErrorHandlerService'),
+  IUserListService: Symbol.for('IUserListService'),
+  IProductService: Symbol.for('IProductService'),
+  ICategoryService: Symbol.for('ICategoryService'),
+  IProductVariantService: Symbol.for('IProductVariantService'),
+  IProductAttributeService: Symbol.for('IProductAttributeService'),
+  IAttributeService: Symbol.for('IAttributeService'),
+  IBrandNameService: Symbol.for('IBrandNameService'),
+  IDashboardService: Symbol.for('IDashboardService'),
+  IStaffSalaryService: Symbol.for('IStaffSalaryService'),
+  IStaffService: Symbol.for('IStaffService'),
+
+};

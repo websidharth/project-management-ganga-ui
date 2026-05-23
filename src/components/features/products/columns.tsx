@@ -1,0 +1,137 @@
+'use client';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
+import { useMemo } from 'react';
+import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ProductDto } from '@/dtos/product.dto';
+import { Badge } from '../../ui/badge';
+import ProductListRowActions from './row-action';
+import ActionTooltip from '@/components/common/tooltip-action-button';
+
+export const useProductColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
+  useMemo<ColumnDef<ProductDto>[]>(
+    () => [
+      {
+        id: 'actions-mobile',
+        accessorKey: 'actions',
+        enableHiding: false,
+        enableSorting: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
+        cell: ({ row }) => {
+          return (
+            <>
+              <div className="flex items-center gap-2">
+                <ActionTooltip
+                  variant="edit"
+                  tooltip="Edit Record"
+                  onClick={() => {
+                    editRecord(+row.original.id);
+                  }}
+                />
+
+                <ActionTooltip
+                  variant="delete"
+                  tooltip="Delete Record"
+                  onClick={() => {
+                    deleteRecord(+row.original.id);
+                  }}
+                />
+              </div>
+            </>
+          );
+        },
+        meta: {
+          sortingKey: 'actions',
+        },
+      },
+
+      {
+        id: 'name',
+        accessorKey: 'name',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Product" />,
+        cell: ({ row }) => (
+          <div className="space-y-0.5">
+            <span className="font-medium block">{row.original.name}</span>
+            <span className="text-xs text-muted-foreground">{row.original.slug}</span>
+          </div>
+        ),
+        meta: { sortingKey: 'name' },
+      },
+      {
+        id: 'sku',
+        accessorKey: 'sku',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="SKU" />,
+        cell: ({ row }) => <span className="font-mono text-xs">{row.original.sku}</span>,
+        meta: { sortingKey: 'sku' },
+      },
+      {
+        id: 'price',
+        accessorKey: 'price',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Price / Cost" />,
+        cell: ({ row }) => (
+          <div className="space-y-0.5">
+            <span className="block font-medium">${row.original.price.toFixed(2)}</span>
+            {row.original.cost != null && <span className="text-xs text-muted-foreground">Cost: ${row.original.cost.toFixed(2)}</span>}
+          </div>
+        ),
+        meta: { sortingKey: 'price' },
+      },
+      {
+        id: 'stock',
+        accessorKey: 'stock',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Stock" />,
+        cell: ({ row }) => {
+          const { stock, lowStockThreshold } = row.original;
+          const isLow = lowStockThreshold != null && stock <= lowStockThreshold;
+          return (
+            <div className="space-y-0.5">
+              <span className={`block font-medium ${isLow ? 'text-destructive' : ''}`}>{stock}</span>
+              {isLow && <span className="text-xs text-destructive">Low stock</span>}
+            </div>
+          );
+        },
+        meta: { sortingKey: 'stock' },
+      },
+      {
+        id: 'status',
+        accessorKey: 'status',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Status" />,
+        cell: ({ row }) => <Badge variant={row.original.status ? true : false}>{row.original.status ? 'Active' : 'Inactive'}</Badge>,
+        meta: { sortingKey: 'status' },
+      },
+      {
+        id: 'createdAt',
+        accessorKey: 'createdAt',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Created At" />,
+        cell: ({ row }) => {
+          const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+          return (
+            <span className="text-sm text-muted-foreground">
+              {row.original.createdAt ? unitOfService.DateTimeService.convertToLocalDate(row.original.createdAt, true) : '-'}
+            </span>
+          );
+        },
+        meta: { sortingKey: 'createdAt' },
+      },
+      {
+        id: 'actions',
+        header: '',
+        cell: ({ row }) => <ProductListRowActions row={row} editRecord={editRecord} deleteRecord={deleteRecord} />,
+      },
+    ],
+    [editRecord, deleteRecord]
+  );

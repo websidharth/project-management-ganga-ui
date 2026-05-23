@@ -1,0 +1,53 @@
+import { injectable } from 'inversify';
+import IHttpService from './interfaces/IHttpService';
+import { TYPES } from '@/config/types';
+import IAccountService from './interfaces/IAccountService';
+import { LoginDto, refreshTokenResponseDto } from '@/dtos/LoginDto';
+import { AxiosResponse } from 'axios';
+import Response from '@/dtos/Response';
+import { container } from '@/config/ioc';
+import LoginModel from '@/models/LoginModel';
+import PlainDto from '@/dtos/PlainDto';
+import { CreateUserModel } from '@/models/user.model';
+
+@injectable()
+export default class AccountService implements IAccountService {
+  private readonly httpService: IHttpService;
+  constructor(httpService = container.get<IHttpService>(TYPES.IHttpService)) {
+    this.httpService = httpService;
+  }
+
+  login_response_way(model: LoginModel): Promise<AxiosResponse<Response<LoginDto>>> {
+    return this.httpService.externalCall().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/auth/login', model);
+  }
+
+  login(model: LoginModel): Promise<AxiosResponse<LoginDto>> {
+    return this.httpService.externalCall().post<LoginDto, AxiosResponse<LoginDto>>('/auth/login', model);
+  }
+
+  logout(token: string): Promise<AxiosResponse<Response<PlainDto>>> {
+    const result = this.httpService.call().post<PlainDto, AxiosResponse<Response<PlainDto>>>('/auth/logout', {
+      token: token,
+    });
+
+    return result;
+  }
+
+  logoutAllSession(): Promise<AxiosResponse<Response<PlainDto>>> {
+    const result = this.httpService.call().post<PlainDto, AxiosResponse<Response<PlainDto>>>('/auth/logoutallsession');
+
+    return result;
+  }
+
+  getRefreshToken(token: string): Promise<AxiosResponse<Response<refreshTokenResponseDto>>> {
+    return this.httpService.call().post<refreshTokenResponseDto, AxiosResponse<Response<refreshTokenResponseDto>>>('/auth/refreshToken', {
+      token: token,
+    });
+  }
+
+  createUser(model: CreateUserModel): Promise<AxiosResponse<Response<LoginDto>>> {
+    return this.httpService.externalCall().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/auth/register', model);
+  }
+
+
+}

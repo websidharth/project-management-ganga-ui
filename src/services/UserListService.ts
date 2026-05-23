@@ -1,0 +1,46 @@
+import { injectable } from 'inversify';
+import IHttpService from './interfaces/IHttpService';
+import { TYPES } from '@/config/types';
+import { AxiosResponse } from 'axios';
+import Response from '@/dtos/Response';
+import { container } from '@/config/ioc';
+import { UserDto } from '@/dtos/UserDto';
+import { ListResponseDto } from '@/dtos/list-response.dto';
+import IUserListService from './interfaces/IUserListService.ts';
+import { UserListParams } from '@/params/user-list.params';
+import PlainDto from '@/dtos/PlainDto';
+import ResetPasswordModel from '@/models/ResetPasswordModel';
+
+@injectable()
+export default class UserListService implements IUserListService {
+  private readonly httpService: IHttpService;
+  constructor(httpService = container.get<IHttpService>(TYPES.IHttpService)) {
+    this.httpService = httpService;
+  }
+
+  getAll(p?: UserListParams): Promise<AxiosResponse<Response<ListResponseDto<UserDto>>>> {
+    return this.httpService.call().get<ListResponseDto<UserDto>, AxiosResponse<Response<ListResponseDto<UserDto>>>>(`/users`, { params: p });
+  }
+
+  getById(id: string): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call().get<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`);
+  }
+  update(id: string, model: FormData): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call('multipart/form-data').put<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`, model);
+  }
+  delete(id: string): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call().delete<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`);
+  }
+
+  getOtp(otp: number): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call().get<UserDto, AxiosResponse<Response<UserDto>>>(`/auth/verify/${otp}`);
+  }
+
+  sendOtp(): Promise<AxiosResponse<Response<PlainDto>>> {
+    return this.httpService.call().post<PlainDto, AxiosResponse<Response<PlainDto>>>(`/auth/otp/send`);
+  }
+
+  resetPassword(model: ResetPasswordModel): Promise<AxiosResponse<Response<PlainDto>>> {
+    return this.httpService.call().post<PlainDto, AxiosResponse<Response<PlainDto>>>(`/auth/reset-password`, model);
+  }
+}
