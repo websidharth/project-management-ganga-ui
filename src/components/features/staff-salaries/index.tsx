@@ -53,7 +53,7 @@ export default function StaffSalaryList() {
   useEffect(() => {
     if (getAllStaffSalariesResponse.isSuccess && getAllStaffSalariesResponse.data?.data?.data) {
       setData(getAllStaffSalariesResponse.data.data.data.data ?? []);
-      setRecordCount(getAllStaffSalariesResponse.data.data.data.totalRecord ?? 0);
+      setRecordCount(getAllStaffSalariesResponse.data.data.data.totalRecord);
     }
   }, [getAllStaffSalariesResponse.isSuccess, getAllStaffSalariesResponse.data]);
 
@@ -166,21 +166,33 @@ export default function StaffSalaryList() {
         ) : (
           <>
             <CustomDataTable table={table} columns={columns} />
-            <DataTablePagination table={table} totalRecords={recordCount} />
+            <DataTablePagination table={table} totalRecord={recordCount} />
           </>
         )}
       </div>
 
-      {showEditModal && <ManageStaffSalary id={editId} isOpen={showEditModal} onClose={closeEditModal} />}
-      {showDeleteModal && (
-        <ConfirmBox
-          isOpen={showDeleteModal}
-          onClose={closeDeleteModal}
-          onConfirm={() => handleDelete(deleteId)}
-          title="Delete Staff Salary Record"
-          description="Are you sure you want to delete this staff salary record? This action cannot be undone."
+      {showEditModal && (
+        <ManageStaffSalary
+          id={editId ? (typeof editId === 'string' ? +editId : editId) : undefined}
+          isOpen={showEditModal}
+          onClose={closeEditModal}
         />
       )}
+     
+     
+        {showDeleteModal && (
+             <ConfirmBox
+               isOpen={showDeleteModal}
+               onClose={() => closeDeleteModal(false)}
+               onSubmit={() => handleDelete(+(deleteId ?? 0))}
+               bodyText="Are you sure you want to delete this product?"
+               noButtonText="Cancel"
+               yesButtonText="Delete"
+               loading={deleteStaffSalaryMutation.isPending}
+             />
+           )}
+           
+          
     </>
   );
 }

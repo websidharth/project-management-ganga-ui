@@ -2,17 +2,13 @@
 
 const nextConfig = {
   trailingSlash: true,
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
+  eslint: { 
     ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost', port: '3000' },
-      { protocol: 'https', hostname: 'localhost', port: '3000' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-      { protocol: 'https', hostname: 'gmr-teal.vercel.app' },
+      { protocol: 'https', hostname: 'localhost', port: '3000' }, 
     ],
   },
   async redirects() {

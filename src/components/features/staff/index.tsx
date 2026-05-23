@@ -53,7 +53,7 @@ export default function StaffList() {
   useEffect(() => {
     if (getAllStaffResponse.isSuccess && getAllStaffResponse.data?.data?.data) {
       setData(getAllStaffResponse.data.data.data.data ?? []);
-      setRecordCount(getAllStaffResponse.data.data.data.totalRecord ?? 0);
+      setRecordCount(getAllStaffResponse.data.data.data.totalRecord);
     }
   }, [getAllStaffResponse.isSuccess, getAllStaffResponse.data]);
 
@@ -166,21 +166,28 @@ export default function StaffList() {
         ) : (
           <>
             <CustomDataTable table={table} columns={columns} />
-            <DataTablePagination table={table} totalRecords={recordCount} />
+            <DataTablePagination table={table} totalRecord={recordCount} />
           </>
         )}
       </div>
 
-      {showEditModal && <ManageStaff id={editId} isOpen={showEditModal} onClose={closeEditModal} />}
+      {showEditModal && <ManageStaff id={+(editId ?? 0)} isOpen={showEditModal} onClose={closeEditModal} />}
+   
+   
+   
       {showDeleteModal && (
-        <ConfirmBox
-          isOpen={showDeleteModal}
-          onClose={closeDeleteModal}
-          onConfirm={() => handleDelete(deleteId)}
-          title="Delete Staff Member"
-          description="Are you sure you want to delete this staff member? This action cannot be undone."
-        />
-      )}
+           <ConfirmBox
+             isOpen={showDeleteModal}
+             onClose={() => closeDeleteModal(false)}
+             onSubmit={() => handleDelete(+(deleteId ?? 0))}
+             bodyText="Are you sure you want to delete this staff member? This action cannot be undone."
+             noButtonText="Cancel"
+             yesButtonText="Delete"
+             loading={deleteStaffMutation.isPending}
+           />
+         )}
+             
+   
     </>
   );
 }

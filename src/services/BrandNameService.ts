@@ -5,7 +5,7 @@ import { container } from '@/config/ioc';
 import IHttpService from './interfaces/IHttpService';
 import IBrandNameService from './interfaces/IBrandNameService';
 import { BrandNameDto } from '@/dtos/brand-name.dto';
-import { CreateBrandNameModel, UpdateBrandNameModel } from '@/models/brand-name.model';
+import { CreateBrandNameModel  } from '@/models/brand-name.model';
 import { ListResponseDto } from '@/dtos/list-response.dto';
 import Response from '@/dtos/Response';
 
@@ -35,7 +35,7 @@ export default class BrandNameService implements IBrandNameService {
             .get<BrandNameDto, AxiosResponse<Response<BrandNameDto>>>(`/brand-names/${id}`);
     }
 
-    update(id: number | string, model: UpdateBrandNameModel): Promise<AxiosResponse<Response<BrandNameDto>>> {
+    update(id: number | string, model: CreateBrandNameModel): Promise<AxiosResponse<Response<BrandNameDto>>> {
         return this.httpService
             .call()
             .put<BrandNameDto, AxiosResponse<Response<BrandNameDto>>>(`/brand-names/${id}`, model);
