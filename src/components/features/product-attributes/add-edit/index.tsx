@@ -14,8 +14,7 @@ import { CreateProductAttributeModel } from '@/models/product-attribute.model';
 import ProductAttributeSchema from '@/schema/productAttributeSchema';
 import { useCreateProductAttribute, useGetProductAttributeById, useUpdateProductAttribute } from '@/hooks/service-hooks/useProductAttributeService';
 import { useGetAllProducts } from '@/hooks/service-hooks/useProductService';
-import { SelectSearch } from '@/components/common/select-search';
-import Loader from '@/components/loader';
+import { SelectSearch } from '@/components/common/select-search'; 
 import { useGetAllAttributes } from '@/hooks/service-hooks/useAttributeService';
 
 interface ManageProductAttributeProps {

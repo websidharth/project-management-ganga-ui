@@ -18,8 +18,7 @@ import IAttributeService from './interfaces/IAttributeService';
 import IBrandNameService from './interfaces/IBrandNameService';
 import IDashboardService from './interfaces/IDashboardService';
 import IStaffSalaryService from './interfaces/IStaffSalaryService';
-import IStaffService from './interfaces/IStaffService';
-import BrandNameService from './BrandNameService';
+import IStaffService from './interfaces/IStaffService'; 
 
 @injectable()
 export default class UnitOfService implements IUnitOfService {

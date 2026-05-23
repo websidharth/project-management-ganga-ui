@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { ShieldCheck, Sparkles, GraduationCap } from 'lucide-react';
+import React from 'react'; 
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '../common/Logo';
@@ -19,12 +18,7 @@ export interface AuthFullPageLayoutProps {
 export default function AuthFullPageLayout({
   formComponent,
   title = 'Welcome back',
-  description = 'Login to continue your transcription certification journey.',
-  stats = [
-    { value: '10+', label: 'Exams' },
-    { value: '24/7', label: 'Access' },
-    { value: '100%', label: 'Secure' },
-  ],
+  description = 'Login to continue your transcription certification journey.', 
   className,
 }: AuthFullPageLayoutProps) {
   return (
@@ -37,45 +31,8 @@ export default function AuthFullPageLayout({
       </div>
 
       <div className="grid min-h-screen lg:grid-cols-1">
-        {/* Left: Branding & Value Props */}
-        {/* <section className="hidden flex-col justify-between p-8 lg:flex xl:p-12">
-          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/40 px-4 py-2 text-sm text-foreground/80 backdrop-blur-sm">
-            <Sparkles className="h-4 w-4 text-emerald-500" />
-            Transcription Certification Institute
-          </div>
-
-          <div className="space-y-6">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-card/60 backdrop-blur-sm">
-              <GraduationCap className="h-8 w-8 text-primary" />
-            </div>
-
-            <h1 className="text-4xl font-semibold tracking-tight xl:text-6xl">
-              Learn faster.
-              <br />
-              Certify smarter.
-            </h1>
-
-            <p className="max-w-md text-lg leading-8 text-muted-foreground">
-              Access your lessons, exams, certificates, course resources, and student dashboard from one secure place.
-            </p>
-
-            <div className="grid max-w-md grid-cols-3 gap-3 pt-4">
-              {stats.map(({ value, label }) => (
-                <div key={label} className="rounded-2xl border border-border bg-card/40 p-4 backdrop-blur-sm">
-                  <div className="text-2xl font-bold text-foreground">{value}</div>
-                  <div className="text-xs text-muted-foreground">{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <ShieldCheck className="h-4 w-4" />
-            Secure login protected with encrypted authentication.
-          </div>
-        </section> */}
-
-        {/* Right: Authentication Form */}
+     
+ 
         <section className="flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <Card className="w-full max-w-md border-border/50 shadow-xl">
             <CardHeader className="space-y-2 text-center">

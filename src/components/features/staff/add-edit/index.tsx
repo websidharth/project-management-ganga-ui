@@ -62,7 +62,7 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
     },
   });
 
-  const { handleSubmit, reset, setValue } = form;
+  const { handleSubmit, reset  } = form;
 
   useEffect(() => {
     if (isEdit && staffResponse?.data?.data) {

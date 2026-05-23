@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import LoginModule from '@/components/account/login';
-import AuthStaticLayout from '@/components/layout/authSimpleSlider';
-import Component from '@/components/account/giigle';
+import AuthStaticLayout from '@/components/layout/authSimpleSlider'; 
 
 export const metadata: Metadata = {
   title: 'Login - Admin Dashboard',

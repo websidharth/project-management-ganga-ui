@@ -1,5 +1,4 @@
-import BackgroundImageWrapper from '../common/background-image-wrapper';
-import Logo from '../common/Logo';
+ import Logo from '../common/Logo';
 
 export default function CenteredLayout({ children }: { children: React.ReactNode }) {
   return (

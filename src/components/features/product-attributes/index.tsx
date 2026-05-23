@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { ProductAttributeDto } from '@/dtos/product-attribute.dto';
-import { useGetAttributesByProductId, useDeleteProductAttribute, useGetAllProductAttributes } from '@/hooks/service-hooks/useProductAttributeService';
+import {   useDeleteProductAttribute, useGetAllProductAttributes } from '@/hooks/service-hooks/useProductAttributeService';
 import { useCustomDataTable } from '@/hooks/use-custom-table';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
 import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';

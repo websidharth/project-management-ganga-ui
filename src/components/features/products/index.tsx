@@ -8,8 +8,7 @@ import { useCustomDataTable } from '@/hooks/use-custom-table';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
 import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
 import { CustomDataTable } from '../../Table/data-table';
-import { DataTablePagination } from '../../Table/data-table-pagination';
-import RecentPostSkeleton from '../../skelton/recent-post';
+import { DataTablePagination } from '../../Table/data-table-pagination'; 
 import ConfirmBox from '../../common/confirm-box';
 import { toast } from '../../ui/use-toast';
 import { container } from '@/config/ioc';
@@ -19,8 +18,7 @@ import useModalShowHide from '@/hooks/use-modal-show-hide';
 import { useProductColumns } from './columns';
 import ProductListFilter from './filter';
 import ManageProduct from './add-edit';
-import config from '@/config';
-import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
+import config from '@/config'; 
 
 export default function ProductList() {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
