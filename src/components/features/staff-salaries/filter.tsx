@@ -186,15 +186,10 @@ export default function StaffSalaryListFilter<TData>({
             setIsFiltered(true);
           }}
         />
-
-        <DateRangePicker
-          value={dateRange}
-          onChange={(range) => {
-            setDateRange(range);
-            setIsFiltered(true);
-          }}
-        />
-
+   <div className="overflow-hidden">
+        <DateRangePicker mode="range" value={dateRange} selected={dateRange} onSelect={setDateRange} numberOfMonthsToShow={2} />
+      </div>
+       
         {hasFilters && (
           <Button variant="ghost" onClick={resetFilter} className="h-10 px-4">
             Reset
