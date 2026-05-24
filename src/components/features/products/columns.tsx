@@ -13,41 +13,11 @@ import ActionTooltip from '@/components/common/tooltip-action-button';
 export const useProductColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
   useMemo<ColumnDef<ProductDto>[]>(
     () => [
-      {
-        id: 'actions-mobile',
-        accessorKey: 'actions',
-        enableHiding: false,
-        enableSorting: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
-        cell: ({ row }) => {
-          return (
-            <>
-              <div className="flex items-center gap-2">
-                <ActionTooltip
-                  variant="edit"
-                  tooltip="Edit Record"
-                  onClick={() => {
-                    editRecord(+row.original.id);
-                  }}
-                />
-
-                <ActionTooltip
-                  variant="delete"
-                  tooltip="Delete Record"
-                  onClick={() => {
-                    deleteRecord(+row.original.id);
-                  }}
-                />
-              </div>
-            </>
-          );
-        },
-        meta: {
-          sortingKey: 'actions',
-        },
-      },
-
-      {
+       {
+        id: 'actions',
+        header: '',
+        cell: ({ row }) => <ProductListRowActions row={row} editRecord={editRecord} deleteRecord={deleteRecord} />,
+      }, {
         id: 'name',
         accessorKey: 'name',
         enableSorting: false,
@@ -102,6 +72,39 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         },
         meta: { sortingKey: 'stock' },
       },
+       {
+        id: 'actions-mobile',
+        accessorKey: 'actions',
+        enableHiding: false,
+        enableSorting: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
+        cell: ({ row }) => {
+          return (
+            <>
+              <div className="flex items-center gap-2">
+                <ActionTooltip
+                  variant="edit"
+                  tooltip="Edit Record"
+                  onClick={() => {
+                    editRecord(+row.original.id);
+                  }}
+                />
+
+                <ActionTooltip
+                  variant="delete"
+                  tooltip="Delete Record"
+                  onClick={() => {
+                    deleteRecord(+row.original.id);
+                  }}
+                />
+              </div>
+            </>
+          );
+        },
+        meta: {
+          sortingKey: 'actions',
+        },
+      },
       {
         id: 'status',
         accessorKey: 'status',
@@ -127,11 +130,7 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         },
         meta: { sortingKey: 'createdAt' },
       },
-      {
-        id: 'actions',
-        header: '',
-        cell: ({ row }) => <ProductListRowActions row={row} editRecord={editRecord} deleteRecord={deleteRecord} />,
-      },
+    
     ],
     [editRecord, deleteRecord]
   );

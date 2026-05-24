@@ -156,7 +156,7 @@ export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandName
               <Button type="button" variant="outline" onClick={() => onClose(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" loading={isLoading}>
                 {isEdit ? 'Update' : 'Add'} Brand Name
               </Button>
             </div>

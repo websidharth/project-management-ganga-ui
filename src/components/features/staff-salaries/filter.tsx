@@ -151,6 +151,7 @@ export default function StaffSalaryListFilter<TData>({
           className="h-10 w-full md:max-w-sm"
         />
 
+ 
         <SelectSearch
           buttonClass="w-full md:w-[180px]"
           placeholder="Select Status"
@@ -158,8 +159,7 @@ export default function StaffSalaryListFilter<TData>({
           items={statusList}
           value={status}
           onChange={(value) => {
-            onStatusValueChange(value);
-            setIsFiltered(true);
+            onStatusValueChange(value); 
           }}
         />
 
@@ -170,8 +170,7 @@ export default function StaffSalaryListFilter<TData>({
           items={monthsList}
           value={month}
           onChange={(value) => {
-            onMonthValueChange(value);
-            setIsFiltered(true);
+            onMonthValueChange(value); 
           }}
         />
 

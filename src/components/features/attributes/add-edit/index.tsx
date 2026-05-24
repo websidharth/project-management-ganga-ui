@@ -151,7 +151,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
               <Button type="button" variant="outline" onClick={() => onClose(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" loading={isLoading}>
                 {isEdit ? 'Update' : 'Add'} Attribute
               </Button>
             </div>

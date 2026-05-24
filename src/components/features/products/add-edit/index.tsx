@@ -18,6 +18,7 @@ import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
 import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 import StatusData from '@/data/status.data';
+import { StatusValues } from '@/enums/status-values.enum';
 
 interface ManageProductProps {
   id?: number;
@@ -311,27 +312,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
               )}
             />
 
-            {/* Display Order */}
-            <FormField
-              control={form.control}
-              name="displayOrder"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Display Order</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 1"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+  
             {/* Description — full width */}
             <div className="md:col-span-2">
               <FormField
@@ -356,33 +337,42 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
             </div>
 
             {/* Status */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <SelectSearch
-                      buttonClass="w-full"
-                      placeholder="Select Status"
-                      disableSearch={true}
-                      items={StatusData.map((s) => ({ value: s.value, label: s.label }))}
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value ?? '')}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           <FormField
+                       control={form.control}
+                       name="status"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Status *</FormLabel>
+                           <FormControl>
+                             <div className="flex">
+                               <SelectSearch
+                                 placeholder="Select Status*"
+                                 buttonClass="w-full"
+                                 disableSearch={true}
+                                 items={[
+                                   { label: 'Published', value: StatusValues.Published },
+                                   { label: 'Draft', value: StatusValues.Draft },
+                                 ]}
+                                 value={field.value}
+                                 valueType="string"
+                                 containerName="attribute-status"
+                                 onChange={(value) => {
+                                   field.onChange(value);
+                                 }}
+                               />
+                             </div>
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
             {/* Actions */}
             <div className="md:col-span-2 flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => onClose(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" loading={isLoading}>
                 {isEdit ? 'Update' : 'Create'} Product
               </Button>
             </div>

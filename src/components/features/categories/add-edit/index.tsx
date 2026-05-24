@@ -132,7 +132,7 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
               <Button type="button" variant="outline" onClick={() => onClose(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" loading={isLoading}>
                 {isEdit ? 'Update' : 'Create'} Category
               </Button>
             </div>
