@@ -1,225 +1,154 @@
 'use client';
-import { UserDto } from '@/dtos/UserDto';
+
+import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { GoCheckCircleFill } from 'react-icons/go';
 import { IoMdCloseCircle } from 'react-icons/io';
-import { useMemo } from 'react';
-import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
-import { container } from '@/config/ioc';
 import { BsEnvelope, BsPhone } from 'react-icons/bs';
-import { CardDescription } from '@/components/ui/card';
+import { UserDto } from '@/dtos/UserDto';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Dot } from 'lucide-react';
 
-// ─── Tiny composable atoms ────────────────────────────────────────────────────
+import { TYPES } from '@/config/types';
+import { container } from '@/config/ioc';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
 
-/** Monogram avatar with a subtle ring */
-const Avatar = ({ name }: { name?: string }) => (
-  <span
-    className="
-            inline-flex items-center justify-center
-            h-8 w-8 rounded-full shrink-0
-            bg-gradient-to-br from-slate-700 to-slate-800
-            border border-slate-600/60
-            text-[11px] font-semibold tracking-widest uppercase
-            text-slate-300 shadow-inner
-        "
-  >
-    {name?.charAt(0) ?? 'U'}
-  </span>
-);
-
-/** Pill badge with optional glow variant */
-const Pill = ({ children, variant = 'neutral' }: { children: React.ReactNode; variant?: 'success' | 'warning' | 'neutral' | 'danger' }) => {
-  const map = {
-    success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25 shadow-[0_0_8px_rgba(52,211,153,0.15)]',
-    warning: 'bg-amber-500/10  text-amber-400  border-amber-500/25  shadow-[0_0_8px_rgba(251,191,36,0.12)]',
-    danger: 'bg-red-500/10    text-red-400    border-red-500/25    shadow-[0_0_8px_rgba(248,113,113,0.12)]',
-    neutral: 'bg-slate-500/10  text-slate-400  border-slate-500/25',
-  };
-  return (
-    <span
-      className={`
-                inline-flex items-center gap-1 px-2 py-[3px]
-                rounded-full text-[11px] font-medium tracking-wide
-                border ${map[variant]}
-            `}
-    >
-      {children}
-    </span>
-  );
-};
-
-/** Small dot indicator */
-const Dot = ({ active }: { active: boolean }) => (
-  <span
-    className={`
-            inline-block h-[6px] w-[6px] rounded-full
-            ${active ? 'bg-emerald-400 shadow-[0_0_5px_rgba(52,211,153,0.7)]' : 'bg-slate-600'}
-        `}
-  />
-);
-
-// ─── Column definitions ───────────────────────────────────────────────────────
-
-export const UserColumns = () =>
+const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+ 
+export const useUserColumns = () =>
   useMemo<ColumnDef<UserDto>[]>(
     () => [
-      // ── ID ──────────────────────────────────────────────────────────
-
-      // ── NAME ────────────────────────────────────────────────────────
+ 
+    
       {
-        id: 'name',
+        id: 'user',
         accessorKey: 'name',
+        enableSorting: true,
         enableHiding: false,
-        enableSorting: false,
         header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-left text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Name"
-          />
-        ),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Avatar name={row.original.name} />
-            <div className="min-w-0">
-              <CardDescription className="font-semibold truncate leading-tight">{row.original.name}</CardDescription>
-              <CardDescription className="text-[11px] text-slate-500 truncate leading-tight mt-px font-mono">
-                @{row.original.userName}
-              </CardDescription>
-              <CardDescription className="text-xs text-slate-500 truncate leading-tight mt-px font-mono">@{row.original.usersId}</CardDescription>
-            </div>
-          </div>
-        ),
-        meta: { sortingKey: 'name' },
-      },
-
-      // ── CONTACT (email column repurposed) ────────────────────────────
-      {
-        id: 'email',
-        accessorKey: 'email',
-        enableHiding: false,
-        enableSorting: false,
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-left text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Contact"
-          />
-        ),
-        cell: ({ row }) => (
-          <div className="space-y-1">
-            <p className="flex items-center gap-1.5 text-[12px] text-slate-300">
-              <BsEnvelope className="text-slate-500 shrink-0" size={11} />
-              <span className="truncate">{row.original.email}</span>
-            </p>
-            <p className="flex items-center gap-1.5 text-[12px] text-slate-400">
-              <BsPhone className="text-slate-500 shrink-0" size={11} />
-              <span>{row.original.phone}</span>
-            </p>
-          </div>
-        ),
-        meta: { sortingKey: 'email' },
-      },
-
-      // ── ACTIVE STATUS (phone column repurposed) ──────────────────────
-      {
-        id: 'phone',
-        accessorKey: 'phone',
-        enableHiding: false,
-        enableSorting: false,
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-left text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Activity"
-          />
-        ),
-        cell: ({ row }) => (
-          <Pill variant={row.original.isActive ? 'success' : 'neutral'}>
-            <Dot active={!!row.original.isActive} />
-            {row.original.isActive ? 'Active' : 'Inactive'}
-          </Pill>
-        ),
-        meta: { sortingKey: 'phone' },
-      },
-
-      // ── EMAIL VERIFICATION ───────────────────────────────────────────
-      {
-        id: 'isEmailVerified',
-        accessorKey: 'isEmailVerified',
-        enableHiding: false,
-        enableSorting: false,
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-left text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Verification"
-          />
-        ),
-        cell: ({ row }) => (
-          <Pill variant={row.original.isEmailVerified ? 'success' : 'warning'}>
-            {row.original.isEmailVerified ? (
-              <>
-                <GoCheckCircleFill size={10} />
-                Verified
-              </>
-            ) : (
-              <>⏳ Pending</>
-            )}
-          </Pill>
-        ),
-        meta: { sortingKey: 'isEmailVerified' },
-      },
-
-      // ── LAST ACTIVE ──────────────────────────────────────────────────
-      {
-        id: 'updatedAt',
-        accessorKey: 'updatedAt',
-        enableHiding: false,
-        enableSorting: false,
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-left text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Last Active"
-          />
+          <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="User" />
         ),
         cell: ({ row }) => {
-          const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+          const user = row.original;
           return (
-            <span className="text-[12px] text-slate-400 tabular-nums">
-              {row.original.tokenUpdated ? (
-                unitOfService.DateTimeService.convertToLocalDate(row.original.tokenUpdated, true)
-              ) : (
-                <span className="text-slate-600 select-none">—</span>
-              )}
+            <div className="flex items-center gap-3">
+              <Avatar className="w-[30px] h-[30px] ring-1 ring-green-500 ring-offset-[2px] ring-offset-background">
+                {user?.profileImageUrl && (
+                  <AvatarImage src={user.profileImageUrl} className="object-cover" alt={user.name} />
+                )}
+                <AvatarFallback className="uppercase bg-primary text-primary-foreground">
+                  {user?.name?.slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <span className="text-sm font-medium">{user.name}</span>
+              </div>
+            </div>
+          );
+        },
+        meta: { sortingKey: 'name' },
+      },
+      {
+        id: 'contact',
+        accessorKey: 'email',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Contact" />
+        ),
+        cell: ({ row }) => {
+          const user = row.original;
+          return (
+            <div className="space-y-1 text-xs min-w-[220px]">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <BsEnvelope size={12} />
+                <span className="truncate">{user.email}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <BsPhone size={12} />
+                <span>{user.phone}</span>
+              </div>
+            </div>
+          );
+        },
+        meta: { sortingKey: 'email' },
+      },
+      {
+        id: 'activity',
+        accessorKey: 'isActive',
+        enableSorting: true,
+        enableHiding: false,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Activity" />
+        ),
+        cell: ({ row }) => (
+          <Badge variant={row.original.isActive ? 'cyan' : 'blue'}>
+            <Dot className={row.original.isActive ? 'text-green-500' : 'text-gray-400'} />
+            {row.original.isActive ? 'Active' : 'Inactive'}
+          </Badge>
+        ),
+        meta: { sortingKey: 'isActive' },
+      },
+      {
+        id: 'verification',
+        accessorKey: 'isEmailVerified',
+        enableSorting: true,
+        enableHiding: false,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Verification" />
+        ),
+        cell: ({ row }) =>
+          row.original.isEmailVerified ? (
+            <Badge variant="green" className="flex items-center gap-1">
+              <GoCheckCircleFill size={12} />
+              Verified
+            </Badge>
+          ) : (
+            <Badge variant="orange" className="flex items-center gap-1">
+              Pending
+            </Badge>
+          ),
+        meta: { sortingKey: 'isEmailVerified' },
+      },
+      {
+        id: 'lastActive',
+        accessorKey: 'tokenUpdated',
+        enableSorting: true,
+        enableHiding: false,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Last Active" />
+        ),
+        cell: ({ row }) => {
+          const tokenUpdated = row.original.tokenUpdated;
+          if (!tokenUpdated) {
+            return <span className="text-muted-foreground text-xs">Never</span>;
+          }
+          return (
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {unitOfService.DateTimeService.convertToLocalDate(tokenUpdated, true)}
             </span>
           );
         },
-        meta: { sortingKey: 'updatedAt' },
+        meta: { sortingKey: 'tokenUpdated' },
       },
-
-      // ── STATUS ───────────────────────────────────────────────────────
       {
         id: 'status',
         accessorKey: 'status',
+        enableSorting: true,
         enableHiding: false,
-        enableSorting: false,
         header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            className="text-center text-[10px] font-semibold uppercase tracking-widest text-slate-500"
-            title="Status"
-          />
+          <div className="flex justify-center">
+            <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase text-center" title="Status" />
+          </div>
         ),
         cell: ({ row }) => (
           <div className="flex justify-center">
             {row.original.status ? (
-              <GoCheckCircleFill size={16} className="text-emerald-400 drop-shadow-[0_0_4px_rgba(52,211,153,0.6)]" />
+              <GoCheckCircleFill size={18} className="text-emerald-500" />
             ) : (
-              <IoMdCloseCircle size={16} className="text-red-400 drop-shadow-[0_0_4px_rgba(248,113,113,0.5)]" />
+              <IoMdCloseCircle size={18} className="text-red-500" />
             )}
           </div>
         ),

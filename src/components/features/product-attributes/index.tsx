@@ -48,8 +48,7 @@ export default function ProductAttributeList({ productId }: ProductAttributeList
     }
   }, [attributesResponse.status, attributesResponse.data]);
 
-  console.log('attributesResponse', attributesResponse);
-
+ 
   const { sorting, onSortingChange } = useTanstackTableSorting<ProductAttributeDto>('', 'desc', columns);
   const { onPaginationChange, pagination } = useTanstackTablePagination(config.recordPerPage);
 

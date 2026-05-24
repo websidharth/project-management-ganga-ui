@@ -6,7 +6,7 @@ import { useGetAllUserList } from '@/hooks/service-hooks/useUserList.service.hoo
 import RecentPostSkeleton from '../../skelton/recent-post';
 import { CustomDataTable } from '../../Table/data-table';
 import { DataTablePagination } from '../../Table/data-table-pagination';
-import { UserColumns } from './columns';
+import {  useUserColumns } from './columns';
 import { useCustomDataTable } from '@/hooks/use-custom-table';
 import config from '@/config';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
@@ -18,7 +18,7 @@ export default function GetAllUserss() {
   const [data, setData] = useState<UserDto[]>([]);
   const [recordCount, setRecordCount] = useState<number>(0);
   const searchParams = useSearchParams();
-  const columns = UserColumns();
+  const columns = useUserColumns();
 
   const [filterParams, setFilterParams] = useState<UserListParams>({
     status: searchParams.get('status') || '',

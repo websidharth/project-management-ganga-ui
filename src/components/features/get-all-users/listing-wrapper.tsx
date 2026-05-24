@@ -1,6 +1,7 @@
 'use client'; 
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'; 
 import GetAllUserss from '.';
+import { PageHeader } from '@/components/common/page-header';
 
 export default function GetAllUsersListingWrapper() {
 
@@ -8,16 +9,12 @@ export default function GetAllUsersListingWrapper() {
     <>
 
       <Card className="overflow-hidden space-y-4">
-        <div className="flex items-center justify-between ">
-          <CardHeader className="p-0">
-            <CardTitle>All Users List</CardTitle>
-          </CardHeader>
-          {/* <div className="flex items-center gap-2">
-            <Button asChild variant="outline" className="">
-              <Link href={`/admin/`}>Back</Link>
-            </Button>
-          </div> */}
-        </div>
+
+          <PageHeader
+                title={`All Users List`}
+                description=""
+                variant="back"  
+              /> 
         <GetAllUserss />
       </Card>
     </>
