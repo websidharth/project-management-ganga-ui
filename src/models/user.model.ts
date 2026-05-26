@@ -3,7 +3,7 @@ export interface CreateUserModel {
   lastName?: string;
   email: string;
   phone?: string;
-  password: string;
-  googleId?: string;
+  password: string; 
   profileImage?: string;
+  isRegisterbyShop?: boolean;
 }

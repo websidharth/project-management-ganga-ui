@@ -16,5 +16,6 @@ export const TYPES = {
   IDashboardService: Symbol.for('IDashboardService'),
   IStaffSalaryService: Symbol.for('IStaffSalaryService'),
   IStaffService: Symbol.for('IStaffService'),
+  IStoreService: Symbol.for('IStoreService'),
 
 };

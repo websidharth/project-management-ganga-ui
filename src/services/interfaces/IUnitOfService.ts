@@ -14,6 +14,7 @@ import IBrandNameService from './IBrandNameService';
 import IDashboardService from './IDashboardService';
 import IStaffSalaryService from './IStaffSalaryService';
 import IStaffService from './IStaffService';
+import IStoreService from './IStoreService';
 
 export default interface IUnitOfService {
   HttpService: IHttpService;
@@ -32,4 +33,5 @@ export default interface IUnitOfService {
   DashboardService: IDashboardService;
   StaffSalaryService: IStaffSalaryService;
   StaffService: IStaffService;
+  StoreService: IStoreService;
 }

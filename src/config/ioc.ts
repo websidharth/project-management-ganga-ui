@@ -38,6 +38,8 @@ import IStaffSalaryService from '@/services/interfaces/IStaffSalaryService';
 import StaffSalaryService from '@/services/StaffSalaryService';
 import IStaffService from '@/services/interfaces/IStaffService';
 import StaffService from '@/services/StaffService';
+import IStoreService from '@/services/interfaces/IStoreService';
+import StoreService from '@/services/StoreService';
 
 const container = new Container();
 
@@ -58,5 +60,6 @@ container.bind<IBrandNameService>(TYPES.IBrandNameService).to(BrandNameService);
 container.bind<IDashboardService>(TYPES.IDashboardService).to(DashboardService);
 container.bind<IStaffSalaryService>(TYPES.IStaffSalaryService).to(StaffSalaryService);
 container.bind<IStaffService>(TYPES.IStaffService).to(StaffService);
+container.bind<IStoreService>(TYPES.IStoreService).to(StoreService);
 
 export { container };
