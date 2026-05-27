@@ -6,8 +6,8 @@ export const SignupSchema: Yup.ObjectSchema<CreateUserModel> = Yup.object().shap
   lastName: Yup.string().min(3, 'Name must be at least 3 characters'),
   email: Yup.string().required('Email is required').email('Invalid email address'),
   password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
-  phone: Yup.string().min(10, 'Phone number must be at least 10 digits').optional(), 
-  profileImage: Yup.string().url('Invalid URL').optional(),
+  phone: Yup.string().min(10, 'Phone number must be at least 10 digits').optional(),
+  googleId: Yup.string().optional(),
   isRegisterbyShop: Yup.boolean().optional(),
 });
 

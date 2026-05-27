@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import Link from 'next/link';
 import { CardDescription } from '../ui/card';
-import { Switch } from '../ui/switch';
+import { Checkbox } from '../ui/checkbox';
 
 export default function RegisterModule() {
   const [showLoader, setShowLoader] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export default function RegisterModule() {
       email: '',
       phone: '',
       password: '',
-      isRegisterbyShop:false,
+      isRegisterbyShop: false,
     },
   });
 
@@ -154,20 +154,21 @@ export default function RegisterModule() {
               </FormItem>
             )}
           />
- <FormField
-              control={form.control}
-              name="isRegisterbyShop"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-3">
-                  <FormLabel className="mt-2">Register As Shop Owner</FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value ?? false} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
+          <FormField
+            control={form.control}
+            name="isRegisterbyShop"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-7">
+                <FormControl>
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Is Register by Shop</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
 
           <Button
             type="submit"

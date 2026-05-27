@@ -4,6 +4,5 @@ export interface CreateUserModel {
   email: string;
   phone?: string;
   password: string; 
-  profileImage?: string;
   isRegisterbyShop?: boolean;
 }

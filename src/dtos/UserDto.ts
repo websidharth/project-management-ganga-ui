@@ -25,6 +25,7 @@ export interface UserDto {
   tokenUpdated?: Date | null;
   refreshToken: string | null;
   status: boolean;
+  storeCode?: string | null;
 }
 
 export interface UserBasicDto {
@@ -46,6 +47,7 @@ export interface UserBasicDto {
   userType: string;
   timezoneId: string;
   backgroundColorClass?: string;
+  storeCode?: string | null;
 }
 
 // export interface UserMostBasicDto {
