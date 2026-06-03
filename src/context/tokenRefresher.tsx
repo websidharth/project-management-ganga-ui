@@ -1,6 +1,6 @@
 'use client';
 
-import { scheduleAccessTokenRefresh } from '@/components/auth';
+import { scheduleAccessTokenRefresh } from '@/utils/auth';
 import { useEffect } from 'react';
 import useLogout from '@/hooks/use-logout';
 import { toast } from '@/components/ui/use-toast';

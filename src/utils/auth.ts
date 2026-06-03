@@ -1,73 +1,123 @@
-// import { refreshTokenResponseDto } from '@/dtos/LoginDto';
-// import { useRefreshToken } from '@/hooks/service-hooks/useAccountService';
-// import { useEffect, useState } from 'react';
+import { container } from "@/config/ioc";
+import { TYPES } from "@/config/types";
+import IUnitOfService from "@/services/interfaces/IUnitOfService";
 
-// export async function refreshAccessToken() {
-//   const at = localStorage.getItem('at');
-//   if (!at) throw new Error('No access token');
+const ACCESS_TOKEN_KEY = "at";
+const REFRESH_TOKEN_KEY = "refreshToken";
+const REFRESH_BUFFER_MS = 90_000; // 90 sec before expiry
 
-//   const [data, setData] = useState<refreshTokenResponseDto>();
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+let onRefreshFailedHandler: (() => void) | null = null;
+let onRefreshSuccessHandler: (() => void) | null = null;
 
-//   const getAllnewsletterResponse = useRefreshToken(at || '');
-//   console.log('at', at);
-//   useEffect(() => {
-//     if (getAllnewsletterResponse.status === 'success' && getAllnewsletterResponse.data?.data?.data) {
-//       setData(getAllnewsletterResponse.data?.data?.data);
-//     }
-//   }, [getAllnewsletterResponse.status, getAllnewsletterResponse.data]);
+function clearRefreshTimer() {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
+}
 
-//   console.log('Newsletter data:', data?.refreshToken);
-//   console.log('[auth] Calling /auth/refresh-token');
+function decodeJwtExp(token: string): number | null {
+  const parts = token.split(".");
+  if (parts.length < 2) return null;
 
-//   const newAccessToken = data?.refreshToken as string;
+  const base64Url = parts[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
 
-//   // keep both keys in sync: existing code reads 'at', some may read 'accessToken'
-//   localStorage.setItem('at', newAccessToken);
-//   localStorage.setItem('accessToken', newAccessToken);
+  try {
+    const decoded = JSON.parse(atob(padded)) as { exp?: number };
+    return decoded.exp ?? null;
+  } catch {
+    return null;
+  }
+}
 
-//   console.log('[auth] Access token refreshed successfully at', new Date().toISOString());
-//   console.log('[auth] Got new access token, scheduling next refresh');
+export function scheduleAccessTokenRefresh(accessToken: string, onRefreshFailed?: () => void, onRefreshSuccess?: () => void) {
+  const exp = decodeJwtExp(accessToken);
+  if (!exp) {
+    console.warn("[auth] Token has no exp, not scheduling refresh");
+    return;
+  }
 
-//   // schedule next refresh using the new token
-//   scheduleAccessTokenRefresh(newAccessToken);
+  const expMs = exp * 1000;
+  const nowMs = Date.now();
+  const remainingMs = expMs - nowMs;
 
-//   return newAccessToken;
-// }
+  const expiryDate = new Date(expMs);
+  const totalSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
-// export function scheduleAccessTokenRefresh(accessToken: string) {
-//   try {
-//     const [, payload] = accessToken.split('.');
-//     if (!payload) {
-//       console.warn('[auth] Cannot schedule refresh, invalid token payload');
-//       return;
-//     }
+  // console.log(`[auth] Token expires at: ${expiryDate.toLocaleString()}`);
+  //console.log(`[auth] Token expires in: ${minutes}m ${seconds}s`);
 
-//     // decode JWT payload
-//     const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))) as { exp?: number };
+  const refreshInMs = remainingMs - REFRESH_BUFFER_MS;
 
-//     if (!decoded.exp) {
-//       console.warn('[auth] Token has no exp, not scheduling refresh');
-//       return;
-//     }
+  // ✅ store failure handler and clear previous timer
+  onRefreshFailedHandler = onRefreshFailed || null;
+  onRefreshSuccessHandler = onRefreshSuccess || null;
+  clearRefreshTimer();
 
-//     const expMs = decoded.exp * 1000;
-//     // refresh 1 minute before expiry
-//     //const refreshIn = expMs - Date.now() - 60_000;
-//     const refreshIn = 5_000;
+  // ✅ if already near expiry, refresh immediately
+  if (refreshInMs <= 0) {
+    //console.log("[auth] Token near expiry, refreshing now...");
+    void refreshAccessToken(onRefreshFailedHandler || undefined, onRefreshSuccessHandler || undefined);
+    return;
+  }
 
-//     console.log('[auth] Token exp (ms):', expMs, 'refresh in (ms):', refreshIn);
+  //console.log(`[auth] Refresh scheduled in: ${Math.floor(refreshInMs / 1000)}s`);
 
-//     if (refreshIn <= 0) {
-//       console.log('[auth] Token already near/after expiry, refreshing now');
-//       void refreshAccessToken();
-//       return;
-//     }
+  refreshTimer = setTimeout(() => {
+    //console.log("[auth] Timer fired, refreshing now...");
+    void refreshAccessToken(onRefreshFailedHandler || undefined, onRefreshSuccessHandler || undefined);
+  }, refreshInMs);
+}
 
-//     setTimeout(() => {
-//       console.log('[auth] Timer fired, refreshing access token');
-//       void refreshAccessToken();
-//     }, refreshIn);
-//   } catch (err) {
-//     console.error('[auth] Failed to schedule token refresh', err);
-//   }
-// }
+export async function refreshAccessToken(onRefreshFailed?: () => void, onRefreshSuccess?: () => void): Promise<string | undefined> {
+  const at = localStorage.getItem(ACCESS_TOKEN_KEY);
+  if (!at) {
+    // console.warn("[auth] No access token found");
+    return;
+  }
+
+  const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+
+  try {
+    const refreshResponse = await unitOfService.AccountService.getRefreshToken(at);
+
+    const newAccessToken = refreshResponse?.data?.data?.newToken as string | undefined;
+    const newRefreshToken = refreshResponse?.data?.data?.refreshToken as string | undefined;
+
+    if (refreshResponse.status !== 200 || !newAccessToken) {
+      //console.error("[auth] Refresh failed", refreshResponse.status);
+
+      // ✅ optional: logout if refresh fails
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      if (onRefreshFailed) {
+        try { onRefreshFailed(); } catch { }
+      }
+      return;
+    }
+
+    localStorage.setItem(ACCESS_TOKEN_KEY, newAccessToken);
+    if (newRefreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, newRefreshToken);
+
+    //console.log("[auth] Token refreshed ✅");
+    if (onRefreshSuccess) {
+      try { onRefreshSuccess(); } catch { }
+    }
+
+    // ✅ important: schedule again with new token
+    scheduleAccessTokenRefresh(newAccessToken);
+
+    return newAccessToken;
+  } catch (error) {
+    //console.error("[auth] Error in refreshAccessToken", error);
+    if (onRefreshFailed) {
+      try { onRefreshFailed(); } catch { }
+    }
+    return;
+  }
+}
