@@ -36,8 +36,7 @@ export default function CategoryList() {
     (id) => openDeleteModal(id)
   );
 
-   const searchParams = useSearchParams();
- 
+  const searchParams = useSearchParams();
 
   const [filterParams, setFilterParams] = useState<CategoryFilterParams>({
     status: searchParams.get('status') || '',
@@ -47,7 +46,6 @@ export default function CategoryList() {
     sortBy: searchParams.get('sortBy') || 'createdon',
     sortDirection: searchParams.get('sortDirection') || 'desc',
   });
-
 
   const getAllCategoriesResponse = useGetAllCategories(filterParams);
   const deleteCategoryMutation = useDeleteCategory();
@@ -59,9 +57,16 @@ export default function CategoryList() {
       setRecordCount(result.totalRecord ?? 0);
     }
   }, [getAllCategoriesResponse.status, getAllCategoriesResponse.data]);
+ 
 
-  const { sorting, onSortingChange } = useTanstackTableSorting<CategoryDto>('', 'desc', columns);
-  const { onPaginationChange, pagination } = useTanstackTablePagination(config.recordPerPage);
+
+ const { sorting, onSortingChange, field, order } = useTanstackTableSorting<CategoryDto>(
+    filterParams.sortBy ?? '',
+    filterParams.sortDirection ?? '',
+    columns
+  );
+
+  const { onPaginationChange, pagination } = useTanstackTablePagination(filterParams.recordPerPage);
 
   const table = useCustomDataTable({
     columns,
@@ -69,12 +74,45 @@ export default function CategoryList() {
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
-    pageCount: Math.ceil((recordCount || 0) / config.recordPerPage),
+    pageCount: Math.ceil((recordCount || 0) / (filterParams.recordPerPage || 1)),
     pagination,
     sorting,
-    onPaginationChange,
-    onSortingChange,
+    onPaginationChange: onPaginationChange,
+    onSortingChange: onSortingChange,
   });
+
+  useEffect(() => {
+    setFilterParams((oldValue) => {
+      return {
+        ...oldValue,
+        page: pagination.pageIndex + 1,
+        recordPerPage: pagination.pageSize,
+      };
+    });
+  }, [pagination]);
+
+  useEffect(() => {
+    setFilterParams((oldValue) => {
+      return {
+        ...oldValue,
+        sortBy: field,
+        sortDirection: order,
+      };
+    });
+  }, [field, order]);
+
+  const resetForm = () => {
+    setFilterParams(() => {
+      return {
+        status: searchParams.get('status') || '',
+        page: +(searchParams.get('page') || 1),
+        q: searchParams.get('q') || '',
+        recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
+        sortBy: searchParams.get('sortBy') || 'createdon',
+        sortDirection: searchParams.get('sortDirection') || 'desc',
+      };
+    });
+  };
 
   const handleDelete = async (id: number) => {
     const response = await deleteCategoryMutation.mutateAsync(id);
@@ -104,16 +142,26 @@ export default function CategoryList() {
   return (
     <>
       <div className="space-y-4">
-        <CategoryListFilter table={table} resetForm={() => getAllCategoriesResponse.refetch()} />
-
+        <CategoryListFilter
+           table={table}
+          resetForm={resetForm}
+             onTextChange={(value) => {
+            setFilterParams((oldValue) => {
+              return {
+                ...oldValue,
+                q: value || '',
+              };
+            });
+          }}
+          />
+        <DataTablePagination table={table} totalRecord={recordCount} loading={getAllCategoriesResponse.isLoading} />
         <div className="rounded-md border">
           <CustomDataTable columns={columns} table={table} />
         </div>
-
         <DataTablePagination table={table} totalRecord={recordCount} loading={getAllCategoriesResponse.isLoading} />
       </div>
 
-      {getAllCategoriesResponse.isLoading && <Loader />}
+     
 
       {showEditModal && (
         <ManageCategory

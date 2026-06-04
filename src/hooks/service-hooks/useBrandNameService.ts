@@ -1,6 +1,7 @@
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { CreateBrandNameModel } from '@/models/brand-name.model';
+import { BrandNameFilterParams } from '@/params/brand-name.params';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -19,12 +20,12 @@ const useCreateBrandName = () => {
     });
 };
 
-const useGetAllBrandNames = (enabled: boolean = true) => {
+const useGetAllBrandNames = (params?: BrandNameFilterParams, enabled: boolean = true) => {
     const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
 
     return useQuery({
-        queryKey: ['BrandNameService.getAll'],
-        queryFn: () => unitOfService.BrandNameService.getAll(),
+        queryKey: ['BrandNameService.getAll', params],
+        queryFn: () => unitOfService.BrandNameService.getAll(params),
         enabled,
     });
 };

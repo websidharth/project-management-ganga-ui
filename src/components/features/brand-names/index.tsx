@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { BrandNameDto } from '@/dtos/brand-name.dto';
 import { useGetAllBrandNames, useDeleteBrandName } from '@/hooks/service-hooks/useBrandNameService';
+import { BrandNameFilterParams } from '@/params/brand-name.params';
 import { useCustomDataTable } from '@/hooks/use-custom-table';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
 import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
@@ -33,7 +35,17 @@ export default function BrandNameList() {
     (id) => openDeleteModal(id)
   );
 
-  const getAllBrandNamesResponse = useGetAllBrandNames();
+  const searchParams = useSearchParams();
+
+  const [filterParams, setFilterParams] = useState<BrandNameFilterParams>({
+    q: searchParams.get('q') || '',
+    page: +(searchParams.get('page') || 1),
+    recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
+    sortBy: searchParams.get('sortBy') || 'createdon',
+    sortDirection: searchParams.get('sortDirection') || 'desc',
+  });
+
+  const getAllBrandNamesResponse = useGetAllBrandNames(filterParams);
   const deleteBrandNameMutation = useDeleteBrandName();
 
   useEffect(() => {
@@ -44,8 +56,13 @@ export default function BrandNameList() {
     }
   }, [getAllBrandNamesResponse.status, getAllBrandNamesResponse.data]);
 
-  const { sorting, onSortingChange } = useTanstackTableSorting<BrandNameDto>('', 'desc', columns);
-  const { onPaginationChange, pagination } = useTanstackTablePagination(config.recordPerPage);
+ const { sorting, onSortingChange, field, order } = useTanstackTableSorting<BrandNameDto>(
+    filterParams.sortBy ?? '',
+    filterParams.sortDirection ?? '',
+    columns
+  );
+
+  const { onPaginationChange, pagination } = useTanstackTablePagination(filterParams.recordPerPage);
 
   const table = useCustomDataTable({
     columns,
@@ -53,12 +70,47 @@ export default function BrandNameList() {
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
-    pageCount: Math.ceil((recordCount || 0) / config.recordPerPage),
+    pageCount: Math.ceil((recordCount || 0) / (filterParams.recordPerPage || 1)),
     pagination,
     sorting,
-    onPaginationChange,
-    onSortingChange,
+    onPaginationChange: onPaginationChange,
+    onSortingChange: onSortingChange,
   });
+
+  useEffect(() => {
+    setFilterParams((oldValue) => {
+      return {
+        ...oldValue,
+        page: pagination.pageIndex + 1,
+        recordPerPage: pagination.pageSize,
+      };
+    });
+  }, [pagination]);
+
+  useEffect(() => {
+    setFilterParams((oldValue) => {
+      return {
+        ...oldValue,
+        sortBy: field,
+        sortDirection: order,
+      };
+    });
+  }, [field, order]);
+
+  const resetForm = () => {
+    setFilterParams(() => {
+      return {
+        status: searchParams.get('status') || '',
+        page: +(searchParams.get('page') || 1),
+        q: searchParams.get('q') || '',
+        recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
+        sortBy: searchParams.get('sortBy') || 'createdon',
+        sortDirection: searchParams.get('sortDirection') || 'desc',
+      };
+    });
+  };
+
+
 
   const handleDelete = async (id: number) => {
     const response = await deleteBrandNameMutation.mutateAsync(id);
@@ -78,7 +130,16 @@ export default function BrandNameList() {
   return (
     <>
       <div className="p-4">
-        <BrandNameListFilter table={table} />
+        <BrandNameListFilter  table={table}
+          resetForm={resetForm}
+             onTextChange={(value) => {
+            setFilterParams((oldValue) => {
+              return {
+                ...oldValue,
+                q: value || '',
+              };
+            });
+          }}/>
       </div>
       {deleteBrandNameMutation.isPending && <Loader />}
       <CustomDataTable table={table} columns={columns} isLoading={getAllBrandNamesResponse.isLoading} />
