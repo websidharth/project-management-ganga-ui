@@ -119,7 +119,7 @@ export function SelectSearchMulti({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0" align="start">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] max-h-[var(--radix-popover-content-available-height)] p-0" align="start">
         <Command>
           <div className="flex items-center border-b px-3">
             <MagnifyingGlassIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />

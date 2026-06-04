@@ -152,7 +152,7 @@ export function SelectSearch({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="p-0 w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] mt-0">
+      <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] max-h-[var(--radix-popover-content-available-height)] mt-0">
         <Command>
           {!disableSearch && (
             <div className="flex items-center border-b px-3">

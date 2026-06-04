@@ -80,7 +80,7 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
                     <SelectSearch
                       buttonClass={`w-full`}
                       placeholder="Select Parent Category"
-                      disableSearch={true}
+                      disableSearch={false}
                       items={
                         getAllCategories?.data?.data?.data?.data?.map((item) => ({
                           value: item.id,
