@@ -141,7 +141,7 @@ export default function BrandNameList() {
             });
           }}/>
       </div>
-      {deleteBrandNameMutation.isPending && <Loader />}
+       
       <CustomDataTable table={table} columns={columns} isLoading={getAllBrandNamesResponse.isLoading} />
       <DataTablePagination table={table} />
       {showEditModal && editId && (
@@ -159,6 +159,7 @@ export default function BrandNameList() {
           onClose={() => closeDeleteModal(false)}
           onSubmit={() => handleDelete(+deleteId)}
           heading="Delete Brand Name"
+          loading={deleteBrandNameMutation.isPending}
           bodyText="Are you sure you want to delete this brand name? This action cannot be undone."
         />
       )}
