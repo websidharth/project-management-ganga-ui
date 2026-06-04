@@ -1,16 +1,17 @@
 export interface CreateProductVariantModel {
-    productId: number;
-    brandName?: string;
-    size?: string;
-    material?: string;
-    voltage?: string;
-    color?: string;
-    extraSku?: string;
-    extraPrice?: number;
-    stock?: number;
-    isDefault?: boolean;
-    status: string;
-    displayOrder?: number;
+  name: string;
+  slug?: string;
+  productId: number;
+  brandNameId?: number;
+  productAttributeId?: number | null; 
+  attributeId?: number | null;
+  cost?: number;
+  Price?: number;
+  stock?: number;
+  lowStockThreshold?: number | null;
+  status : string ;
+  displayOrder?: number | null;
+  isDefault?: boolean;
 }
 
 export interface UpdateProductVariantModel extends Partial<CreateProductVariantModel> { }
