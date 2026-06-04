@@ -294,6 +294,25 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
+              <FormField
+              control={form.control}
+              name="Price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Stock */}
             <FormField
