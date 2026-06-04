@@ -8,6 +8,7 @@ import { CategoryDto } from '@/dtos/category.dto';
 import { CreateCategoryModel, UpdateCategoryModel } from '@/models/category.model';
 import { ListResponseDto } from '@/dtos/list-response.dto';
 import Response from '@/dtos/Response';
+import { CategoryFilterParams } from '@/params/category.params';
 
 @injectable()
 export default class CategoryService implements ICategoryService {
@@ -23,10 +24,10 @@ export default class CategoryService implements ICategoryService {
             .post<CategoryDto, AxiosResponse<Response<CategoryDto>>>('/categories', model);
     }
 
-    getAll(): Promise<AxiosResponse<Response<ListResponseDto<CategoryDto>>>> {
+    getAll(params?: CategoryFilterParams): Promise<AxiosResponse<Response<ListResponseDto<CategoryDto>>>> {
         return this.httpService
             .call()
-            .get<ListResponseDto<CategoryDto>, AxiosResponse<Response<ListResponseDto<CategoryDto>>>>('/categories');
+            .get<ListResponseDto<CategoryDto>, AxiosResponse<Response<ListResponseDto<CategoryDto>>>>('/categories',{ params });
     }
 
     getById(id: number | string): Promise<AxiosResponse<Response<CategoryDto>>> {

@@ -1,6 +1,8 @@
-import { PaginationParams } from './pagination.params';
+import { PageFilterParams } from "./page.params";
 
-export interface UserListParams extends PaginationParams {
+ 
+
+export interface UserListParams extends PageFilterParams {
   status?: string | null;
-  endDate?: string | null;
+
 }

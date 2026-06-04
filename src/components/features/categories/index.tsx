@@ -19,6 +19,8 @@ import { useCategoryColumns } from './columns';
 import CategoryListFilter from './filter';
 import ManageCategory from './add-edit';
 import config from '@/config';
+import { useSearchParams } from 'next/navigation';
+import { CategoryFilterParams } from '@/params/category.params';
 
 export default function CategoryList() {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
@@ -34,7 +36,20 @@ export default function CategoryList() {
     (id) => openDeleteModal(id)
   );
 
-  const getAllCategoriesResponse = useGetAllCategories();
+   const searchParams = useSearchParams();
+ 
+
+  const [filterParams, setFilterParams] = useState<CategoryFilterParams>({
+    status: searchParams.get('status') || '',
+    page: +(searchParams.get('page') || 1),
+    q: searchParams.get('q') || '',
+    recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
+    sortBy: searchParams.get('sortBy') || 'createdon',
+    sortDirection: searchParams.get('sortDirection') || 'desc',
+  });
+
+
+  const getAllCategoriesResponse = useGetAllCategories(filterParams);
   const deleteCategoryMutation = useDeleteCategory();
 
   useEffect(() => {

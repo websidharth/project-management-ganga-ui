@@ -1,6 +1,7 @@
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { CreateCategoryModel, UpdateCategoryModel } from '@/models/category.model';
+import { CategoryFilterParams } from '@/params/category.params';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -19,12 +20,12 @@ const useCreateCategory = () => {
     });
 };
 
-const useGetAllCategories = (enabled: boolean = true) => {
+const useGetAllCategories = (params?: CategoryFilterParams, enabled: boolean = true) => {
     const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
 
     return useQuery({
-        queryKey: ['CategoryService.getAll'],
-        queryFn: () => unitOfService.CategoryService.getAll(),
+        queryKey: ['CategoryService.getAll',params],
+        queryFn: () => unitOfService.CategoryService.getAll(params),
         enabled,
     });
 };

@@ -7,6 +7,7 @@ import IBrandNameService from './interfaces/IBrandNameService';
 import { BrandNameDto } from '@/dtos/brand-name.dto';
 import { CreateBrandNameModel  } from '@/models/brand-name.model';
 import { ListResponseDto } from '@/dtos/list-response.dto';
+import { BrandNameFilterParams } from '@/params/brand-name.params';
 import Response from '@/dtos/Response';
 
 @injectable()
@@ -23,10 +24,10 @@ export default class BrandNameService implements IBrandNameService {
             .post<BrandNameDto, AxiosResponse<Response<BrandNameDto>>>('/brand-names', model);
     }
 
-    getAll(): Promise<AxiosResponse<Response<ListResponseDto<BrandNameDto>>>> {
+    getAll(params?: BrandNameFilterParams): Promise<AxiosResponse<Response<ListResponseDto<BrandNameDto>>>> {
         return this.httpService
             .call()
-            .get<ListResponseDto<BrandNameDto>, AxiosResponse<Response<ListResponseDto<BrandNameDto>>>>('/brand-names');
+            .get<ListResponseDto<BrandNameDto>, AxiosResponse<Response<ListResponseDto<BrandNameDto>>>>('/brand-names', { params });
     }
 
     getById(id: number | string): Promise<AxiosResponse<Response<BrandNameDto>>> {

@@ -25,7 +25,8 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
 
-  const getAllCategories = useGetAllCategories();
+  
+  const getAllCategories = useGetAllCategories({showAllRecords: true});
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const { data: categoryResponse, isLoading: isFetching } = useGetCategoryById(id ?? 0, isEdit);
