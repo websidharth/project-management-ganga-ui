@@ -33,6 +33,15 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
 
+    const generateSlug = (name: string) =>
+    name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+
+
   // Queries
   const getAllProductAttributes = useGetAllProductAttributes();
   const getAllAttributes = useGetAllAttributes();
@@ -70,8 +79,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
     defaultValues: {
       name: '',
       slug: '',
-      productId: 0,        // use undefined instead of 0 for clarity
-      brandNameId: '',
+      productId: 0,     
       productAttributeId: '',
       attributeId: '',
       cost: '',
@@ -79,8 +87,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
       stock: '',
       lowStockThreshold: '',
       status: StatusValues.Published,
-      displayOrder: 0,
-      isDefault: false,
+      
     },
   });
 
@@ -108,13 +115,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
 
   const submitData = async (model: CreateProductVariantModel) => {
     // Convert empty strings/undefined to null for number fields if your API expects null
-    const payload = {
-      ...model,
-      cost: model.cost ? Number(model.cost) : null,
-      Price: model.Price ? Number(model.Price) : null,
-      stock: model.stock ? Number(model.stock) : null,
-      lowStockThreshold: model.lowStockThreshold ? Number(model.lowStockThreshold) : null,
-    };
+   
     const response = isEdit 
       ? await updateVariant.mutateAsync({ id: id!, model  }) 
       : await createVariant.mutateAsync(model);
@@ -141,17 +142,16 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
         
         <Form {...form}>
           <form autoComplete="off" onSubmit={form.handleSubmit(submitData)} className="grid gap-4">
-            {/* Product Field */}
+        
             <FormField
               control={form.control}
               name="productId"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product *</FormLabel>
+                <FormItem> 
                   <FormControl>
                     <SelectSearch
                       buttonClass="w-full"
-                      placeholder="Select Product"
+                      placeholder="Select Product*"
                       disableSearch={false}
                       items={productOptions}
                       value={field.value ?? ''}   // SelectSearch expects string | number | undefined
@@ -162,8 +162,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
-
-            {/* Variant Name */}
+ 
             <FormField
               control={form.control}
               name="name"
@@ -171,7 +170,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Variant Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Variant name" {...field} value={field.value ?? ''} />
+                    <Input placeholder="Variant name" {...field}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +185,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Slug</FormLabel>
                   <FormControl>
-                    <Input placeholder="Slug (optional)" {...field} value={field.value ?? ''} />
+                    <Input placeholder="Slug (optional)" {...field}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -237,32 +236,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
               )}
             />
 
-            {/* Brand Name (Uncommented - add if needed) */}
-            <FormField
-              control={form.control}
-              name="brandNameId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand Name</FormLabel>
-                  <FormControl>
-                    <SelectSearch
-                      buttonClass="w-full"
-                      placeholder="Select Brand"
-                      disableSearch={false}
-                      items={
-                        getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
-                          value: item.id,
-                          label: item.brandName,
-                        })) ?? []
-                      }
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           
 
             {/* Cost */}
             <FormField
@@ -272,16 +246,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Cost</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={field.value ?? ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        field.onChange(val === '' ? undefined : parseFloat(val));
-                      }}
-                    />
+                    <Input placeholder="Cost"   value={field.value ?? ''}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -296,15 +261,9 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={field.value ?? ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        field.onChange(val === '' ? undefined : parseFloat(val));
-                      }}
+                    <Input 
+                      placeholder=""
+                      value={field.value ?? ''} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -320,14 +279,9 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Stock</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0"
-                      value={field.value ?? ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        field.onChange(val === '' ? undefined : parseInt(val, 10));
-                      }}
+                    <Input 
+                      placeholder=""
+                      value={field.value ?? ''} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -343,14 +297,10 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Low Stock Threshold</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <Input 
                       placeholder="Notify when stock below"
                       value={field.value ?? ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        field.onChange(val === '' ? undefined : parseInt(val, 10));
-                      }}
+                    
                     />
                   </FormControl>
                   <FormMessage />
@@ -358,25 +308,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
               )}
             />
 
-            {/* Is Default (Switch) */}
-            <FormField
-              control={form.control}
-              name="isDefault"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Default Variant</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
+            
             {/* Status */}
             <FormField
               control={form.control}

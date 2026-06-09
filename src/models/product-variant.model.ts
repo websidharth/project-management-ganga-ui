@@ -1,8 +1,7 @@
 export interface CreateProductVariantModel {
   name: string;
   slug?: string;
-  productId: number;
-  brandNameId?: string | null;
+  productId: number; 
   productAttributeId?: string | null; 
   attributeId?: string | null;
   cost?: string | null;
@@ -10,8 +9,4 @@ export interface CreateProductVariantModel {
   stock?: string | null;
   lowStockThreshold?: string | null;
   status : string;
-  displayOrder?: number | null;
-  isDefault?: boolean;
 }
-
-export interface UpdateProductVariantModel extends Partial<CreateProductVariantModel> { }
