@@ -45,17 +45,17 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
     resolver: yupResolver(ProductVariantSchema),
     defaultValues: {
       name: '',
-      slug: undefined,
+      slug: '',
       productId: defaultProductId ?? 0,
-      brandNameId: undefined,
-      productAttributeId: null,
-      attributeId: null,
-      cost: undefined,
-      Price: undefined,
+      brandNameId: 0,
+      productAttributeId: 0,
+      attributeId: 0,
+      cost: 0,
+      Price: 0,
       stock: 0,
-      lowStockThreshold: null,
+      lowStockThreshold: 5,
       status: StatusValues.Published,
-      displayOrder: null,
+      displayOrder: 0,
       isDefault: false,
     },
   });
@@ -65,18 +65,18 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
       const v = variantResponse.data.data;
       form.reset({
         name: v.name ?? '',
-        slug: v.slug ?? undefined,
+        slug: v.slug ?? '',
         productId: v.productId ?? 0,
-        brandNameId: v.brandNameId ?? undefined,
-        productAttributeId: v.productAttributeId ?? null,
-        attributeId: v.attributeId ?? null,
-        cost: v.cost ?? undefined,
-        Price: v.Price ?? undefined,
+        brandNameId: v.brandNameId ?? 0,
+        productAttributeId: v.productAttributeId ?? 0,
+        attributeId: v.attributeId ?? 0,
+        cost: v.cost ?? 0,
+        Price: v.Price ?? 0,
         stock: v.stock ?? 0,
-        lowStockThreshold: v.lowStockThreshold ?? null,
+        lowStockThreshold: v.lowStockThreshold ?? 5,
         isDefault: v.isDefault ?? false,
         status: v.status,
-        displayOrder: v.displayOrder ?? null,
+        displayOrder: v.displayOrder ?? 0,
       });
     }
   }, [isEdit, variantResponse, form]);
@@ -102,11 +102,11 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
           <DialogTitle>{isEdit ? 'Edit Variant' : 'Add New Variant'}</DialogTitle>
         </DialogHeader>
 
-        {isLoading && <Loader />}
+     
 
         <Form {...form}>
           <form autoComplete="off" onSubmit={form.handleSubmit(submitData)} className="grid   gap-4">
-            {/* Product */}
+        
             <FormField
               control={form.control}
               name="productId"
@@ -132,34 +132,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="attributeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Attribute</FormLabel>
-                  <FormControl>
-                    <SelectSearch
-                      buttonClass="w-full"
-                      placeholder="Select Attribute"
-                      disableSearch={false}
-                      items={
-                        getAllAttributes?.data?.data?.data?.data?.map((item) => ({
-                          value: item.id,
-                          label: item.name || item.name,
-                        })) ?? []
-                      }
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value ? Number(value) : null)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
+  <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
@@ -186,26 +159,25 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
-              name="brandNameId"
+              name="attributeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Brand Name</FormLabel>
+                  <FormLabel>Attribute</FormLabel>
                   <FormControl>
                     <SelectSearch
                       buttonClass="w-full"
-                      placeholder="Select Brand"
+                      placeholder="Select Attribute"
                       disableSearch={false}
                       items={
-                        getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
+                        getAllAttributes?.data?.data?.data?.data?.map((item) => ({
                           value: item.id,
-                          label: item.brandName,
+                          label: item.name || item.name,
                         })) ?? []
                       }
                       value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                      onChange={(value) => field.onChange(value ? Number(value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -238,44 +210,34 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
+          
 
-            {/* Size */}
             {/* <FormField
               control={form.control}
-              name="size"
+              name="brandNameId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size</FormLabel>
+                  <FormLabel>Brand Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. S, M, L, XL" {...field} value={field.value ?? ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
-            {/* Extra Price */}
-            <FormField
-              control={form.control}
-              name="Price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
+                    <SelectSearch
+                      buttonClass="w-full"
+                      placeholder="Select Brand"
+                      disableSearch={false}
+                      items={
+                        getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
+                          value: item.id,
+                          label: item.brandName,
+                        })) ?? []
+                      }
                       value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
+                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
-            <FormField
+            /> */}
+   <FormField
               control={form.control}
               name="cost"
               render={({ field }) => (
@@ -294,7 +256,10 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
-              <FormField
+
+            
+
+            <FormField
               control={form.control}
               name="Price"
               render={({ field }) => (
@@ -313,6 +278,8 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 </FormItem>
               )}
             />
+
+          
 
             {/* Stock */}
             <FormField
@@ -362,38 +329,8 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="displayOrder"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Display Order</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 1, 2, 3 (optional)"
-                      value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? null : +e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Is Default */}
-            <FormField
-              control={form.control}
-              name="isDefault"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-3">
-                  <FormLabel className="mt-2">Set as Default</FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value ?? false} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            
+           
 
             {/* Actions */}
             <div className="flex justify-end gap-2 pt-2">
