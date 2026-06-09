@@ -5,11 +5,8 @@ import ProductVariantList from '.';
 import ManageProductVariant from './add-edit';
 import { PageHeader } from '@/components/common/page-header';
 
-interface ProductVariantListingWrapperProps {
-  productId?: number;
-}
-
-export default function ProductVariantListingWrapper({ productId }: ProductVariantListingWrapperProps) {
+ 
+export default function ProductVariantListingWrapper( ) {
   const [showAddModal, setShowAddModal] = useState(false);
 
   return (
@@ -22,10 +19,12 @@ export default function ProductVariantListingWrapper({ productId }: ProductVaria
         onClick={() => setShowAddModal(true)}
       />
       <Card>
-        <ProductVariantList productId={productId} />
+        <ProductVariantList  />
       </Card>
 
-      {showAddModal && <ManageProductVariant defaultProductId={productId} isOpen={showAddModal} onClose={() => setShowAddModal(false)} />}
+      {showAddModal && <ManageProductVariant  id={0}
+       isOpen={showAddModal} 
+       onClose={() => setShowAddModal(false)} />}
     </>
   );
 }
