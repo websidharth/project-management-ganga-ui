@@ -27,10 +27,11 @@ interface ManageBrandNameProps {
 export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandNameProps) {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
-  const getAllCategories = useGetAllCategories();
+  
   const createMutation = useCreateBrandName();
   const updateMutation = useUpdateBrandName();
   const { data: brandNameResponse, isLoading: isFetching } = useGetBrandNameById(id ?? 0, isEdit);
+  const { data: getAllCategories, isLoading: isFetchingCategories } = useGetAllCategories( );
 
   const form = useForm<CreateBrandNameModel>({
     resolver: yupResolver(BrandNameSchema),
@@ -56,7 +57,7 @@ export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandName
     }
   };
 
-  const isLoading = createMutation.isPending || updateMutation.isPending || isFetching;
+  const isLoading = createMutation.isPending || updateMutation.isPending || isFetching || isFetchingCategories;
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose(false)}>
@@ -78,7 +79,7 @@ export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandName
                       buttonClass={`w-full`}
                       placeholder="Select Category"
                       items={
-                        getAllCategories?.data?.data?.data?.data?.map((item) => ({
+                        getAllCategories?.data?.data?.data?.map((item) => ({
                           value: item.id,
                           label: item.name,
                         })) ?? []

@@ -43,10 +43,9 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
 
 
   // Queries
-  const getAllProductAttributes = useGetAllProductAttributes();
-  const getAllAttributes = useGetAllAttributes();
-  const getAllBrandNames = useGetAllBrandNames();
-  const getAllProducts = useGetAllProducts();
+  const getAllProductAttributes = useGetAllProductAttributes({ showAllRecords: true });
+  const getAllAttributes = useGetAllAttributes({ showAllRecords: true });
+  const getAllProducts = useGetAllProducts({ showAllRecords: true });
   const createVariant = useCreateProductVariant();
   const updateVariant = useUpdateProductVariant();
   const { data: variantResponse, isLoading: isFetching } = useGetProductVariantById(id ?? 0, isEdit);
@@ -80,8 +79,8 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
       name: '',
       slug: '',
       productId: 0,     
-      productAttributeId: '',
-      attributeId: '',
+      productAttributeId: 0,
+      attributeId: 0,
       cost: '',
       Price: '',
       stock: '',
@@ -95,21 +94,18 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
   useEffect(() => {
     if (isEdit && variantResponse?.data?.data) {
       const v = variantResponse.data.data;
-      // form.reset({
-      //   name: v.name ?? '',
-      //   slug: v.slug ?? '',
-      //   productId: v.productId ?? 0,
-      //   brandNameId: v.brandNameId ?? '',
-      //   productAttributeId: v.productAttributeId ?? '',
-      //   attributeId: v.attributeId ?? '',
-      //   cost: v.cost ?? '',
-      //   Price: v.Price ?? '',
-      //   stock: v.stock ?? '',
-      //   lowStockThreshold: v.lowStockThreshold ?? '',
-      //   isDefault: v.isDefault ?? false,
-      //   status: v.status,
-      //   displayOrder: v.displayOrder ?? 0,
-      // });
+      form.reset({
+        name: v.name ?? '',
+        slug: v.slug ?? '',
+        productId: v.productId ?? 0, 
+        productAttributeId: v.productAttributeId ?? 0,
+        attributeId: v.attributeId ?? 0,
+        cost: v.cost?.toString() ?? '',
+        Price: v.Price?.toString() ?? '',
+        stock: v.stock?.toString() ?? '',
+        lowStockThreshold: v.lowStockThreshold?.toString() ?? '',
+        status: v.status, 
+      });
     }
   }, [isEdit, variantResponse, form]);
 
@@ -205,7 +201,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                       placeholder="Select Attribute"
                       disableSearch={false}
                       items={attributeOptions}
-                      value={field.value ?? ''}
+                      value={field.value ?? ''} 
                       onChange={(value) => field.onChange(value ? Number(value) : undefined)}
                     />
                   </FormControl>
@@ -246,7 +242,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Cost</FormLabel>
                   <FormControl>
-                    <Input placeholder="Cost"   value={field.value ?? ''}  />
+                    <Input placeholder="Cost"   {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -263,7 +259,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                   <FormControl>
                     <Input 
                       placeholder=""
-                      value={field.value ?? ''} 
+                     {...field} value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -281,7 +277,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                   <FormControl>
                     <Input 
                       placeholder=""
-                      value={field.value ?? ''} 
+                     {...field} value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -297,11 +293,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Low Stock Threshold</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Notify when stock below"
-                      value={field.value ?? ''}
-                    
-                    />
+                   <Input placeholder="Notify when stock below" {...field} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -2,8 +2,8 @@ export interface CreateProductVariantModel {
   name: string;
   slug?: string;
   productId: number; 
-  productAttributeId?: string | null; 
-  attributeId?: string | null;
+  productAttributeId?: number; 
+  attributeId?: number;
   cost?: string | null;
   Price?: string | null;
   stock?: string | null;
