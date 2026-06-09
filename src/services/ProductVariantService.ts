@@ -5,7 +5,7 @@ import { container } from '@/config/ioc';
 import IHttpService from './interfaces/IHttpService';
 import IProductVariantService from './interfaces/IProductVariantService';
 import { ProductVariantDto } from '@/dtos/product-variant.dto';
-import { CreateProductVariantModel, UpdateProductVariantModel } from '@/models/product-variant.model';
+import { CreateProductVariantModel } from '@/models/product-variant.model';
 import Response from '@/dtos/Response';
 
 @injectable()
@@ -40,7 +40,7 @@ export default class ProductVariantService implements IProductVariantService {
             .get<ProductVariantDto, AxiosResponse<Response<ProductVariantDto>>>(`/product-variants/${id}`);
     }
 
-    update(id: number | string, model: UpdateProductVariantModel): Promise<AxiosResponse<Response<ProductVariantDto>>> {
+    update(id: number | string, model: CreateProductVariantModel): Promise<AxiosResponse<Response<ProductVariantDto>>> {
         return this.httpService
             .call()
             .put<ProductVariantDto, AxiosResponse<Response<ProductVariantDto>>>(`/product-variants/${id}`, model);
