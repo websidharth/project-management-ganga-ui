@@ -1,6 +1,6 @@
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import { CreateProductVariantModel, UpdateProductVariantModel } from '@/models/product-variant.model';
+import { CreateProductVariantModel } from '@/models/product-variant.model';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -51,7 +51,7 @@ const useGetProductVariantById = (id: number | string, enabled: boolean = true) 
     });
 };
 
-type UpdateProductVariantArgs = { id: number | string; model: UpdateProductVariantModel };
+type UpdateProductVariantArgs = { id: number | string; model: CreateProductVariantModel };
 
 const useUpdateProductVariant = () => {
     const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);

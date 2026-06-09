@@ -30,40 +30,15 @@ export const useProductVariantColumns = (editRecord: (id: number) => void, delet
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Variant" />,
         cell: ({ row }) => {
           const v = row.original;
-          const parts = [v.size, v.color, v.material, v.voltage].filter(Boolean);
+           
           return (
             <div className="flex flex-wrap gap-1">
-              {parts.length > 0 ? (
-                parts.map((p, i) => (
-                  <Badge key={i} variant="secondary" className="text-xs">
-                    {p}
-                  </Badge>
-                ))
-              ) : (
-                <span className="text-muted-foreground text-xs">—</span>
-              )}
+               {row.original.Price}
             </div>
           );
         },
       },
-      {
-        id: 'extraSku',
-        accessorKey: 'extraSku',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Extra SKU" />,
-        cell: ({ row }) => <span className="font-mono text-xs text-muted-foreground">{row.original.extraSku ?? '—'}</span>,
-        meta: { sortingKey: 'extraSku' },
-      },
-      {
-        id: 'extraPrice',
-        accessorKey: 'extraPrice',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Extra Price" />,
-        cell: ({ row }) => <span className="text-sm">{row.original.extraPrice != null ? `$${row.original.extraPrice.toFixed(2)}` : '—'}</span>,
-        meta: { sortingKey: 'extraPrice' },
-      },
+      
       {
         id: 'stock',
         accessorKey: 'stock',
@@ -73,16 +48,7 @@ export const useProductVariantColumns = (editRecord: (id: number) => void, delet
         cell: ({ row }) => <span className="font-medium">{row.original.stock}</span>,
         meta: { sortingKey: 'stock' },
       },
-      {
-        id: 'isDefault',
-        accessorKey: 'isDefault',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Default" />,
-        cell: ({ row }) =>
-          row.original.isDefault ? <Badge variant="default">Default</Badge> : <span className="text-muted-foreground text-xs">—</span>,
-        meta: { sortingKey: 'isDefault' },
-      },
+     
     ],
     [editRecord, deleteRecord]
   );
