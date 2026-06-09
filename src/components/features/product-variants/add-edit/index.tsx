@@ -95,10 +95,10 @@ const getVariantById = useGetProductVariantById(id, false);
       productId: 0,     
       productAttributeId: 0,
       attributeId: 0,
-      cost: '',
-      Price: '',
-      stock: '',
-      lowStockThreshold: '',
+      cost: 0,
+      Price: 0,
+      stock: 0,
+      lowStockThreshold: 0,
       status: StatusValues.Published,
     },
   });
@@ -111,10 +111,10 @@ const getVariantById = useGetProductVariantById(id, false);
     setValue('productId', data.productId || 0);
     setValue('productAttributeId', data.productAttributeId || 0);
     setValue('attributeId', data.attributeId || 0);
-    setValue('cost', data.cost?.toString() || '');
-    setValue('Price', data.Price?.toString() || '');
-    setValue('stock', data.stock?.toString() || '');
-    setValue('lowStockThreshold', data.lowStockThreshold?.toString() || '');
+    setValue('cost', data.cost || 0);
+    setValue('Price', data.Price || 0);
+    setValue('stock', data.stock || 0);
+    setValue('lowStockThreshold', data.lowStockThreshold || 0);
     setValue('status', data.status || '');
   };
 
@@ -320,7 +320,7 @@ const getVariantById = useGetProductVariantById(id, false);
                 <FormItem>
                   <FormLabel>Cost</FormLabel>
                   <FormControl>
-                    <Input placeholder="Cost"   {...field} value={field.value ?? ''} />
+                    <Input placeholder="Cost" type='text'  {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

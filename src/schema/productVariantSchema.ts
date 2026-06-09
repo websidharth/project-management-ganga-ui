@@ -7,10 +7,10 @@ const ProductVariantSchema: Yup.ObjectSchema<CreateProductVariantModel> = Yup.ob
     productId: Yup.number().required('Product is required'), 
     productAttributeId:Yup.number().optional().default(0),
     attributeId:Yup.number().optional().default(0),
-    cost:Yup.string().matches(/^[0-9]+$/, 'Cost must contain only numbers').required('Cost is required'),
-    Price:Yup.string().matches(/^[0-9]+$/, 'Price must contain only numbers').required('Price is required'),
-    stock:Yup.string().matches(/^[0-9]+$/, 'stock must contain only numbers').required('Stock is required'),
-    lowStockThreshold:Yup.string().matches(/^[0-9]+$/, 'stock must contain only numbers').optional(),
+    cost:Yup.number().required('Cost is required'),
+    Price:Yup.number().required('Price is required'),
+    stock:Yup.number().required('Stock is required'),
+    lowStockThreshold:Yup.number().optional(),
     status: Yup.string().required('Status is required'), 
 });
 

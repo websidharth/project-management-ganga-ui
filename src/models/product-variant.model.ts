@@ -4,9 +4,9 @@ export interface CreateProductVariantModel {
   productId: number; 
   productAttributeId?: number; 
   attributeId?: number;
-  cost?: string | null;
-  Price?: string | null;
-  stock?: string | null;
-  lowStockThreshold?: string | null;
+  cost?: number | null;
+  Price?: number | null;
+  stock?: number | null;
+  lowStockThreshold?: number | null;
   status : string;
 }
