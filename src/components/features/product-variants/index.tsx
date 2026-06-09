@@ -97,17 +97,16 @@ export default function ProductVariantList({ productId }: ProductVariantListProp
     <>
       <div className="space-y-4">
         <div className="rounded-md border">
-          <CustomDataTable columns={columns} table={table} />
+          <CustomDataTable columns={columns} table={table}  isLoading={activeResponse.isLoading}/>
         </div>
         <DataTablePagination table={table} totalRecord={recordCount} loading={activeResponse.isLoading} />
       </div>
 
-      {activeResponse.isLoading && <Loader />}
+      
 
       {showEditModal && (
         <ManageProductVariant
-          id={+(editId ?? 0)}
-          defaultProductId={productId}
+          id={+(editId ?? 0)} 
           isOpen={showEditModal}
           onClose={(refresh) => {
             closeEditModal(refresh);
