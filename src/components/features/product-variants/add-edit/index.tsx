@@ -112,6 +112,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
 
   const submitData = async (model: CreateProductVariantModel) => {
     // Convert empty strings/undefined to null for number fields if your API expects null
+   console.log('Submitting model:', model);
    
     const response = isEdit 
       ? await updateVariant.mutateAsync({ id: id!, model  }) 
