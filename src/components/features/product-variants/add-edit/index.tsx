@@ -1,5 +1,5 @@
-'use client';
-import { useEffect, useMemo } from 'react';
+'use client'; 
+import { useEffect, useReducer,useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -21,17 +21,31 @@ import { StatusValues } from '@/enums/status-values.enum';
 import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
 import { useGetAllProductAttributes } from '@/hooks/service-hooks/useProductAttributeService';
 import { useGetAllAttributes } from '@/hooks/service-hooks/useAttributeService';
+import { ProductVariantDto } from '@/dtos/product-variant.dto';
+import { InModalActionType, InModalState, modalReducer } from '@/reducers/InModalAction';
+import { AxiosResponse } from 'axios';
+import Response from '@/dtos/Response';
+
+ 
+
+const initialState: InModalState = {
+  modalHeading: 'Add Grade',
+  isUpdate: false,
+  refreshRequired: false,
+  showLoader: false,
+};
 
 interface ManageProductVariantProps {
-  id?: number;
-  defaultProductId?: number;
+  id: number;
   isOpen: boolean;
-  onClose: (refresh: boolean) => void;
+  onClose: (refreshRequired: boolean) => void;
 }
 
-export default function ManageProductVariant({ id, defaultProductId, isOpen, onClose }: ManageProductVariantProps) {
+export default function ManageProductVariant({ id, isOpen, onClose }: ManageProductVariantProps) {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
-  const isEdit = !!id && id > 0;
+    const [states, dispatch] = useReducer(modalReducer, initialState);
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const isEdit = !!id && id > 0;
 
     const generateSlug = (name: string) =>
     name
@@ -48,8 +62,8 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
   const getAllProducts = useGetAllProducts({ showAllRecords: true });
   const createVariant = useCreateProductVariant();
   const updateVariant = useUpdateProductVariant();
-  const { data: variantResponse, isLoading: isFetching } = useGetProductVariantById(id ?? 0, isEdit);
-
+  //const { data: variantResponse, isLoading: isFetching } = useGetProductVariantById(id ?? 0, isEdit);
+const getVariantById = useGetProductVariantById(id, false);
   // Memoized select options to avoid recomputing on every render
   const productOptions = useMemo(() => 
     getAllProducts?.data?.data?.data?.data?.map((item) => ({
@@ -86,48 +100,103 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
       stock: '',
       lowStockThreshold: '',
       status: StatusValues.Published,
-      
     },
   });
 
     const { handleSubmit, reset, setValue, getValues } = form;
-  // Reset form when editing
-  useEffect(() => {
-    if (isEdit && variantResponse?.data?.data) {
-      const v = variantResponse.data.data;
-      form.reset({
-        name: v.name ?? '',
-        slug: v.slug ?? '',
-        productId: v.productId ?? 0, 
-        productAttributeId: v.productAttributeId ?? 0,
-        attributeId: v.attributeId ?? 0,
-        cost: v.cost?.toString() ?? '',
-        Price: v.Price?.toString() ?? '',
-        stock: v.stock?.toString() ?? '',
-        lowStockThreshold: v.lowStockThreshold?.toString() ?? '',
-        status: v.status, 
-      });
+
+   const fillVariantData = (data: ProductVariantDto) => {
+    setValue('name', data.name || '');
+    setValue('slug', data.slug || '');
+    setValue('productId', data.productId || 0);
+    setValue('productAttributeId', data.productAttributeId || 0);
+    setValue('attributeId', data.attributeId || 0);
+    setValue('cost', data.cost?.toString() || '');
+    setValue('Price', data.Price?.toString() || '');
+    setValue('stock', data.stock?.toString() || '');
+    setValue('lowStockThreshold', data.lowStockThreshold?.toString() || '');
+    setValue('status', data.status || '');
+  };
+
+   const submitData = async (model: CreateProductVariantModel) => {
+
+    dispatch({
+      type: InModalActionType.SHOW_LOADER,
+      payload: true,
+    });
+
+    let response: AxiosResponse<Response<ProductVariantDto>>;
+
+    if (isUpdating) {
+      response = await updateVariant.mutateAsync({ id: id, model });
+    } else {
+      response = await createVariant.mutateAsync(model);
     }
-  }, [isEdit, variantResponse, form]);
 
-  const submitData = async (model: CreateProductVariantModel) => {
-    // Convert empty strings/undefined to null for number fields if your API expects null
-   console.log('Submitting model:', model);
-   
-    const response = isEdit 
-      ? await updateVariant.mutateAsync({ id: id!, model  }) 
-      : await createVariant.mutateAsync(model);
+    dispatch({
+      type: InModalActionType.SHOW_LOADER,
+      payload: false,
+    });
 
-    if (response && (response.status === 200 || response.status === 201)) {
-      toast({ variant: 'success', title: `Variant ${isEdit ? 'updated' : 'created'} successfully` });
+    if (response && (response.status === 200 || response.status === 201) && response.data.data) {
+      toast({
+        variant: 'success',
+        title: 'Record saved successfully',
+      });
+      dispatch({
+        type: InModalActionType.IS_REFRESH_REQUIRED,
+        payload: true,
+      });
       onClose(true);
     } else {
       const error = unitOfService.ErrorHandlerService.getErrorMessage(response);
-      toast({ variant: 'destructive', title: 'Error', description: <span>{error}</span> });
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: <span>{error}</span>,
+      });
     }
   };
 
-  const isLoading = createVariant.isPending || updateVariant.isPending || isFetching;
+  useEffect(() => {
+    if (getVariantById.status === 'success' && getVariantById?.data?.data?.data) {
+      dispatch({
+        type: InModalActionType.SET_MODAL_HEADING,
+        payload: 'Update Variant',
+      });
+      dispatch({
+        type: InModalActionType.IS_UPDATE,
+        payload: true,
+      });
+
+      fillVariantData(getVariantById.data.data.data);
+      setIsUpdating(typeof getVariantById.data.data.data.id === 'number' && getVariantById.data.data.data.id > 0);
+    }
+  }, [getVariantById.status, getVariantById.isSuccess, getVariantById.data]);
+
+  useEffect(() => {
+    getVariantById.refetch();
+  }, [id]);
+
+
+  // const submitData = async (model: CreateProductVariantModel) => {
+  //   // Convert empty strings/undefined to null for number fields if your API expects null
+  //  console.log('Submitting model:', model);
+
+  //   const response = isEdit 
+  //     ? await updateVariant.mutateAsync({ id: id!, model  }) 
+  //     : await createVariant.mutateAsync(model);
+
+  //   if (response && (response.status === 200 || response.status === 201)) {
+  //     toast({ variant: 'success', title: `Variant ${isEdit ? 'updated' : 'created'} successfully` });
+  //     onClose(true);
+  //   } else {
+  //     const error = unitOfService.ErrorHandlerService.getErrorMessage(response);
+  //     toast({ variant: 'destructive', title: 'Error', description: <span>{error}</span> });
+  //   }
+  // };
+
+  const isLoading = createVariant.isPending || updateVariant.isPending || getVariantById.isLoading || getAllProducts.isLoading || getAllAttributes.isLoading || getAllProductAttributes.isLoading;
   const isDataLoading = getAllProducts.isLoading || getAllAttributes.isLoading || getAllProductAttributes.isLoading;
 
   return (
