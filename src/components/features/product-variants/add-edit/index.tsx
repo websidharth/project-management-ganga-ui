@@ -90,6 +90,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
     },
   });
 
+    const { handleSubmit, reset, setValue, getValues } = form;
   // Reset form when editing
   useEffect(() => {
     if (isEdit && variantResponse?.data?.data) {
@@ -150,7 +151,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                       placeholder="Select Product*"
                       disableSearch={false}
                       items={productOptions}
-                      value={field.value ?? ''}   // SelectSearch expects string | number | undefined
+                      value={field.value ?? 0}   // SelectSearch expects string | number | undefined
                       onChange={(value) => field.onChange(value ? Number(value) : undefined)}
                     />
                   </FormControl>
@@ -166,7 +167,14 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                 <FormItem>
                   <FormLabel>Variant Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Variant name" {...field}  />
+                    <Input placeholder="Variant name" {...field}
+                     onChange={(e) => {
+                        field.onChange(e);
+                        if (!isEdit || !getValues('slug')) {
+                          setValue('slug', generateSlug(e.target.value), { shouldValidate: true });
+                        }
+                      }}
+                        />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -201,7 +209,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                       placeholder="Select Attribute"
                       disableSearch={false}
                       items={attributeOptions}
-                      value={field.value ?? ''} 
+                      value={field.value ?? 0} 
                       onChange={(value) => field.onChange(value ? Number(value) : undefined)}
                     />
                   </FormControl>
@@ -223,7 +231,7 @@ export default function ManageProductVariant({ id, defaultProductId, isOpen, onC
                       placeholder="Select Product Attribute"
                       disableSearch={false}
                       items={productAttributeOptions}
-                      value={field.value ?? ''}
+                      value={field.value ?? 0}
                       onChange={(value) => field.onChange(value ? Number(value) : undefined)}
                     />
                   </FormControl>
