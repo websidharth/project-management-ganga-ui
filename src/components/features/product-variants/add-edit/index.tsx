@@ -320,7 +320,7 @@ const getVariantById = useGetProductVariantById(id, false);
                 <FormItem>
                   <FormLabel>Cost</FormLabel>
                   <FormControl>
-                    <Input placeholder="Cost" type='text'  {...field} value={field.value ?? ''} />
+                    <Input placeholder="Cost"    {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
