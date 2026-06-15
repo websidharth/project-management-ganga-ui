@@ -1,19 +1,19 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
-import { useMemo } from 'react';
+import ActionTooltip from '@/components/common/tooltip-action-button';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { ProductDto } from '@/dtos/product.dto';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { Badge } from '../../ui/badge';
 import ProductListRowActions from './row-action';
-import ActionTooltip from '@/components/common/tooltip-action-button';
 
 export const useProductColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
   useMemo<ColumnDef<ProductDto>[]>(
     () => [
-       {
+      {
         id: 'actions',
         header: '',
         cell: ({ row }) => <ProductListRowActions row={row} editRecord={editRecord} deleteRecord={deleteRecord} />,
@@ -31,15 +31,7 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         ),
         meta: { sortingKey: 'name' },
       },
-      {
-        id: 'sku',
-        accessorKey: 'sku',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="SKU" />,
-        cell: ({ row }) => <span className="font-mono text-xs">{row.original.sku}</span>,
-        meta: { sortingKey: 'sku' },
-      },
+
       {
         id: 'price',
         accessorKey: 'price',
@@ -72,7 +64,7 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         },
         meta: { sortingKey: 'stock' },
       },
-       {
+      {
         id: 'actions-mobile',
         accessorKey: 'actions',
         enableHiding: false,
@@ -130,7 +122,7 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         },
         meta: { sortingKey: 'createdAt' },
       },
-    
+
     ],
     [editRecord, deleteRecord]
   );

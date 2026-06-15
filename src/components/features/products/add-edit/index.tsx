@@ -8,9 +8,10 @@ import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { StatusValues } from '@/enums/status-values.enum';
+import { useGetAllAttributes } from '@/hooks/service-hooks/useAttributeService';
 import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
 import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
-import { useCreateProduct, useGetProductById, useUpdateProduct } from '@/hooks/service-hooks/useProductService';
+import { useCreateProduct, useGetAllProducts, useGetProductById, useUpdateProduct } from '@/hooks/service-hooks/useProductService';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 import { CreateProductModel } from '@/models/product.model';
 import ProductSchema from '@/schema/productSchema';
@@ -31,6 +32,8 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
 
   const getAllCategories = useGetAllCategories();
   const getAllBrandNames = useGetAllBrandNames();
+  const getAllAttributes = useGetAllAttributes();
+  const getAllProducts = useGetAllProducts();
 
   const { currentUser } = useGetCurrentUser();
   const createProduct = useCreateProduct();
@@ -40,31 +43,25 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
   const form = useForm<CreateProductModel>({
     resolver: yupResolver(ProductSchema),
     defaultValues: {
+      parentId: undefined,
+      categoryId: 0,
+      brandNameId: undefined,
+      attributeId: undefined,
       name: '',
       slug: '',
-      sku: '',
       description: '',
       price: 0,
       cost: undefined,
       stock: 0,
       lowStockThreshold: undefined,
-      categoryId: 0,
-      brandNameId: undefined,
-      storeId: undefined,
-      displayOrder: undefined,
+      displayOrder: 0,
       images: [],
       status: '',
-      createdById: 0,
     },
   });
 
   const { handleSubmit, reset, setValue, getValues } = form;
 
-  useEffect(() => {
-    if (currentUser?.id) {
-      setValue('createdById', currentUser.id);
-    }
-  }, [currentUser, setValue]);
 
   const generateSlug = (name: string) =>
     name
@@ -80,19 +77,18 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
       reset({
         name: p.name,
         slug: p.slug,
-        sku: p.sku,
         description: p.description ?? '',
         price: p.price,
         cost: p.cost ?? undefined,
         stock: p.stock,
         lowStockThreshold: p.lowStockThreshold ?? undefined,
+        parentId: p.parentId ?? undefined,
         categoryId: p.categoryId,
         brandNameId: p.brandNameId ?? undefined,
-        storeId: p.storeId ?? undefined,
+        attributeId: p.attributeId ?? undefined,
         displayOrder: p.displayOrder ?? undefined,
         images: p.images ?? [],
         status: p.status,
-        createdById: p.createdById,
       });
     }
   }, [isEdit, productResponse, reset]);
@@ -125,6 +121,31 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
 
         <Form {...form}>
           <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="parentId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select Parent Product</FormLabel>
+                  <FormControl>
+                    <SelectSearch
+                      buttonClass={`w-full`}
+                      placeholder="Select Parent Product"
+                      disableSearch={true}
+                      items={
+                        getAllProducts?.data?.data?.data?.data?.map((item) => ({
+                          value: item.id,
+                          label: item.name,
+                        })) ?? []
+                      }
+                      value={field.value ?? ''}
+                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* Name */}
             <FormField
               control={form.control}
@@ -142,6 +163,57 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
                           value: item.id,
                           label: item.name,
                         })) ?? []
+                      }
+                      value={field.value ?? ''}
+                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="brandNameId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brand Name</FormLabel>
+                  <FormControl>
+                    <SelectSearch
+                      buttonClass="w-full"
+                      placeholder="Select Brand"
+                      disableSearch={false}
+                      items={
+                        getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
+                          value: item.id,
+                          label: item.name, // ← was item.name
+                        })) ?? []
+                      }
+                      value={field.value ?? ''}
+                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="attributeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Attribute</FormLabel>
+                  <FormControl>
+                    <SelectSearch
+                      buttonClass="w-full"
+                      placeholder="Select Attribute"
+                      disableSearch={false}
+                      items={
+                        (getAllAttributes?.data?.data?.data?.data ?? []).map((item) => ({
+                          value: item.id,
+                          label: item.name, // ← was item.name
+                        }))
                       }
                       value={field.value ?? ''}
                       onChange={(value) => field.onChange(value ? Number(value) : undefined)}
@@ -190,20 +262,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
               )}
             />
 
-            {/* SKU */}
-            <FormField
-              control={form.control}
-              name="sku"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>SKU *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="SKU-001" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
 
             {/* Price */}
             <FormField
@@ -211,9 +270,9 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price *</FormLabel>
+                  <FormLabel>Selling Price *</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" placeholder="0.00" {...field} onChange={(e) => field.onChange(+e.target.value)} />
+                    <Input type="text" placeholder="0" {...field} onChange={(e) => field.onChange(+e.target.value)} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -226,12 +285,11 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
               name="cost"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cost</FormLabel>
+                  <FormLabel>Purchased Cost*</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
+                      type="text"
+                      placeholder="0"
                       {...field}
                       value={field.value ?? ''}
                       onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
@@ -251,7 +309,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
                   <FormLabel>Stock</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="0"
                       {...field}
                       value={field.value ?? ''}
@@ -272,7 +330,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
                   <FormLabel>Low Stock Threshold</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="e.g. 5"
                       {...field}
                       value={field.value ?? ''}
@@ -285,31 +343,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
             />
 
             {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="brandNameId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand Name</FormLabel>
-                  <FormControl>
-                    <SelectSearch
-                      buttonClass="w-full"
-                      placeholder="Select Brand"
-                      disableSearch={false}
-                      items={
-                        getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
-                          value: item.id,
-                          label: item.name, // ← was item.name
-                        })) ?? []
-                      }
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
 
 
             {/* Description — full width */}

@@ -1,20 +1,20 @@
 'use client';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { StatusValues } from '@/enums/status-values.enum';
+import { useCreateAttribute, useGetAttributeById, useUpdateAttribute } from '@/hooks/service-hooks/useAttributeService';
 import { CreateAttributeModel } from '@/models/attribute.model';
 import AttributeSchema from '@/schema/attributeSchema';
-import { useCreateAttribute, useGetAttributeById, useUpdateAttribute } from '@/hooks/service-hooks/useAttributeService';
-import { SelectSearch } from '@/components/common/select-search';
-import { StatusValues } from '@/enums/status-values.enum';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface ManageAttributeProps {
   id?: number;
@@ -32,7 +32,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
 
   const form = useForm<CreateAttributeModel>({
     resolver: yupResolver(AttributeSchema),
-    defaultValues: { name: '', unit: '', status: StatusValues.Published, displayOrder: null },
+    defaultValues: { name: '', unit: '0', status: StatusValues.Published, displayOrder: null },
   });
 
   useEffect(() => {
