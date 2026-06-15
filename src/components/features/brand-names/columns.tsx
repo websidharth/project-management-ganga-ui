@@ -1,11 +1,11 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
-import { useMemo } from 'react';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { BrandNameDto } from '@/dtos/brand-name.dto';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import BrandNameRowActions from './row-action';
 
 export const useBrandNameColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
@@ -22,7 +22,7 @@ export const useBrandNameColumns = (editRecord: (id: number) => void, deleteReco
         enableSorting: false,
         enableHiding: false,
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Brand Name" />,
-        cell: ({ row }) => <span className="font-medium">{row.original.brandName}</span>,
+        cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
         meta: { sortingKey: 'brandName' },
       },
       {
