@@ -1,24 +1,23 @@
 'use client';
-import { useEffect  } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { StatusValues } from '@/enums/status-values.enum';
+import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
+import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
+import { useCreateProduct, useGetProductById, useUpdateProduct } from '@/hooks/service-hooks/useProductService';
+import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 import { CreateProductModel } from '@/models/product.model';
 import ProductSchema from '@/schema/productSchema';
-import { useCreateProduct, useGetProductById, useUpdateProduct } from '@/hooks/service-hooks/useProductService';
-import { SelectSearch } from '@/components/common/select-search';
-import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
-import { useGetAllBrandNames } from '@/hooks/service-hooks/useBrandNameService';
-import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import StatusData from '@/data/status.data';
-import { StatusValues } from '@/enums/status-values.enum';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface ManageProductProps {
   id?: number;
@@ -300,7 +299,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
                       items={
                         getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
                           value: item.id,
-                          label: item.brandName, // ← was item.name
+                          label: item.name, // ← was item.name
                         })) ?? []
                       }
                       value={field.value ?? ''}
@@ -312,7 +311,7 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
               )}
             />
 
-  
+
             {/* Description — full width */}
             <div className="md:col-span-2">
               <FormField
@@ -337,35 +336,35 @@ export default function ManageProduct({ id, isOpen, onClose }: ManageProductProp
             </div>
 
             {/* Status */}
-           <FormField
-                       control={form.control}
-                       name="status"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Status *</FormLabel>
-                           <FormControl>
-                             <div className="flex">
-                               <SelectSearch
-                                 placeholder="Select Status*"
-                                 buttonClass="w-full"
-                                 disableSearch={true}
-                                 items={[
-                                   { label: 'Published', value: StatusValues.Published },
-                                   { label: 'Draft', value: StatusValues.Draft },
-                                 ]}
-                                 value={field.value}
-                                 valueType="string"
-                                 containerName="attribute-status"
-                                 onChange={(value) => {
-                                   field.onChange(value);
-                                 }}
-                               />
-                             </div>
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status *</FormLabel>
+                  <FormControl>
+                    <div className="flex">
+                      <SelectSearch
+                        placeholder="Select Status*"
+                        buttonClass="w-full"
+                        disableSearch={true}
+                        items={[
+                          { label: 'Published', value: StatusValues.Published },
+                          { label: 'Draft', value: StatusValues.Draft },
+                        ]}
+                        value={field.value}
+                        valueType="string"
+                        containerName="attribute-status"
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Actions */}
             <div className="md:col-span-2 flex justify-end gap-2 pt-2">
