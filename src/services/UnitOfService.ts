@@ -1,25 +1,23 @@
-import { injectable } from 'inversify';
-import { TYPES } from '@/config/types';
 import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
+import { injectable } from 'inversify';
 
-import IUnitOfService from './interfaces/IUnitOfService';
-import IHttpService from './interfaces/IHttpService';
 import IAccountService from './interfaces/IAccountService';
-import IDateTimeService from './interfaces/IDateTimeService';
-import IErrorHandlerService from './interfaces/IErrorHandlerService';
-import IUserListService from './interfaces/IUserListService.ts';
-import INewsletterService from './interfaces/INewsletterService';
-import IEmailService from './interfaces/IEmailService';
-import IProductService from './interfaces/IProductService';
-import ICategoryService from './interfaces/ICategoryService';
-import IProductVariantService from './interfaces/IProductVariantService';
-import IProductAttributeService from './interfaces/IProductAttributeService';
 import IAttributeService from './interfaces/IAttributeService';
 import IBrandNameService from './interfaces/IBrandNameService';
+import ICategoryService from './interfaces/ICategoryService';
 import IDashboardService from './interfaces/IDashboardService';
+import IDateTimeService from './interfaces/IDateTimeService';
+import IEmailService from './interfaces/IEmailService';
+import IErrorHandlerService from './interfaces/IErrorHandlerService';
+import IHttpService from './interfaces/IHttpService';
+import INewsletterService from './interfaces/INewsletterService';
+import IProductService from './interfaces/IProductService';
 import IStaffSalaryService from './interfaces/IStaffSalaryService';
 import IStaffService from './interfaces/IStaffService';
 import IStoreService from './interfaces/IStoreService';
+import IUnitOfService from './interfaces/IUnitOfService';
+import IUserListService from './interfaces/IUserListService.ts';
 
 @injectable()
 export default class UnitOfService implements IUnitOfService {
@@ -32,8 +30,6 @@ export default class UnitOfService implements IUnitOfService {
   public ErrorHandlerService: IErrorHandlerService;
   public ProductService: IProductService;
   public CategoryService: ICategoryService;
-  public ProductVariantService: IProductVariantService;
-  public ProductAttributeService: IProductAttributeService;
   public AttributeService: IAttributeService;
   public BrandNameService: IBrandNameService;
   public DashboardService: IDashboardService;
@@ -51,8 +47,6 @@ export default class UnitOfService implements IUnitOfService {
     userListService = container.get<IUserListService>(TYPES.IUserListService),
     productService = container.get<IProductService>(TYPES.IProductService),
     categoryService = container.get<ICategoryService>(TYPES.ICategoryService),
-    productVariantService = container.get<IProductVariantService>(TYPES.IProductVariantService),
-    productAttributeService = container.get<IProductAttributeService>(TYPES.IProductAttributeService),
     attributeService = container.get<IAttributeService>(TYPES.IAttributeService),
     brandNameService = container.get<IBrandNameService>(TYPES.IBrandNameService),
     dashboardService = container.get<IDashboardService>(TYPES.IDashboardService),
@@ -69,8 +63,6 @@ export default class UnitOfService implements IUnitOfService {
     this.UserListService = userListService;
     this.ProductService = productService;
     this.CategoryService = categoryService;
-    this.ProductVariantService = productVariantService;
-    this.ProductAttributeService = productAttributeService;
     this.AttributeService = attributeService;
     this.BrandNameService = brandNameService;
     this.DashboardService = dashboardService;

@@ -1,20 +1,18 @@
-import IHttpService from './IHttpService';
 import IAccountService from './IAccountService';
-import IDateTimeService from './IDateTimeService';
-import IErrorHandlerService from './IErrorHandlerService';
-import INewsletterService from './INewsletterService';
-import IUserListService from './IUserListService.ts';
-import IEmailService from './IEmailService';
-import IProductService from './IProductService';
-import ICategoryService from './ICategoryService';
-import IProductVariantService from './IProductVariantService';
-import IProductAttributeService from './IProductAttributeService';
 import IAttributeService from './IAttributeService';
 import IBrandNameService from './IBrandNameService';
+import ICategoryService from './ICategoryService';
 import IDashboardService from './IDashboardService';
+import IDateTimeService from './IDateTimeService';
+import IEmailService from './IEmailService';
+import IErrorHandlerService from './IErrorHandlerService';
+import IHttpService from './IHttpService';
+import INewsletterService from './INewsletterService';
+import IProductService from './IProductService';
 import IStaffSalaryService from './IStaffSalaryService';
 import IStaffService from './IStaffService';
 import IStoreService from './IStoreService';
+import IUserListService from './IUserListService.ts';
 
 export default interface IUnitOfService {
   HttpService: IHttpService;
@@ -26,8 +24,6 @@ export default interface IUnitOfService {
   UserListService: IUserListService;
   ProductService: IProductService;
   CategoryService: ICategoryService;
-  ProductVariantService: IProductVariantService;
-  ProductAttributeService: IProductAttributeService;
   AttributeService: IAttributeService;
   BrandNameService: IBrandNameService;
   DashboardService: IDashboardService;

@@ -1,25 +1,24 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
-import {
-  Package,
-  FileText,
-  Layers,
-  Tags,
-  AlertCircle,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  ArrowRight,
-  ShoppingBag,
-  Star,
-  Activity,
-} from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
+import {
+  Activity,
+  AlertCircle,
+  ArrowRight,
+  Clock,
+  Layers,
+  Package,
+  ShoppingBag,
+  Star,
+  Tags,
+  TrendingDown,
+  TrendingUp
+} from 'lucide-react';
 import Link from 'next/link';
 
 type StatCardProps = {
@@ -33,15 +32,15 @@ type StatCardProps = {
   href: string;
 };
 
-const StatCard = ({ 
-  icon: Icon, 
-  title, 
-  total, 
-  recentCount, 
-  trend, 
-  iconColor, 
-  bgColor, 
-  href 
+const StatCard = ({
+  icon: Icon,
+  title,
+  total,
+  recentCount,
+  trend,
+  iconColor,
+  bgColor,
+  href
 }: StatCardProps) => (
   <Link href={href}>
     <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary">
@@ -105,14 +104,14 @@ export default function DashboardHome() {
             <Skeleton className="h-10 w-48" />
             <Skeleton className="h-4 w-96" />
           </div>
-          
+
           {/* Stats Grid Skeleton */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...Array(4)].map((_, i) => (
               <StatCardSkeleton key={i} />
             ))}
           </div>
-          
+
           {/* Charts and Recent Activity Skeleton */}
           <div className="grid gap-6 md:grid-cols-2">
             <Skeleton className="h-[400px] w-full rounded-xl" />
@@ -179,8 +178,6 @@ export default function DashboardHome() {
   const trends = {
     products: 12,
     attributes: 8,
-    productVariants: -3,
-    productAttributes: 15,
   };
 
   return (
@@ -230,26 +227,7 @@ export default function DashboardHome() {
             bgColor="bg-green-50 dark:bg-green-950/30"
             href="/attributes"
           />
-          <StatCard
-            icon={Layers}
-            title="Product Variants"
-            total={summaryData.productVariants.total}
-            recentCount={summaryData.productVariants.recent.length}
-            trend={trends.productVariants}
-            iconColor="text-purple-600"
-            bgColor="bg-purple-50 dark:bg-purple-950/30"
-            href="/product-variants"
-          />
-          <StatCard
-            icon={FileText}
-            title="Product Attributes"
-            total={summaryData.productAttributes.total}
-            recentCount={summaryData.productAttributes.recent.length}
-            trend={trends.productAttributes}
-            iconColor="text-orange-600"
-            bgColor="bg-orange-50 dark:bg-orange-950/30"
-            href="/product-attributes"
-          />
+
         </div>
 
         {/* Main Content Grid */}
@@ -400,7 +378,7 @@ export default function DashboardHome() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-4">
@@ -416,7 +394,7 @@ export default function DashboardHome() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-4">

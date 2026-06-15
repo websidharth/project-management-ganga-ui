@@ -1,5 +1,5 @@
 import { Roles } from '@/enums/roles.enum';
-import { MdDashboard, MdSettings, MdSend, MdPerson, MdList } from 'react-icons/md';
+import { MdDashboard, MdList, MdPerson, MdSend } from 'react-icons/md';
 import { TbTemplate } from 'react-icons/tb';
 
 export interface SideBarMenuDto {
@@ -75,22 +75,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
     role: [Roles.ADMIN],
     isActive: false,
   },
-  {
-    id: 'product-attributes',
-    title: 'Product Attributes',
-    icon: MdSend,
-    url: '/admin/product-attributes/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
-  {
-    id: 'product-variants',
-    title: 'Product Variants',
-    icon: MdSend,
-    url: '/admin/product-variants/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
+
   {
     id: 'brand-names',
     title: 'Brand Names',
@@ -128,102 +113,6 @@ export const SideBarMenu: SideBarMenuDto[] = [
 
   //     ]
   // },
-
-  {
-    id: 'settings',
-    title: 'Settings',
-    icon: MdSettings,
-    url: '',
-    role: [Roles.ADMIN],
-    isActive: true,
-    submenu: [
-      {
-        id: 'DashboardPreferences',
-        title: 'Dashboard Preferences',
-        icon: MdSettings,
-        url: '/CreateList',
-        role: [Roles.ADMIN],
-        isActive: false,
-      },
-      // {
-      //     id: "Rating/ReviewProcess",
-      //     title: "Rating/Review Process",
-      //     icon: faStar,
-      //     url: "",
-      //
-      //     subsubmenu: [
-      //         {
-      //             id: "ReviewLinks",
-      //             title: "Review Links",
-      //             icon: faDash,
-      //             url: "/smm-list",
-      //             class: ""
-      //         },
-      //         {
-      //             id: "EmailSettings",
-      //             title: "Email Settings",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         },
-      //         {
-      //             id: "QRSettings",
-      //             title: "QR Settings",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         },
-
-      //         {
-      //             id: "Scheduler",
-      //             title: "Scheduler",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         }
-      //         ,
-      //     ]
-      // },
-      // {
-      //     id: "Testimonials",
-      //     title: "Testimonials",
-      //     icon: faPaperPlane,
-      //     url: "",
-      //
-      //     subsubmenu: [
-
-      //         {
-      //             id: "Approve/ignoreratings",
-      //             title: "Approve/ignore ratings",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         },
-      //         {
-      //             id: "TestimonialPreferences",
-      //             title: "Testimonial Preferences",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         }, {
-      //             id: "QRcode",
-      //             title: "QR code",
-      //             icon: faDash,
-      //             url: "",
-      //             class: ""
-      //         }
-      //     ]
-      // },
-    ],
-  },
-
-  // {
-  //     id: "setting",
-  //     title: "Setting",
-  //     icon: faGearComplex,
-  //     url: "/setting",
-  //     class: ""
-  // },
   {
     id: 'user',
     title: 'Sidharth Kumar',
@@ -237,14 +126,6 @@ export const SideBarMenu: SideBarMenuDto[] = [
         title: 'Profile',
         icon: MdList,
         url: '/dashboard/edit-profile',
-        role: [Roles.USER],
-        isActive: false,
-      },
-      {
-        id: 'myTemplates',
-        title: 'Templates',
-        icon: MdList,
-        url: '/dashboard/my-templates',
         role: [Roles.USER],
         isActive: false,
       },

@@ -9,8 +9,6 @@ export const TYPES = {
   IUserListService: Symbol.for('IUserListService'),
   IProductService: Symbol.for('IProductService'),
   ICategoryService: Symbol.for('ICategoryService'),
-  IProductVariantService: Symbol.for('IProductVariantService'),
-  IProductAttributeService: Symbol.for('IProductAttributeService'),
   IAttributeService: Symbol.for('IAttributeService'),
   IBrandNameService: Symbol.for('IBrandNameService'),
   IDashboardService: Symbol.for('IDashboardService'),
