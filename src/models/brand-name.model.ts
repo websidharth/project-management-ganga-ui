@@ -1,8 +1,8 @@
 
 export interface CreateBrandNameModel {
-    brandName: string;
-    status: string;
-    displayOrder?: number | null;
-    categoryIds: number[];
+  name: string;
+  status: string;
+  displayOrder?: number | null;
+  categoryIds: number[];
 }
 

@@ -1,22 +1,21 @@
 'use client';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { StatusValues } from '@/enums/status-values.enum';
+import { useCreateBrandName, useGetBrandNameById, useUpdateBrandName } from '@/hooks/service-hooks/useBrandNameService';
+import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
 import { CreateBrandNameModel } from '@/models/brand-name.model';
 import BrandNameSchema from '@/schema/brandNameSchema';
-import { useCreateBrandName, useGetBrandNameById, useUpdateBrandName } from '@/hooks/service-hooks/useBrandNameService';
-import { SelectSearch } from '@/components/common/select-search';
-import { SelectSearchMulti } from '@/components/common/select-search-multi';
-import { StatusValues } from '@/enums/status-values.enum';
-import { useGetAllCategories } from '@/hooks/service-hooks/useCategoryService';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface ManageBrandNameProps {
   id?: number;
@@ -27,21 +26,21 @@ interface ManageBrandNameProps {
 export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandNameProps) {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
-  
+
   const createMutation = useCreateBrandName();
   const updateMutation = useUpdateBrandName();
   const { data: brandNameResponse, isLoading: isFetching } = useGetBrandNameById(id ?? 0, isEdit);
-  const { data: getAllCategories, isLoading: isFetchingCategories } = useGetAllCategories( );
+  const { data: getAllCategories, isLoading: isFetchingCategories } = useGetAllCategories();
 
   const form = useForm<CreateBrandNameModel>({
     resolver: yupResolver(BrandNameSchema),
-    defaultValues: { brandName: '', status: StatusValues.Published, displayOrder: 0, categoryIds: [] },
+    defaultValues: { name: '', status: StatusValues.Draft, displayOrder: 1 },
   });
 
   useEffect(() => {
     if (isEdit && brandNameResponse?.data?.data) {
       const b = brandNameResponse.data.data;
-      form.reset({ brandName: b.brandName, status: b.status, displayOrder: b.displayOrder ?? 0, categoryIds: b.categoryId ? [b.categoryId] : [] });
+      form.reset({ name: b.name, status: b.status, displayOrder: b.displayOrder ?? 0 });
     }
   }, [isEdit, brandNameResponse, form]);
 
@@ -68,33 +67,10 @@ export default function ManageBrandName({ id, isOpen, onClose }: ManageBrandName
 
         <Form {...form}>
           <form autoComplete="off" onSubmit={form.handleSubmit(submitData)} className="space-y-4">
+
             <FormField
               control={form.control}
-              name="categoryIds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Category ID</FormLabel>
-                  <FormControl>
-                    <SelectSearchMulti
-                      buttonClass={`w-full`}
-                      placeholder="Select Category"
-                      items={
-                        getAllCategories?.data?.data?.data?.map((item) => ({
-                          value: item.id,
-                          label: item.name,
-                        })) ?? []
-                      }
-                      value={field.value ?? []}
-                      onChange={(values) => field.onChange(values.map(Number))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="brandName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name *</FormLabel>
