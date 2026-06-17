@@ -243,7 +243,7 @@
   h4,
   h5,
   h6 {
-    @apply text-foreground font-young-serif font-normal;
+    @apply text-foreground font-normal;
   }
 
   h1 {
@@ -289,13 +289,7 @@
     @apply leading-5 text-xs;
   }
 
-  .font-onest {
-    font-family: var(--font-onest), sans-serif;
-  }
 
-  .font-young-serif {
-    font-family: var(--font-yserif), serif;
-  }
 
   .gradient-bg {
     background: linear-gradient(90deg, hsl(var(--blue)), hsl(var(--cyan)), hsl(var(--blue)), hsl(var(--cyan)));

@@ -1,0 +1,18 @@
+import { OrderStatus } from '@/enums/order-status.enum';
+
+export interface OrderDto {
+  id: number;
+  orderNumber: string;
+  customerId: string;
+  storeCode: string;
+  orderDate: Date;
+  totalAmount: number;
+  discount: number;
+  tax: number;
+  shippingCost: number;
+  grandTotal: number;
+  status: OrderStatus;
+  notes?: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
+}

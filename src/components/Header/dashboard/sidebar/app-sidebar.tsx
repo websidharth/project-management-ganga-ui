@@ -1,13 +1,13 @@
 'use client';
 
-import * as React from 'react';
-import Link from 'next/link';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import config from '@/config';
+import Image from 'next/image';
+import Link from 'next/link';
+import * as React from 'react';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
-import config from '@/config';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import Image from 'next/image';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const logo = '/logo-full.svg';

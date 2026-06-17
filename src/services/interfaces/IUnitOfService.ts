@@ -8,6 +8,8 @@ import IEmailService from './IEmailService';
 import IErrorHandlerService from './IErrorHandlerService';
 import IHttpService from './IHttpService';
 import INewsletterService from './INewsletterService';
+import IOrderItemService from './IOrderItemService';
+import IOrderService from './IOrderService';
 import IProductService from './IProductService';
 import IStaffSalaryService from './IStaffSalaryService';
 import IStaffService from './IStaffService';
@@ -30,4 +32,6 @@ export default interface IUnitOfService {
   StaffSalaryService: IStaffSalaryService;
   StaffService: IStaffService;
   StoreService: IStoreService;
+  OrderService: IOrderService;
+  OrderItemService: IOrderItemService;
 }

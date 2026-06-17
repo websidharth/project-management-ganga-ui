@@ -1,21 +1,14 @@
-import type { Metadata } from 'next';
 import '@/app/globals.css';
-import { Onest, Young_Serif } from 'next/font/google';
+import type { Metadata } from 'next';
+import { Quicksand } from 'next/font/google';
 import AppProviders from './app-providers';
 
-const oneset = Onest({
+const quicksand = Quicksand({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
   adjustFontFallback: false,
-  variable: '--font-onest',
-});
-const young_serif = Young_Serif({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-  adjustFontFallback: false,
-  variable: '--font-yserif',
+  variable: '--font-quicksand',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${oneset.variable} ${young_serif.variable} bg-background !pointer-events-auto`}>
+      <body className={`${quicksand.variable} bg-background !pointer-events-auto`}>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

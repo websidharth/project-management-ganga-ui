@@ -12,12 +12,16 @@ import IEmailService from './interfaces/IEmailService';
 import IErrorHandlerService from './interfaces/IErrorHandlerService';
 import IHttpService from './interfaces/IHttpService';
 import INewsletterService from './interfaces/INewsletterService';
+import IOrderItemService from './interfaces/IOrderItemService';
+import IOrderService from './interfaces/IOrderService';
 import IProductService from './interfaces/IProductService';
 import IStaffSalaryService from './interfaces/IStaffSalaryService';
 import IStaffService from './interfaces/IStaffService';
 import IStoreService from './interfaces/IStoreService';
 import IUnitOfService from './interfaces/IUnitOfService';
 import IUserListService from './interfaces/IUserListService.ts';
+
+
 
 @injectable()
 export default class UnitOfService implements IUnitOfService {
@@ -36,6 +40,8 @@ export default class UnitOfService implements IUnitOfService {
   public StaffSalaryService: IStaffSalaryService;
   public StaffService: IStaffService;
   public StoreService: IStoreService;
+  public OrderService: IOrderService;
+  public OrderItemService: IOrderItemService;
 
   constructor(
     httpService = container.get<IHttpService>(TYPES.IHttpService),
@@ -52,7 +58,9 @@ export default class UnitOfService implements IUnitOfService {
     dashboardService = container.get<IDashboardService>(TYPES.IDashboardService),
     staffSalaryService = container.get<IStaffSalaryService>(TYPES.IStaffSalaryService),
     staffService = container.get<IStaffService>(TYPES.IStaffService),
-    storeService = container.get<IStoreService>(TYPES.IStoreService)
+    storeService = container.get<IStoreService>(TYPES.IStoreService),
+    orderService = container.get<IOrderService>(TYPES.IOrderService),
+    orderItemService = container.get<IOrderItemService>(TYPES.IOrderItemService),
   ) {
     this.HttpService = httpService;
     this.AccountService = accountService;
@@ -69,5 +77,7 @@ export default class UnitOfService implements IUnitOfService {
     this.StaffSalaryService = staffSalaryService;
     this.StaffService = staffService;
     this.StoreService = storeService;
+    this.OrderService = orderService;
+    this.OrderItemService = orderItemService;
   }
 }

@@ -1,22 +1,21 @@
 'use client';
- 
+
+import Logo from '@/components/common/Logo';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import useLogout from '@/hooks/use-logout';
-import { Card } from '@/components/ui/card';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import Logo from '@/components/common/Logo';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import useLogout from '@/hooks/use-logout';
+import { useSession } from 'next-auth/react';
 import { BreadCrumb } from '../breadcrumb';
 import { ModeToggle } from './sidebar/thememode';
-import { useSession } from 'next-auth/react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function HeaderDashboard() {
   const { data: session } = useSession();
@@ -24,13 +23,13 @@ export default function HeaderDashboard() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 w-full bg-background border-b border-b-slate-200/50 shadow-sm">
-        <Card className="!p-0 bg-card shadow-none">
+      <header className="sticky top-0 z-20 w-full  border-b border-b-slate-200/50 shadow-sm">
+        <Card className="!p-0 bg-card shadow-none rounded-0">
           <div className="flex justify-between items-center px-4 py-2">
             <div className="hidden xl:block ">
               <BreadCrumb />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-end ">
               <div>
                 <ModeToggle />
               </div>
@@ -47,17 +46,17 @@ export default function HeaderDashboard() {
                 <DropdownMenuContent>
                   <div className="p-3 border-b">
                     <div className="flex items-center">
-                      <span className="mr-2">👋</span>
+                      {/* <span className="mr-2">👋</span> */}
                       <span className="font-semibold text-sm">
                         Hey, {session?.user ? `${session.user.name.substring(0, 12)}...` : session?.user?.name}
                       </span>
                     </div>
                   </div>
 
-                  <DropdownMenuLabel>Dashboard</DropdownMenuLabel>
+                  {/* <DropdownMenuLabel>Dashboard</DropdownMenuLabel> */}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Notifications</DropdownMenuItem>
+                  {/* <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Notifications</DropdownMenuItem> */}
                   <DropdownMenuItem
                     onClick={async () => {
                       await logout();

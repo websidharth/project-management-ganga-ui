@@ -24,12 +24,16 @@ import ICategoryService from '@/services/interfaces/ICategoryService';
 import IDashboardService from '@/services/interfaces/IDashboardService';
 import IEmailService from '@/services/interfaces/IEmailService';
 import INewsletterService from '@/services/interfaces/INewsletterService';
+import IOrderItemService from '@/services/interfaces/IOrderItemService';
+import IOrderService from '@/services/interfaces/IOrderService';
 import IProductService from '@/services/interfaces/IProductService';
 import IStaffSalaryService from '@/services/interfaces/IStaffSalaryService';
 import IStaffService from '@/services/interfaces/IStaffService';
 import IStoreService from '@/services/interfaces/IStoreService';
 import IUserListService from '@/services/interfaces/IUserListService.ts';
 import NewsletterService from '@/services/NewsletterService';
+import OrderItemService from '@/services/OrderItemService';
+import OrderService from '@/services/OrderService';
 import ProductService from '@/services/ProductService';
 import StaffSalaryService from '@/services/StaffSalaryService';
 import StaffService from '@/services/StaffService';
@@ -55,6 +59,8 @@ container.bind<IDashboardService>(TYPES.IDashboardService).to(DashboardService);
 container.bind<IStaffSalaryService>(TYPES.IStaffSalaryService).to(StaffSalaryService);
 container.bind<IStaffService>(TYPES.IStaffService).to(StaffService);
 container.bind<IStoreService>(TYPES.IStoreService).to(StoreService);
+container.bind<IOrderService>(TYPES.IOrderService).to(OrderService);
+container.bind<IOrderItemService>(TYPES.IOrderItemService).to(OrderItemService);
 
 export { container };
 

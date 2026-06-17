@@ -17,13 +17,14 @@ export default class ErrorHandlerService implements IErrorHandlerService {
 
         if (actualError) {
           if (actualError.errors) return actualError.errors.join('<br/>');
-          else if (actualError.data) {
+          else if (actualError.message) return actualError.message;
+          else if (actualError.data && typeof actualError.data === 'string') {
             return actualError.data;
           } else {
             if (config.enviroment === 'production') {
               return 'Some error occured';
             } else {
-              return actualError as unknown as string;
+              return JSON.stringify(actualError);
             }
           }
         }
@@ -33,13 +34,14 @@ export default class ErrorHandlerService implements IErrorHandlerService {
 
           if (actualError) {
             if (actualError.errors) return actualError.errors.join('<br/>');
-            else if (actualError.data) {
+            else if (actualError.message) return actualError.message;
+            else if (actualError.data && typeof actualError.data === 'string') {
               return actualError.data;
             } else {
               if (config.enviroment === 'production') {
                 return 'Some error occured';
               } else {
-                return actualError as unknown as string;
+                return JSON.stringify(actualError);
               }
             }
           } else {
