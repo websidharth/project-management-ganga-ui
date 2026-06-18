@@ -22,7 +22,7 @@ import { ProductDto } from '@/dtos/product.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
 import { useCreateOrder } from '@/hooks/service-hooks/useOrderService';
 import { useGetAllProducts } from '@/hooks/service-hooks/useProductService';
-import { MinusIcon, PlusIcon, ShoppingCart } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
@@ -136,98 +136,148 @@ export default function PurchasePage() {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center text-muted-foreground">Loading products...</div>;
+  if (isLoading) return <div className="p-8 text-center text-muted-foreground font-medium animate-pulse">Loading products...</div>;
 
   return (
-    <div className="flex h-[calc(100vh-100px)] gap-6 p-6">
+    <div className="flex h-[calc(100vh-80px)] gap-6 p-6 bg-slate-50/50">
       {/* Products Grid */}
       <div className="flex-1 overflow-hidden flex flex-col">
-        <h2 className="text-2xl font-bold mb-4 tracking-tight">Available Products</h2>
-        <ScrollArea className="flex-1 pr-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4">
-            {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden border-border/40 shadow-sm transition-all hover:shadow-md hover:border-primary/20 flex flex-col">
-                <div className="aspect-square bg-muted/20 relative">
-                  {product.images && product.images[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={product.images[0]} alt={product.name} className="object-cover w-full h-full" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground/30 text-4xl">📦</div>
-                  )}
-                  {product.stock <= 0 && (
-                    <div className="absolute inset-0 bg-background/80 flex items-center justify-center backdrop-blur-[1px]">
-                      <Badge variant="destructive" className="text-sm">Out of Stock</Badge>
-                    </div>
-                  )}
-                </div>
-                <CardHeader className="p-4 pb-2">
-                  <div className="flex justify-between items-start gap-2">
-                    <CardTitle className="text-base font-semibold leading-tight line-clamp-2">{product.name}</CardTitle>
-                    <Badge variant={product.stock > (product.lowStockThreshold || 5) ? 'default' : 'destructive'} className="shrink-0">
-                      {product.stock} left
-                    </Badge>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-800">Available Products</h2>
+          <Badge className="bg-primary/10 text-primary hover:bg-primary/10 border-none font-semibold px-3 py-1">
+            {products.length} Products
+          </Badge>
+        </div>
+        
+        <ScrollArea className="flex-1 pr-4 -mr-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pb-6">
+            {products.map((product) => {
+              const inCartQty = cart[product.id]?.cartQuantity || 0;
+              const isLowStock = product.stock <= (product.lowStockThreshold || 5);
+              
+              return (
+                <Card key={product.id} className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/20 shadow-sm hover:shadow-lg transition-all duration-300 rounded-2xl flex flex-col h-full justify-between">
+                  <div className="aspect-[4/3] bg-slate-100/60 relative overflow-hidden flex items-center justify-center">
+                    {product.images && product.images[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.images[0]} alt={product.name} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                      <span className="text-5xl group-hover:scale-110 transition-transform duration-300">📦</span>
+                    )}
+
+                    {/* Low stock badge */}
+                    {product.stock > 0 && isLowStock && (
+                      <Badge className="absolute top-3 left-3 border-none bg-rose-500 text-white font-medium text-[10px] shadow-sm">
+                        Low Stock
+                      </Badge>
+                    )}
+
+                    {product.stock <= 0 && (
+                      <div className="absolute inset-0 bg-background/80 flex items-center justify-center backdrop-blur-[2px]">
+                        <Badge className="bg-rose-500 text-white font-semibold text-xs border-none shadow-sm px-2.5 py-1">Out of Stock</Badge>
+                      </div>
+                    )}
                   </div>
-                </CardHeader>
-                <CardContent className="p-4 pt-0 mt-auto flex items-center justify-between">
-                  <span className="text-lg font-bold text-primary">${product.price.toFixed(2)}</span>
-                  <Button
-                    size="sm"
-                    onClick={() => handleAddToCart(product)}
-                    disabled={product.stock <= 0 || (cart[product.id]?.cartQuantity || 0) >= product.stock}
-                  >
-                    Add
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start gap-2 mb-1.5">
+                        <span className="text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-wider">SKU: {product.sku || 'N/A'}</span>
+                        <span className={`text-xs font-semibold ${product.stock <= 0 ? 'text-rose-500' : 'text-slate-600'}`}>
+                          {product.stock > 0 ? `${product.stock} left` : 'Sold out'}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-semibold text-slate-800 leading-snug line-clamp-2 min-h-[40px] group-hover:text-primary transition-colors">
+                        {product.name}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                      <span className="text-lg font-bold text-slate-800">${product.price.toFixed(2)}</span>
+                      {inCartQty > 0 ? (
+                        <div className="flex items-center gap-1.5 bg-muted/60 rounded-lg p-0.5 border border-border/60">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-md" onClick={() => handleRemoveFromCart(product.id)}>
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-5 text-center text-xs font-bold text-slate-800">{inCartQty}</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 rounded-md"
+                            onClick={() => handleAddToCart(product)}
+                            disabled={inCartQty >= product.stock}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          size="sm"
+                          onClick={() => handleAddToCart(product)}
+                          disabled={product.stock <= 0}
+                          className="h-8 rounded-lg font-medium px-4 shadow-sm hover:shadow"
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </ScrollArea>
       </div>
 
       {/* Cart Sidebar */}
-      <Card className="w-[380px] flex flex-col h-full shadow-lg border-primary/10 bg-gradient-to-b from-background to-muted/10">
-        <CardHeader className="border-b bg-card">
-          <CardTitle className="flex items-center gap-2">
-            <ShoppingCart className="w-5 h-5" />
+      <Card className="w-[380px] flex flex-col h-full shadow-xl border-border/40 overflow-hidden rounded-2xl bg-card">
+        <CardHeader className="border-b px-4 py-3 bg-slate-50/50">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <div className="p-1 rounded-md bg-primary/10 text-primary">
+              <ShoppingCart className="w-3.5 h-3.5" />
+            </div>
             Current Order
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 p-0 overflow-hidden">
+
+        <CardContent className="flex-1 p-0 overflow-hidden bg-slate-50/10">
           <ScrollArea className="h-full">
             {cartItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-40 text-muted-foreground space-y-2">
-                <ShoppingCart className="w-10 h-10 opacity-20" />
-                <p>Your cart is empty</p>
+              <div className="flex flex-col items-center justify-center py-16 text-muted-foreground space-y-2.5">
+                <div className="p-3.5 rounded-full bg-slate-100 text-muted-foreground/35">
+                  <ShoppingBag className="w-6 h-6" />
+                </div>
+                <p className="text-xs font-semibold text-slate-400">Your cart is empty</p>
               </div>
             ) : (
-              <div className="p-4 space-y-4">
+              <div className="p-3.5 space-y-2.5">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-3 bg-background p-3 rounded-lg border shadow-sm items-center">
-                    <div className="w-12 h-12 bg-muted rounded overflow-hidden shrink-0">
+                  <div key={item.id} className="flex gap-2.5 bg-card p-2.5 rounded-xl border border-border/45 shadow-sm items-center hover:border-primary/15 transition-all">
+                    <div className="w-9 h-9 bg-slate-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-border/30">
                       {item.images && item.images[0] ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={item.images[0]} alt={item.name} className="object-cover w-full h-full" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs">📦</div>
+                        <span className="text-base">📦</span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium truncate">{item.name}</h4>
-                      <p className="text-sm text-primary font-bold">${(item.price * item.cartQuantity).toFixed(2)}</p>
+                      <h4 className="text-[11px] font-semibold text-slate-700 truncate">{item.name}</h4>
+                      <p className="text-xs text-primary font-bold mt-0.5">${(item.price * item.cartQuantity).toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-muted/50 rounded-md p-1 border">
-                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-sm" onClick={() => handleRemoveFromCart(item.id)}>
-                        <MinusIcon className="h-3 w-3" />
+                    <div className="flex items-center gap-1 bg-slate-100/80 rounded-lg p-0.5 border border-border/40">
+                      <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() => handleRemoveFromCart(item.id)}>
+                        <Minus className="h-2.5 w-2.5" />
                       </Button>
-                      <span className="w-6 text-center text-sm font-medium">{item.cartQuantity}</span>
+                      <span className="w-4 text-center text-[10px] font-bold text-slate-700">{item.cartQuantity}</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 rounded-sm"
+                        className="h-5 w-5 rounded-md"
                         onClick={() => handleAddToCart(item)}
                         disabled={item.cartQuantity >= item.stock}
                       >
-                        <PlusIcon className="h-3 w-3" />
+                        <Plus className="h-2.5 w-2.5" />
                       </Button>
                     </div>
                   </div>
@@ -236,22 +286,23 @@ export default function PurchasePage() {
             )}
           </ScrollArea>
         </CardContent>
-        <div className="bg-card">
-          <Separator />
+
+        <div className="bg-card border-t border-border/40">
           <div className="p-4">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleCheckout)} className="space-y-4" autoComplete="off">
-                <div className="grid grid-cols-2 gap-2">
+              <form onSubmit={form.handleSubmit(handleCheckout)} className="space-y-3" autoComplete="off">
+                <div className="grid grid-cols-2 gap-2.5">
                   <FormField
                     control={form.control}
                     name="discount"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Discount ($)</FormLabel>
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Discount ($)</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             placeholder="0"
+                            className="h-8 rounded-lg text-xs"
                             value={field.value ?? ''}
                             onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
                           />
@@ -264,12 +315,13 @@ export default function PurchasePage() {
                     control={form.control}
                     name="tax"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tax ($)</FormLabel>
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tax ($)</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             placeholder="0"
+                            className="h-8 rounded-lg text-xs"
                             value={field.value ?? ''}
                             onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
                           />
@@ -279,33 +331,34 @@ export default function PurchasePage() {
                     )}
                   />
                 </div>
+                
                 <FormField
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Notes</FormLabel>
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Order Notes</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Order notes..." {...field} value={field.value ?? ''} className="min-h-[60px]" />
+                        <Textarea placeholder="Add special instructions..." {...field} value={field.value ?? ''} className="min-h-[45px] h-[45px] rounded-lg text-xs py-1.5 px-2.5" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <div className="pt-2 border-t mt-4 space-y-1">
-                  <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="pt-2.5 border-t border-border/40 space-y-1">
+                  <div className="flex justify-between text-[11px] text-muted-foreground font-medium">
                     <span>Subtotal</span>
                     <span>${totalAmount.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Grand Total</span>
-                    <span className="text-primary">${grandTotal.toFixed(2)}</span>
+                  <div className="flex justify-between items-baseline pt-0.5">
+                    <span className="text-xs font-bold text-slate-700">Grand Total</span>
+                    <span className="text-base font-black text-primary">${grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <Button
-                  className="w-full h-12 text-base font-semibold shadow-md mt-4"
+                  className="w-full h-9 text-xs font-bold shadow-md hover:shadow-lg hover:translate-y-[-1px] active:translate-y-[0px] rounded-lg transition-all mt-2.5"
                   disabled={cartItems.length === 0 || createOrderMutation.isPending}
                   type="submit"
                   loading={createOrderMutation.isPending}

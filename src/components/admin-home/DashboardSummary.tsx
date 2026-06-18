@@ -2,7 +2,8 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
@@ -20,6 +21,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
+import OrderList from '../features/orders';
 
 type StatCardProps = {
   icon: React.ElementType;
@@ -42,29 +44,45 @@ const StatCard = ({
   bgColor,
   href
 }: StatCardProps) => (
-  <Link href={href}>
-    <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <div className={`p-2 rounded-lg ${bgColor} group-hover:scale-110 transition-transform duration-200`}>
-          <Icon className={`h-5 w-5 ${iconColor}`} />
+  <Link href={href} className="block">
+    <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out cursor-pointer rounded-2xl p-6 flex flex-col justify-between h-full min-h-[160px]">
+      {/* Glow Effect on Hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      <div className="flex items-start justify-between w-full">
+        <div className="space-y-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">{title}</span>
+          <div className="text-4xl font-bold tracking-tight text-foreground transition-all duration-200 group-hover:text-primary">
+            {total.toLocaleString()}
+          </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold tracking-tight">{total.toLocaleString()}</div>
-        <div className="flex items-center justify-between mt-2">
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {recentCount} new this month
-          </p>
-          {trend !== undefined && (
-            <div className={`flex items-center gap-1 text-xs ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {trend >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-              <span>{Math.abs(trend)}%</span>
-            </div>
-          )}
+
+        {/* Animated Icon Wrapper with matching glow/color */}
+        <div className={`flex items-center justify-center p-3 rounded-xl ${bgColor} group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all duration-300`}>
+          <Icon className={`h-6 w-6 ${iconColor}`} />
         </div>
-      </CardContent>
+      </div>
+
+      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/45 w-full">
+        {/* Trend Indicator as a Badge */}
+        {trend !== undefined ? (
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${trend >= 0
+            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+            }`}>
+            {trend >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+            <span>{trend >= 0 ? '+' : ''}{trend}%</span>
+          </div>
+        ) : (
+          <div />
+        )}
+
+        {/* Recent Count Indicator */}
+        <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+          <Clock className="h-3.5 w-3.5 text-muted-foreground/70" />
+          <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
+        </div>
+      </div>
     </Card>
   </Link>
 );
@@ -181,17 +199,17 @@ export default function DashboardHome() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen ">
       <div className="space-y-8 p-4 md:p-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <CardTitle className="">
               Dashboard
-            </h1>
-            <p className="text-muted-foreground">
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
               Welcome back! Here's what's happening with your store today.
-            </p>
+            </CardDescription>
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="outline" className="px-3 py-1">
@@ -230,58 +248,80 @@ export default function DashboardHome() {
 
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Recent Products Section */}
-          <Card className="overflow-hidden">
-            <CardHeader className="border-b bg-muted/50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Package className="h-5 w-5 text-primary" />
-                  <CardTitle>Recent Products</CardTitle>
-                </div>
+        <Card>
+          <OrderList />
+        </Card>
+        
+        {/* Main Content Tabs */}
+        <Card className="border border-border/50 shadow-sm rounded-xl overflow-hidden">
+          <Tabs defaultValue="products" className="w-full">
+            <div className="flex items-center justify-between border-b px-5 py-3 bg-card">
+              <TabsList className="bg-muted/60 h-9 p-0.5">
+                <TabsTrigger value="products" className="h-8 px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:text-foreground gap-1.5">
+                  <Package className="h-3.5 w-3.5" />
+                  Recent Products
+                </TabsTrigger>
+                <TabsTrigger value="attributes" className="h-8 px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:text-foreground gap-1.5">
+                  <Tags className="h-3.5 w-3.5" />
+                  Recent Attributes
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="products" className="m-0 p-0">
                 <Link href="/products">
-                  <Button variant="ghost" size="sm" className="gap-1">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 px-2.5">
                     View All
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-3 w-3" />
                   </Button>
                 </Link>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6">
+              </TabsContent>
+              <TabsContent value="attributes" className="m-0 p-0">
+                <Link href="/attributes">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 px-2.5">
+                    View All
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                </Link>
+              </TabsContent>
+            </div>
+
+            <TabsContent value="products" className="m-0 p-4 pt-2">
               {summaryData.products.recent.length > 0 ? (
-                <div className="space-y-4">
+                <div className="divide-y divide-border/30">
                   {summaryData.products.recent.map((product, index) => (
                     <div
                       key={product.id}
-                      className="group flex items-center justify-between border-b pb-4 last:border-0 last:pb-0 hover:bg-muted/50 transition-colors rounded-lg p-2 -mx-2"
+                      className="group flex items-center justify-between py-2.5 hover:bg-muted/30 transition-colors rounded-lg px-2 -mx-2"
                     >
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-sm">{product.name}</p>
-                          {index === 0 && (
-                            <Badge variant="secondary" className="text-xs">
-                              New
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
-                        <div className="flex items-center gap-3">
-                          <p className="text-xs text-muted-foreground">Stock: {product.stock}</p>
-                          {product.stock < 10 && (
-                            <Badge variant="destructive" className="text-xs">
-                              Low Stock
-                            </Badge>
-                          )}
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <p className="font-medium text-sm text-foreground truncate">{product.name}</p>
+                            {index === 0 && (
+                              <Badge className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary hover:bg-primary/10 border-none">
+                                New
+                              </Badge>
+                            )}
+                            {product.stock < 10 && (
+                              <Badge variant="destructive" className="text-[10px] px-1.5 py-0 border-none bg-rose-500/10 text-rose-600 hover:bg-rose-500/10">
+                                Low Stock
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>SKU: {product.sku}</span>
+                            <span className="text-border/60">•</span>
+                            <span>Stock: {product.stock}</span>
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-primary">
+                      <div className="flex items-center gap-3 pl-2">
+                        <p className="text-sm font-semibold text-foreground">
                           ${product.price.toFixed(2)}
                         </p>
                         <Link href={`/products/${product.id}`}>
-                          <Button variant="link" size="sm" className="h-auto p-0 text-xs">
-                            View Details
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md opacity-40 group-hover:opacity-100 transition-opacity">
+                            <ArrowRight className="h-3.5 w-3.5" />
                           </Button>
                         </Link>
                       </div>
@@ -289,49 +329,34 @@ export default function DashboardHome() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                  <p className="text-sm text-muted-foreground">No recent products</p>
+                <div className="text-center py-6">
+                  <ShoppingBag className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
+                  <p className="text-xs text-muted-foreground">No recent products</p>
                   <Link href="/products/create">
-                    <Button variant="link" size="sm" className="mt-2">
-                      Create your first product
+                    <Button variant="link" size="sm" className="mt-1 h-auto text-xs p-0">
+                      Create first product
                     </Button>
                   </Link>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </TabsContent>
 
-          {/* Recent Attributes Section */}
-          <Card className="overflow-hidden">
-            <CardHeader className="border-b bg-muted/50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Tags className="h-5 w-5 text-primary" />
-                  <CardTitle>Recent Attributes</CardTitle>
-                </div>
-                <Link href="/attributes">
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    View All
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6">
+            <TabsContent value="attributes" className="m-0 p-4 pt-2">
               {summaryData.attributes.recent.length > 0 ? (
-                <div className="space-y-3">
+                <div className="divide-y divide-border/30">
                   {summaryData.attributes.recent.map((attribute) => (
                     <div
                       key={attribute.id}
-                      className="group flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                      className="group flex items-center justify-between py-2.5 hover:bg-muted/30 transition-colors rounded-lg px-2 -mx-2"
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium text-sm">{attribute.name}</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="font-medium text-sm text-foreground truncate">{attribute.name}</p>
                           <Badge
-                            variant={attribute.status === 'Published' ? 'default' : 'secondary'}
-                            className="text-xs"
+                            className={`text-[10px] px-1.5 py-0 border-none ${attribute.status === 'Published'
+                                ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10'
+                                : 'bg-muted text-muted-foreground hover:bg-muted'
+                              }`}
                           >
                             {attribute.status}
                           </Badge>
@@ -339,7 +364,7 @@ export default function DashboardHome() {
                         <p className="text-xs text-muted-foreground">Unit: {attribute.unit || 'N/A'}</p>
                       </div>
                       <Link href={`/attributes/${attribute.id}`}>
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                           Edit
                         </Button>
                       </Link>
@@ -347,68 +372,68 @@ export default function DashboardHome() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Star className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                  <p className="text-sm text-muted-foreground">No recent attributes</p>
+                <div className="text-center py-6">
+                  <Star className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
+                  <p className="text-xs text-muted-foreground">No recent attributes</p>
                   <Link href="/attributes/create">
-                    <Button variant="link" size="sm" className="mt-2">
-                      Create your first attribute
+                    <Button variant="link" size="sm" className="mt-1 h-auto text-xs p-0">
+                      Create first attribute
                     </Button>
                   </Link>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
+            </TabsContent>
+          </Tabs>
+        </Card>
 
         {/* Quick Stats Footer */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-medium text-muted-foreground">Inventory Health</p>
-                <Package className="h-4 w-4 text-muted-foreground" />
+        <div className="grid gap-5 md:grid-cols-3">
+          <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-blue-500/20 shadow-sm transition-all duration-300 rounded-xl p-4 flex flex-col justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="p-2.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                <Package className="h-4 w-4" />
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Stock Coverage</span>
-                  <span className="font-medium">78%</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider">Inventory Health</p>
+                <div className="flex items-baseline justify-between mt-0.5">
+                  <span className="text-xs text-muted-foreground truncate">Stock Coverage</span>
+                  <span className="text-sm font-bold text-foreground">78%</span>
                 </div>
-                <Progress value={78} className="h-2" />
               </div>
-            </CardContent>
+            </div>
+            <Progress value={78} className="h-1.5 mt-3.5 bg-blue-500/10 [&>div]:bg-blue-500" />
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-medium text-muted-foreground">Attribute Usage</p>
-                <Tags className="h-4 w-4 text-muted-foreground" />
+          <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-emerald-500/20 shadow-sm transition-all duration-300 rounded-xl p-4 flex flex-col justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                <Tags className="h-4 w-4" />
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Products with Attributes</span>
-                  <span className="font-medium">92%</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider">Attribute Usage</p>
+                <div className="flex items-baseline justify-between mt-0.5">
+                  <span className="text-xs text-muted-foreground truncate">Products with Attributes</span>
+                  <span className="text-sm font-bold text-foreground">92%</span>
                 </div>
-                <Progress value={92} className="h-2" />
               </div>
-            </CardContent>
+            </div>
+            <Progress value={92} className="h-1.5 mt-3.5 bg-emerald-500/10 [&>div]:bg-emerald-500" />
           </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-medium text-muted-foreground">Variant Coverage</p>
-                <Layers className="h-4 w-4 text-muted-foreground" />
+          <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-indigo-500/20 shadow-sm transition-all duration-300 rounded-xl p-4 flex flex-col justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="p-2.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                <Layers className="h-4 w-4" />
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Products with Variants</span>
-                  <span className="font-medium">64%</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider">Variant Coverage</p>
+                <div className="flex items-baseline justify-between mt-0.5">
+                  <span className="text-xs text-muted-foreground truncate">Products with Variants</span>
+                  <span className="text-sm font-bold text-foreground">64%</span>
                 </div>
-                <Progress value={64} className="h-2" />
               </div>
-            </CardContent>
+            </div>
+            <Progress value={64} className="h-1.5 mt-3.5 bg-indigo-500/10 [&>div]:bg-indigo-500" />
           </Card>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Roles } from '@/enums/roles.enum';
-import { MdDashboard, MdList, MdPerson, MdSend } from 'react-icons/md';
+import { MdDashboard, MdList, MdPerson, MdSend, MdShoppingCart, MdReceipt, MdPeople, MdAttachMoney, MdStore } from 'react-icons/md';
 import { TbTemplate } from 'react-icons/tb';
 
 export interface SideBarMenuDto {
@@ -81,6 +81,46 @@ export const SideBarMenu: SideBarMenuDto[] = [
     title: 'Brand Names',
     icon: MdList,
     url: '/admin/brand-names/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'orders',
+    title: 'Orders',
+    icon: MdShoppingCart,
+    url: '/admin/orders/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'purchase',
+    title: 'Purchase',
+    icon: MdReceipt,
+    url: '/admin/purchase/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'staff',
+    title: 'Staff',
+    icon: MdPeople,
+    url: '/admin/staff/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'staff-salaries',
+    title: 'Staff Salaries',
+    icon: MdAttachMoney,
+    url: '/admin/staff-salaries/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'stores',
+    title: 'Stores',
+    icon: MdStore,
+    url: '/admin/stores/',
     role: [Roles.ADMIN],
     isActive: false,
   },
