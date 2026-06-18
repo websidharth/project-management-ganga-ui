@@ -1,14 +1,14 @@
-import { injectable } from 'inversify';
-import IHttpService from './interfaces/IHttpService';
-import { TYPES } from '@/config/types';
-import IAccountService from './interfaces/IAccountService';
-import { LoginDto, refreshTokenResponseDto } from '@/dtos/LoginDto';
-import { AxiosResponse } from 'axios';
-import Response from '@/dtos/Response';
 import { container } from '@/config/ioc';
-import LoginModel from '@/models/LoginModel';
+import { TYPES } from '@/config/types';
+import { LoginDto, refreshTokenResponseDto } from '@/dtos/LoginDto';
 import PlainDto from '@/dtos/PlainDto';
+import Response from '@/dtos/Response';
+import LoginModel from '@/models/LoginModel';
 import { CreateUserModel } from '@/models/user.model';
+import { AxiosResponse } from 'axios';
+import { injectable } from 'inversify';
+import IAccountService from './interfaces/IAccountService';
+import IHttpService from './interfaces/IHttpService';
 
 @injectable()
 export default class AccountService implements IAccountService {
@@ -46,7 +46,7 @@ export default class AccountService implements IAccountService {
   }
 
   createUser(model: CreateUserModel): Promise<AxiosResponse<Response<LoginDto>>> {
-    return this.httpService.externalCall().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/auth/register', model);
+    return this.httpService.externalCall().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/auth/signup', model);
   }
 
 

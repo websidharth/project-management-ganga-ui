@@ -1,10 +1,12 @@
-import { AxiosResponse } from 'axios';
+import { LoginDto } from '@/dtos/LoginDto';
+import PlainDto from '@/dtos/PlainDto';
 import Response from '@/dtos/Response';
 import { UserDto } from '@/dtos/UserDto';
 import { ListResponseDto } from '@/dtos/list-response.dto';
-import { UserListParams } from '@/params/user-list.params';
-import PlainDto from '@/dtos/PlainDto';
 import ResetPasswordModel from '@/models/ResetPasswordModel';
+import { CreateUserModel } from '@/models/user.model';
+import { UserListParams } from '@/params/user-list.params';
+import { AxiosResponse } from 'axios';
 
 export default interface IUserListService {
   getAll(p?: UserListParams): Promise<AxiosResponse<Response<ListResponseDto<UserDto>>>>;
@@ -18,4 +20,5 @@ export default interface IUserListService {
   getOtp(otp: number): Promise<AxiosResponse<Response<UserDto>>>;
   sendOtp(): Promise<AxiosResponse<Response<PlainDto>>>;
   resetPassword(model: ResetPasswordModel): Promise<AxiosResponse<Response<PlainDto>>>;
+  createUser(model: CreateUserModel): Promise<AxiosResponse<Response<LoginDto>>>;
 }

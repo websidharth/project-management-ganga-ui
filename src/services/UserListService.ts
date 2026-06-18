@@ -1,15 +1,17 @@
-import { injectable } from 'inversify';
-import IHttpService from './interfaces/IHttpService';
-import { TYPES } from '@/config/types';
-import { AxiosResponse } from 'axios';
-import Response from '@/dtos/Response';
 import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
+import { LoginDto } from '@/dtos/LoginDto';
+import PlainDto from '@/dtos/PlainDto';
+import Response from '@/dtos/Response';
 import { UserDto } from '@/dtos/UserDto';
 import { ListResponseDto } from '@/dtos/list-response.dto';
-import IUserListService from './interfaces/IUserListService.ts';
-import { UserListParams } from '@/params/user-list.params';
-import PlainDto from '@/dtos/PlainDto';
 import ResetPasswordModel from '@/models/ResetPasswordModel';
+import { CreateUserModel } from '@/models/user.model';
+import { UserListParams } from '@/params/user-list.params';
+import { AxiosResponse } from 'axios';
+import { injectable } from 'inversify';
+import IHttpService from './interfaces/IHttpService';
+import IUserListService from './interfaces/IUserListService.ts';
 
 @injectable()
 export default class UserListService implements IUserListService {
@@ -42,5 +44,9 @@ export default class UserListService implements IUserListService {
 
   resetPassword(model: ResetPasswordModel): Promise<AxiosResponse<Response<PlainDto>>> {
     return this.httpService.call().post<PlainDto, AxiosResponse<Response<PlainDto>>>(`/auth/reset-password`, model);
+  }
+
+  createUser(model: CreateUserModel): Promise<AxiosResponse<Response<LoginDto>>> {
+    return this.httpService.call().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/users/create-user', model);
   }
 }

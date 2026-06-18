@@ -5,4 +5,5 @@ export interface CreateUserModel {
   phone?: string;
   password: string;
   isRegisterbyShop?: boolean;
+  role?: string;
 }

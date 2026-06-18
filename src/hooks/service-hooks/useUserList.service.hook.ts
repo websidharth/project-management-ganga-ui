@@ -1,9 +1,11 @@
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import ResetPasswordModel from '@/models/ResetPasswordModel';
+import { CreateUserModel } from '@/models/user.model';
 import { UserListParams } from '@/params/user-list.params';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 
 const useGetAllUserList = (p?: UserListParams, enabled: boolean = true) => {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
@@ -131,7 +133,25 @@ const useResetPassword = () => {
   });
 };
 
+const useCreateUserByAdmin = () => {
+  const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+  const mutationFn = async (model: CreateUserModel) => {
+    console.log(model);
+    return await unitOfService.UserListService.createUser(model);
+  };
 
+  return useMutation({
+    mutationFn,
+    onSettled: (response) => {
+      if (response && response.status === 200 && response.data) {
+        // handle success
+      }
+    },
+    onError: (error) => {
+      return error;
+    },
+  });
+};
 
 // const useResetPassword = () => {
 //   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
@@ -143,4 +163,5 @@ const useResetPassword = () => {
 //   });
 // };
 
-export { useGetAllUserList, useGetUserById, useUpdateUser, useDeleteUserById, useVerifyOtp, useSendOtp, useResetPassword };
+export { useCreateUserByAdmin, useDeleteUserById, useGetAllUserList, useGetUserById, useResetPassword, useSendOtp, useUpdateUser, useVerifyOtp };
+

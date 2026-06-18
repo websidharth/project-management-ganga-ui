@@ -8,6 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
+import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,14 +39,9 @@ interface CartItem extends ProductDto {
   cartQuantity: number;
 }
 
-import { container } from '@/config/ioc';
-import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
-
 export default function PurchasePage() {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const { data: session } = useSession();
-  const user = (session as any)?.user;
   const customerId = '7659f57e-e2d1-465e-9f9b-4aa946d227e3';
   const { data: productsResponse, isLoading } = useGetAllProducts();
   const createOrderMutation = useCreateOrder();
@@ -254,7 +253,7 @@ export default function PurchasePage() {
                             type="number"
                             placeholder="0"
                             value={field.value ?? ''}
-                            onChange={(e) => field.onChange(e.target.value === '' ? null : +e.target.value)}
+                            onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -272,7 +271,7 @@ export default function PurchasePage() {
                             type="number"
                             placeholder="0"
                             value={field.value ?? ''}
-                            onChange={(e) => field.onChange(e.target.value === '' ? null : +e.target.value)}
+                            onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -293,7 +292,7 @@ export default function PurchasePage() {
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="pt-2 border-t mt-4 space-y-1">
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Subtotal</span>
