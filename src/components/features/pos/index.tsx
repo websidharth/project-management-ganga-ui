@@ -16,7 +16,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { ProductDto } from '@/dtos/product.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
@@ -148,13 +147,13 @@ export default function PurchasePage() {
             {products.length} Products
           </Badge>
         </div>
-        
+
         <ScrollArea className="flex-1 pr-4 -mr-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pb-6">
             {products.map((product) => {
               const inCartQty = cart[product.id]?.cartQuantity || 0;
               const isLowStock = product.stock <= (product.lowStockThreshold || 5);
-              
+
               return (
                 <Card key={product.id} className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/20 shadow-sm hover:shadow-lg transition-all duration-300 rounded-2xl flex flex-col h-full justify-between">
                   <div className="aspect-[4/3] bg-slate-100/60 relative overflow-hidden flex items-center justify-center">
@@ -182,7 +181,6 @@ export default function PurchasePage() {
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start gap-2 mb-1.5">
-                        <span className="text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-wider">SKU: {product.sku || 'N/A'}</span>
                         <span className={`text-xs font-semibold ${product.stock <= 0 ? 'text-rose-500' : 'text-slate-600'}`}>
                           {product.stock > 0 ? `${product.stock} left` : 'Sold out'}
                         </span>
@@ -331,7 +329,7 @@ export default function PurchasePage() {
                     )}
                   />
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="notes"
