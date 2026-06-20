@@ -44,6 +44,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
   }, [isEdit, attrResponse, form]);
 
   const submitData = async (model: CreateAttributeModel) => {
+    console.log(model)
     const payload = { ...model, unit: model.unit || null };
     const response = isEdit ? await updateMutation.mutateAsync({ id: id!, model: payload }) : await createMutation.mutateAsync(payload);
 
@@ -95,7 +96,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
                       type="text"
                       placeholder="e.g. 1, 2, 3 (optional)"
                       value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? null : +e.target.value)}
+                      onChange={(e) => field.onChange(e.target.value === '' ? 0 : +e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />

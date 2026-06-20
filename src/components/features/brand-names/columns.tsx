@@ -1,7 +1,10 @@
 'use client';
+import ActionTooltip from '@/components/common/tooltip-action-button';
+import { Badge } from '@/components/ui/badge';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { BrandNameDto } from '@/dtos/brand-name.dto';
+import { StatusValues } from '@/enums/status-values.enum';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
@@ -26,14 +29,28 @@ export const useBrandNameColumns = (editRecord: (id: number) => void, deleteReco
         meta: { sortingKey: 'brandName' },
       },
       {
+        id: 'actions-mobile',
+        accessorKey: 'actions',
+        enableHiding: false,
+        enableSorting: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <ActionTooltip variant="edit" tooltip="Edit Record" onClick={() => editRecord(+row.original.id)} />
+            <ActionTooltip variant="delete" tooltip="Delete Record" onClick={() => deleteRecord(+row.original.id)} />
+          </div>
+        ),
+        meta: { sortingKey: 'actions' },
+      }, {
         id: 'status',
         accessorKey: 'status',
         enableSorting: false,
         enableHiding: false,
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Status" />,
-        cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.status}</span>,
+        cell: ({ row }) => <Badge variant={row.original.status === StatusValues.Published ? 'scusses' : 'orange'}>{row.original.status}</Badge>,
         meta: { sortingKey: 'status' },
       },
+
       {
         id: 'displayOrder',
         accessorKey: 'displayOrder',

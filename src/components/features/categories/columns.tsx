@@ -1,11 +1,14 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
-import { useMemo } from 'react';
+import ActionTooltip from '@/components/common/tooltip-action-button';
+import { Badge } from '@/components/ui/badge';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { CategoryDto } from '@/dtos/category.dto';
+import { StatusValues } from '@/enums/status-values.enum';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import CategoryRowActions from './row-action';
 
 export const useCategoryColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
@@ -42,6 +45,28 @@ export const useCategoryColumns = (editRecord: (id: number) => void, deleteRecor
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Parent ID" />,
         cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.parentId ?? '—'}</span>,
         meta: { sortingKey: 'parentId' },
+      },
+      {
+        id: 'actions-mobile',
+        accessorKey: 'actions',
+        enableHiding: false,
+        enableSorting: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <ActionTooltip variant="edit" tooltip="Edit Record" onClick={() => editRecord(+row.original.id)} />
+            <ActionTooltip variant="delete" tooltip="Delete Record" onClick={() => deleteRecord(+row.original.id)} />
+          </div>
+        ),
+        meta: { sortingKey: 'actions' },
+      }, {
+        id: 'status',
+        accessorKey: 'status',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Status" />,
+        cell: ({ row }) => <Badge variant={row.original.status === StatusValues.Published ? 'scusses' : 'orange'}>{row.original.status}</Badge>,
+        meta: { sortingKey: 'status' },
       },
       {
         id: 'createdAt',

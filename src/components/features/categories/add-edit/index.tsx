@@ -1,19 +1,20 @@
 'use client';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { StatusValues } from '@/enums/status-values.enum';
+import { useCreateCategory, useGetAllCategories, useGetCategoryById, useUpdateCategory } from '@/hooks/service-hooks/useCategoryService';
 import { CreateCategoryModel } from '@/models/category.model';
 import CategorySchema from '@/schema/categorySchema';
-import { useCreateCategory, useGetAllCategories, useGetCategoryById, useUpdateCategory } from '@/hooks/service-hooks/useCategoryService';
-import { SelectSearch } from '@/components/common/select-search';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface ManageCategoryProps {
   id?: number;
@@ -25,15 +26,15 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
 
-  
-  const getAllCategories = useGetAllCategories({showAllRecords: true});
+
+  const getAllCategories = useGetAllCategories({ showAllRecords: true });
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const { data: categoryResponse, isLoading: isFetching } = useGetCategoryById(id ?? 0, isEdit);
 
   const form = useForm<CreateCategoryModel>({
     resolver: yupResolver(CategorySchema),
-    defaultValues: { name: '', description: '', parentId: undefined },
+    defaultValues: { name: '', description: '', status: StatusValues.Published, parentId: undefined },
   });
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
         name: c.name,
         description: c.description ?? '',
         parentId: c.parentId ?? undefined,
+        status: c.status ?? StatusValues.Draft,
       });
     }
   }, [isEdit, categoryResponse, form]);
@@ -128,7 +130,35 @@ export default function ManageCategory({ id, isOpen, onClose }: ManageCategoryPr
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status *</FormLabel>
+                  <FormControl>
+                    <div className="flex">
+                      <SelectSearch
+                        placeholder="Select Status*"
+                        buttonClass="w-full"
+                        disableSearch={true}
+                        items={[
+                          { label: 'Published', value: StatusValues.Published },
+                          { label: 'Draft', value: StatusValues.Draft },
+                        ]}
+                        value={field.value}
+                        valueType="string"
+                        containerName="attribute-status"
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => onClose(false)}>
                 Cancel

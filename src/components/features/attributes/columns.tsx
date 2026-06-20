@@ -3,6 +3,7 @@ import ActionTooltip from '@/components/common/tooltip-action-button';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { AttributeDto } from '@/dtos/attribute.dto';
+import { StatusValues } from '@/enums/status-values.enum';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
@@ -32,24 +33,15 @@ export const useAttributeColumns = (editRecord: (id: number) => void, deleteReco
         accessorKey: 'displayOrder',
         enableSorting: false,
         enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Display Order" />,
-        cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.displayOrder ?? '—'}</span>,
-      },
-      {
-        id: 'status',
-        accessorKey: 'status',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Status" />,
-        cell: ({ row }) => <Badge variant={row.original.status === 'Published' ? true : 'secondary'}>{row.original.status}</Badge>,
-        meta: { sortingKey: 'status' },
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase text-center" title="Display Order" />,
+        cell: ({ row }) => <span className="text-sm text-muted-foreground text-center block">{row.original.displayOrder ?? '—'}</span>,
       },
       {
         id: 'actions-mobile',
         accessorKey: 'actions',
         enableHiding: false,
         enableSorting: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <ActionTooltip variant="edit" tooltip="Edit Record" onClick={() => editRecord(+row.original.id)} />
@@ -57,6 +49,15 @@ export const useAttributeColumns = (editRecord: (id: number) => void, deleteReco
           </div>
         ),
         meta: { sortingKey: 'actions' },
+      },
+      {
+        id: 'status',
+        accessorKey: 'status',
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Status" />,
+        cell: ({ row }) => <Badge variant={row.original.status === StatusValues.Published ? 'scusses' : 'orange'}>{row.original.status}</Badge>,
+        meta: { sortingKey: 'status' },
       },
       {
         id: 'createdAt',
