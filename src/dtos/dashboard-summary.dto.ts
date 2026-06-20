@@ -65,5 +65,6 @@ export interface DashboardSummaryDto {
     total: number;
     recent: DashboardAttributeDto[];
   };
-
+  todaySale: number;
+  totalMonthSale: number;
 }

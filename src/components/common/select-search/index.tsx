@@ -2,8 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -12,9 +11,10 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import DropdownBasicDto from '@/dtos/dropdown-basic.dto';
+import { cn } from '@/lib/utils';
+import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // Props
 interface SelectSearchProps {
@@ -140,7 +140,7 @@ export function SelectSearch({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'min-w-40 h-11 w-full justify-between text-sm',
+            'min-w-40 h-11 w-full text-sm',
             buttonClass,
             varient === 'color' && value
               ? statusStyles[value as keyof typeof statusStyles]

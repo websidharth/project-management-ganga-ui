@@ -113,230 +113,231 @@ export default function ManageProduct({ id }: ManageProductProps) {
 
 
     <Form {...form}>
-      <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <FormField
-          control={form.control}
-          name="parentId"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <SelectSearch
-                  buttonClass={`w-full`}
-                  placeholder="Select Parent Product"
-                  disableSearch={true}
-                  items={
-                    getAllProducts?.data?.data?.data?.data?.map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    })) ?? []
-                  }
-                  value={field.value ?? ''}
-                  onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Name */}
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <SelectSearch
-                  buttonClass={`w-full`}
-                  placeholder="Select Category"
-                  disableSearch={true}
-                  items={
-                    getAllCategories?.data?.data?.data?.data?.map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    })) ?? []
-                  }
-                  value={field.value ?? ''}
-                  onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="brandNameId"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <SelectSearch
-                  buttonClass="w-full"
-                  placeholder="Select Brand"
-                  disableSearch={false}
-                  items={
-                    getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
-                      value: item.id,
-                      label: item.name, // ← was item.name
-                    })) ?? []
-                  }
-                  value={field.value ?? ''}
-                  onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="attributeId"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <SelectSearch
-                  buttonClass="w-full"
-                  placeholder="Select Attribute"
-                  disableSearch={false}
-                  items={
-                    (getAllAttributes?.data?.data?.data?.data ?? []).map((item) => ({
-                      value: item.id,
-                      label: item.name, // ← was item.name
-                    }))
-                  }
-                  value={field.value ?? ''}
-                  onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name *</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Product name"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    if (!isEdit || !getValues('slug')) {
-                      setValue('slug', generateSlug(e.target.value), { shouldValidate: true });
+      <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="parentId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Product Parent*</FormLabel>
+                <FormControl>
+                  <SelectSearch
+                    buttonClass={`w-full`}
+                    placeholder="Select Parent Product"
+                    disableSearch={true}
+                    items={
+                      getAllProducts?.data?.data?.data?.data?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      })) ?? []
                     }
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    value={field.value ?? ''}
+                    onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Category*</FormLabel>
+                <FormControl>
+                  <SelectSearch
+                    buttonClass={`w-full`}
+                    placeholder="Select Category"
+                    disableSearch={true}
+                    items={
+                      getAllCategories?.data?.data?.data?.data?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      })) ?? []
+                    }
+                    value={field.value ?? ''}
+                    onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Slug */}
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug *</FormLabel>
-              <FormControl>
-                <Input placeholder="product-slug" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="brandNameId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Brand*</FormLabel>
+                <FormControl>
+                  <SelectSearch
+                    buttonClass="w-full"
+                    placeholder="Select Brand"
+                    disableSearch={false}
+                    items={
+                      getAllBrandNames?.data?.data?.data?.data?.map((item) => ({
+                        value: item.id,
+                        label: item.name, // ← was item.name
+                      })) ?? []
+                    }
+                    value={field.value ?? ''}
+                    onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="attributeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Attribute*</FormLabel>
+                <FormControl>
+                  <SelectSearch
+                    buttonClass="w-full"
+                    placeholder="Select Attribute"
+                    disableSearch={false}
+                    items={
+                      (getAllAttributes?.data?.data?.data?.data ?? []).map((item) => ({
+                        value: item.id,
+                        label: item.name, // ← was item.name
+                      }))
+                    }
+                    value={field.value ?? ''}
+                    onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name *</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Product name"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      if (!isEdit || !getValues('slug')) {
+                        setValue('slug', generateSlug(e.target.value), { shouldValidate: true });
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
+          {/* Slug */}
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug *</FormLabel>
+                <FormControl>
+                  <Input placeholder="product-slug" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Price */}
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Selling Price *</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Enter Your Price" {...field} onChange={(e) => field.onChange(+e.target.value)} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Price */}
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Selling Price *</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Enter Your Price" {...field} onChange={(e) => field.onChange(+e.target.value)} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Cost */}
-        <FormField
-          control={form.control}
-          name="cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Purchased Cost*</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Enter Purchased Price"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Cost */}
+          <FormField
+            control={form.control}
+            name="cost"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Purchased Cost*</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Enter Purchased Price"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Stock */}
-        <FormField
-          control={form.control}
-          name="stock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="0"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Stock */}
+          <FormField
+            control={form.control}
+            name="stock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stock</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="0"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Low Stock Threshold */}
-        <FormField
-          control={form.control}
-          name="lowStockThreshold"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Low Stock Threshold</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="e.g. 5"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Low Stock Threshold */}
+          <FormField
+            control={form.control}
+            name="lowStockThreshold"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Low Stock Threshold</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="e.g. 5"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? undefined : +e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        {/* Brand Name */}
-
-
-
-        {/* Description — full width */}
-        <div className="md:col-span-2">
+        <div className="">
           <FormField
             control={form.control}
             name="description"
@@ -356,44 +357,41 @@ export default function ManageProduct({ id }: ManageProductProps) {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status *</FormLabel>
+                <FormControl>
+                  <div className="flex">
+                    <SelectSearch
+                      placeholder="Select Status*"
+                      buttonClass="w-full"
+                      disableSearch={true}
+                      items={[
+                        { label: 'Published', value: StatusValues.Published },
+                        { label: 'Draft', value: StatusValues.Draft },
+                      ]}
+                      value={field.value}
+                      valueType="string"
+                      containerName="attribute-status"
+                      onChange={(value) => {
+                        field.onChange(value);
+                      }}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        {/* Status */}
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status *</FormLabel>
-              <FormControl>
-                <div className="flex">
-                  <SelectSearch
-                    placeholder="Select Status*"
-                    buttonClass="w-full"
-                    disableSearch={true}
-                    items={[
-                      { label: 'Published', value: StatusValues.Published },
-                      { label: 'Draft', value: StatusValues.Draft },
-                    ]}
-                    value={field.value}
-                    valueType="string"
-                    containerName="attribute-status"
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Actions */}
         <div className="md:col-span-2 flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline">
+          {/* <Button type="button" variant="outline">
             Cancel
-          </Button>
+          </Button> */}
           <Button type="submit" loading={isLoading}>
             {isEdit ? 'Update' : 'Create'} Product
           </Button>

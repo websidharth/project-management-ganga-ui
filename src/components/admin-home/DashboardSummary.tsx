@@ -3,9 +3,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
 import {
   Activity,
@@ -21,17 +21,19 @@ import {
   TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
+import { FaRupeeSign } from 'react-icons/fa';
 import OrderList from '../features/orders';
 
 type StatCardProps = {
   icon: React.ElementType;
   title: string;
   total: number;
-  recentCount: number;
+  recentCount?: number;
   trend?: number;
   iconColor: string;
   bgColor: string;
   href: string;
+  isCurrency?: boolean;
 };
 
 const StatCard = ({
@@ -42,7 +44,8 @@ const StatCard = ({
   trend,
   iconColor,
   bgColor,
-  href
+  href,
+  isCurrency
 }: StatCardProps) => (
   <Link href={href} className="block">
     <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out cursor-pointer rounded-2xl p-6 flex flex-col justify-between h-full min-h-[160px]">
@@ -53,7 +56,7 @@ const StatCard = ({
         <div className="space-y-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">{title}</span>
           <div className="text-4xl font-bold tracking-tight text-foreground transition-all duration-200 group-hover:text-primary">
-            {total.toLocaleString()}
+            {isCurrency ? `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total.toLocaleString()}
           </div>
         </div>
 
@@ -80,7 +83,11 @@ const StatCard = ({
         {/* Recent Count Indicator */}
         <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
           <Clock className="h-3.5 w-3.5 text-muted-foreground/70" />
-          <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
+          {recentCount !== undefined ? (
+            <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
+          ) : (
+            <span>Updated just now</span>
+          )}
         </div>
       </div>
     </Card>
@@ -192,11 +199,7 @@ export default function DashboardHome() {
     );
   }
 
-  // Calculate trends (example - you can implement actual trend calculation)
-  const trends = {
-    products: 12,
-    attributes: 8,
-  };
+
 
   return (
     <div className="min-h-screen ">
@@ -226,24 +229,41 @@ export default function DashboardHome() {
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
+            icon={FaRupeeSign}
+            title="Today's Sale"
+            total={summaryData?.todaySale}
+            isCurrency={true}
+            iconColor="text-emerald-600"
+            bgColor="bg-emerald-50 dark:bg-emerald-950/30"
+            href="/admin/orders"
+          />
+          <StatCard
+            icon={FaRupeeSign}
+            title="Total Month Sale"
+            total={summaryData.totalMonthSale}
+
+            isCurrency={true}
+            iconColor="text-purple-600"
+            bgColor="bg-purple-50 dark:bg-purple-950/30"
+            href="/admin/orders"
+          /> <StatCard
             icon={Package}
             title="Total Products"
             total={summaryData.products.total}
             recentCount={summaryData.products.recent.length}
-            trend={trends.products}
+
             iconColor="text-blue-600"
             bgColor="bg-blue-50 dark:bg-blue-950/30"
-            href="/products"
+            href="/admin/products"
           />
           <StatCard
             icon={Tags}
             title="Total Attributes"
             total={summaryData.attributes.total}
             recentCount={summaryData.attributes.recent.length}
-            trend={trends.attributes}
             iconColor="text-green-600"
             bgColor="bg-green-50 dark:bg-green-950/30"
-            href="/attributes"
+            href="/admin/attributes"
           />
 
         </div>
@@ -251,7 +271,7 @@ export default function DashboardHome() {
         <Card>
           <OrderList />
         </Card>
-        
+
         {/* Main Content Tabs */}
         <Card className="border border-border/50 shadow-sm rounded-xl overflow-hidden">
           <Tabs defaultValue="products" className="w-full">
@@ -354,8 +374,8 @@ export default function DashboardHome() {
                           <p className="font-medium text-sm text-foreground truncate">{attribute.name}</p>
                           <Badge
                             className={`text-[10px] px-1.5 py-0 border-none ${attribute.status === 'Published'
-                                ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10'
-                                : 'bg-muted text-muted-foreground hover:bg-muted'
+                              ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10'
+                              : 'bg-muted text-muted-foreground hover:bg-muted'
                               }`}
                           >
                             {attribute.status}

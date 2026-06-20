@@ -1,9 +1,10 @@
 'use client';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ProductDto } from '@/dtos/product.dto';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { ProductDto } from '@/dtos/product.dto';
+import Link from 'next/link';
 
 interface ProductListRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,8 +24,8 @@ export default function ProductListRowActions<TData>({ row, editRecord, deleteRe
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[160px]">
-        <DropdownMenuItem className="cursor-pointer" onClick={() => editRecord(item.id)}>
-          Edit
+        <DropdownMenuItem asChild className="cursor-pointer" >
+          <Link href={`/admin/products/${item?.id}`}>Edit</Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onClick={() => deleteRecord(item.id)}>
           Delete
