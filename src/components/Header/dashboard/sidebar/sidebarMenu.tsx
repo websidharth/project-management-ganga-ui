@@ -116,6 +116,22 @@ export const SideBarMenu: SideBarMenuDto[] = [
     isActive: false,
   },
   {
+    id: 'positions',
+    title: 'Positions',
+    icon: MdList,
+    url: '/admin/positions/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'departments',
+    title: 'Departments',
+    icon: TbTemplate,
+    url: '/admin/departments/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
     id: 'staff-salaries',
     title: 'Staff Salaries',
     icon: MdAttachMoney,

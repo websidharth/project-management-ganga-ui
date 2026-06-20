@@ -1,5 +1,7 @@
 'use client';
-import { SelectSearch } from '@/components/common/select-search';
+import { SelectSearch } from '@/components/common/select-search'; 
+import { ProductImageUploader } from '@/components/common/admin-media/product-image-uploader';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -351,6 +353,22 @@ export default function ManageProduct({ id }: ManageProductProps) {
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                     {...field}
                     value={field.value ?? ''}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <FormItem className="my-4">
+                <FormLabel>Product Images</FormLabel>
+                <FormControl>
+                  <ProductImageUploader 
+                    value={field.value || []} 
+                    onChange={field.onChange} 
                   />
                 </FormControl>
                 <FormMessage />

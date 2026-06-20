@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { Badge } from '../../ui/badge';
 import ProductListRowActions from './row-action';
+import { Image as ImageIcon } from 'lucide-react';
 
 export const useProductColumns = (deleteRecord: (id: number) => void) =>
   useMemo<ColumnDef<ProductDto>[]>(
@@ -24,12 +25,24 @@ export const useProductColumns = (deleteRecord: (id: number) => void) =>
         enableSorting: false,
         enableHiding: false,
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Product" />,
-        cell: ({ row }) => (
-          <div className="space-y-0.5">
-            <span className="font-medium block">{row.original.name}</span>
-            <span className="text-xs text-muted-foreground">{row.original.slug}</span>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const imageUrl = row.original.images && row.original.images.length > 0 ? row.original.images[0] : null;
+          return (
+            <div className="flex items-center gap-3">
+              <div className="relative h-10 w-10 rounded border overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
+                {imageUrl ? (
+                  <img src={imageUrl} alt={row.original.name} className="h-full w-full object-cover" />
+                ) : (
+                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                )}
+              </div>
+              <div className="space-y-0.5 min-w-0">
+                <span className="font-medium block truncate max-w-[200px]" title={row.original.name}>{row.original.name}</span>
+                <span className="text-xs text-muted-foreground block truncate max-w-[200px]" title={row.original.slug}>{row.original.slug}</span>
+              </div>
+            </div>
+          );
+        },
         meta: { sortingKey: 'name' },
       },
 
