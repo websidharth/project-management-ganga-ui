@@ -3,6 +3,7 @@ import ActionTooltip from '@/components/common/tooltip-action-button';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { ProductDto } from '@/dtos/product.dto';
+import { StatusValues } from '@/enums/status-values.enum';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
@@ -69,41 +70,21 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
         accessorKey: 'actions',
         enableHiding: false,
         enableSorting: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
-        cell: ({ row }) => {
-          return (
-            <>
-              <div className="flex items-center gap-2">
-                <ActionTooltip
-                  variant="edit"
-                  tooltip="Edit Record"
-                  onClick={() => {
-                    editRecord(+row.original.id);
-                  }}
-                />
-
-                <ActionTooltip
-                  variant="delete"
-                  tooltip="Delete Record"
-                  onClick={() => {
-                    deleteRecord(+row.original.id);
-                  }}
-                />
-              </div>
-            </>
-          );
-        },
-        meta: {
-          sortingKey: 'actions',
-        },
-      },
-      {
+        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <ActionTooltip variant="edit" tooltip="Edit Record" href={`/admin/products/${row.original.id}`} />
+            <ActionTooltip variant="delete" tooltip="Delete Record" onClick={() => deleteRecord(+row.original.id)} />
+          </div>
+        ),
+        meta: { sortingKey: 'actions' },
+      }, {
         id: 'status',
         accessorKey: 'status',
         enableSorting: false,
         enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-left text-xs font-semibold uppercase" title="Status" />,
-        cell: ({ row }) => <Badge variant={row.original.status ? true : false}>{row.original.status ? 'Active' : 'Inactive'}</Badge>,
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Status" />,
+        cell: ({ row }) => <Badge variant={row.original.status === StatusValues.Published ? 'scusses' : 'orange'}>{row.original.status}</Badge>,
         meta: { sortingKey: 'status' },
       },
       {
