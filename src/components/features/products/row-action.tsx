@@ -8,11 +8,10 @@ import Link from 'next/link';
 
 interface ProductListRowActionsProps<TData> {
   row: Row<TData>;
-  editRecord: (id: number) => void;
   deleteRecord: (id: number) => void;
 }
 
-export default function ProductListRowActions<TData>({ row, editRecord, deleteRecord }: ProductListRowActionsProps<TData>) {
+export default function ProductListRowActions<TData>({ row, deleteRecord }: ProductListRowActionsProps<TData>) {
   const item = row.original as ProductDto;
 
   return (

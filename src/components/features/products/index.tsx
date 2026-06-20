@@ -1,24 +1,23 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ProductDto } from '@/dtos/product.dto';
-import { ProductFilterParams } from '@/params/product.params';
-import { useGetAllProducts, useDeleteProduct } from '@/hooks/service-hooks/useProductService';
-import { useCustomDataTable } from '@/hooks/use-custom-table';
-import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
-import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
-import { CustomDataTable } from '../../Table/data-table';
-import { DataTablePagination } from '../../Table/data-table-pagination'; 
-import ConfirmBox from '../../common/confirm-box';
-import { toast } from '../../ui/use-toast';
+import config from '@/config';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ProductDto } from '@/dtos/product.dto';
+import { useDeleteProduct, useGetAllProducts } from '@/hooks/service-hooks/useProductService';
+import { useCustomDataTable } from '@/hooks/use-custom-table';
 import useModalShowHide from '@/hooks/use-modal-show-hide';
+import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
+import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
+import { ProductFilterParams } from '@/params/product.params';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { CustomDataTable } from '../../Table/data-table';
+import { DataTablePagination } from '../../Table/data-table-pagination';
+import ConfirmBox from '../../common/confirm-box';
+import { toast } from '../../ui/use-toast';
 import { useProductColumns } from './columns';
 import ProductListFilter from './filter';
-import ManageProduct from './add-edit';
-import config from '@/config'; 
 
 export default function ProductList() {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
@@ -27,7 +26,6 @@ export default function ProductList() {
   const [recordCount, setRecordCount] = useState<number>(0);
   const searchParams = useSearchParams();
 
-  const { showModal: showEditModal, openModal: openEditModal, closeModal: closeEditModal, uniqueId: editId } = useModalShowHide();
   const { showModal: showDeleteModal, openModal: openDeleteModal, closeModal: closeDeleteModal, uniqueId: deleteId } = useModalShowHide();
 
   const [filterParams, setFilterParams] = useState<ProductFilterParams>({
@@ -41,7 +39,6 @@ export default function ProductList() {
   });
 
   const columns = useProductColumns(
-    (id) => openEditModal(id),
     (id) => openDeleteModal(id)
   );
 
@@ -158,16 +155,7 @@ export default function ProductList() {
         <DataTablePagination table={table} totalRecord={recordCount} loading={getAllProductsResponse.isLoading} />
       </div>
 
-      {showEditModal && (
-        <ManageProduct
-          id={+(editId ?? 0)}
-          isOpen={showEditModal}
-          onClose={(refresh) => {
-            closeEditModal(refresh);
-            if (refresh) getAllProductsResponse.refetch();
-          }}
-        />
-      )}
+
 
       {showDeleteModal && (
         <ConfirmBox

@@ -3,7 +3,7 @@ import config from '@/config';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { UserDto } from '@/dtos/UserDto';
-import { useGetAllUserList, useDeleteUserById } from '@/hooks/service-hooks/useUserList.service.hook';
+import { useDeleteUserById, useGetAllUserList } from '@/hooks/service-hooks/useUserList.service.hook';
 import { useCustomDataTable } from '@/hooks/use-custom-table';
 import useModalShowHide from '@/hooks/use-modal-show-hide';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
@@ -117,7 +117,7 @@ export default function UserList() {
         <ConfirmBox
           isOpen={showDeleteModal}
           onClose={() => closeDeleteModal(false)}
-          onSubmit={() => handleDelete(deleteId ?? '')}
+          onSubmit={() => handleDelete(deleteId as string)}
           bodyText="Are you sure you want to delete this user?"
           noButtonText="Cancel"
           yesButtonText="Delete"

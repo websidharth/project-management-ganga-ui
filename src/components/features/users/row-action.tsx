@@ -1,4 +1,5 @@
 'use client';
+import { UserDto } from '@/dtos/UserDto';
 import { Row } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from '../../ui/button';
@@ -9,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
-import { UserDto } from '@/dtos/UserDto';
 
 interface UserRowActionsProps {
   row: Row<UserDto>;
@@ -28,19 +28,19 @@ export function UserRowActions({ row, editRecord, deleteRecord }: UserRowActions
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         {editRecord && (
-          <DropdownMenuItem onClick={() => editRecord(row.original.usersId || String(row.original.id))}>
+          <DropdownMenuItem onClick={() => editRecord(row.original.usersId)}>
             Edit
           </DropdownMenuItem>
         )}
         {deleteRecord && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => deleteRecord(row.original.usersId || String(row.original.id))} className="text-destructive">
+            <DropdownMenuItem onClick={() => deleteRecord(row.original.usersId)} className="text-destructive">
               Delete
             </DropdownMenuItem>
           </>
         )}
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu >
   );
 }

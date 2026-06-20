@@ -1,12 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { PageHeader } from '@/components/common/page-header';
 import { Card } from '@/components/ui/card';
 import ProductList from '.';
-import ManageProduct from './add-edit';
-import { PageHeader } from '@/components/common/page-header';
 
 export default function ProductListingWrapper() {
-  const [showAddModal, setShowAddModal] = useState(false);
 
   return (
     <>
@@ -15,13 +12,12 @@ export default function ProductListingWrapper() {
         description="Manage product listings"
         variant="add"
         actionText="Add Product"
-        onClick={() => setShowAddModal(true)}
+        href={`/admin/products/0`}
       />
       <Card>
         <ProductList />
       </Card>
 
-      {showAddModal && <ManageProduct isOpen={showAddModal} onClose={() => setShowAddModal(false)} />}
     </>
   );
 }

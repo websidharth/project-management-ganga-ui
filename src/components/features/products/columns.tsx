@@ -11,13 +11,13 @@ import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { Badge } from '../../ui/badge';
 import ProductListRowActions from './row-action';
 
-export const useProductColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
+export const useProductColumns = (deleteRecord: (id: number) => void) =>
   useMemo<ColumnDef<ProductDto>[]>(
     () => [
       {
         id: 'actions',
         header: '',
-        cell: ({ row }) => <ProductListRowActions row={row} editRecord={editRecord} deleteRecord={deleteRecord} />,
+        cell: ({ row }) => <ProductListRowActions row={row} deleteRecord={deleteRecord} />,
       }, {
         id: 'name',
         accessorKey: 'name',
@@ -105,5 +105,5 @@ export const useProductColumns = (editRecord: (id: number) => void, deleteRecord
       },
 
     ],
-    [editRecord, deleteRecord]
+    [deleteRecord]
   );
