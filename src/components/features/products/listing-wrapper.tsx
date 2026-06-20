@@ -17,7 +17,6 @@ export default function ProductListingWrapper() {
       <Card>
         <ProductList />
       </Card>
-
     </>
   );
 }
