@@ -1,20 +1,21 @@
 'use client';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { useCreateStaff, useGetStaffById, useUpdateStaff } from '@/hooks/service-hooks/useStaffService';
+import { useGetAllUserList } from '@/hooks/service-hooks/useUserList.service.hook';
 import { CreateStaffModel } from '@/models/staff.model';
 import StaffSchema from '@/schema/staffSchema';
-import { useCreateStaff, useGetStaffById, useUpdateStaff } from '@/hooks/service-hooks/useStaffService';
-import { SelectSearch } from '@/components/common/select-search';
-import { Switch } from '@/components/ui/switch';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface ManageStaffProps {
   id?: number;
@@ -44,7 +45,7 @@ const positionsData = [
 export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const isEdit = !!id && id > 0;
-
+  const getAllUserResponse = useGetAllUserList();
   const createStaff = useCreateStaff();
   const updateStaff = useUpdateStaff();
   const { data: staffResponse, isLoading: isFetching } = useGetStaffById(id ?? 0, isEdit);
@@ -62,7 +63,7 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
     },
   });
 
-  const { handleSubmit, reset  } = form;
+  const { handleSubmit, reset } = form;
 
   useEffect(() => {
     if (isEdit && staffResponse?.data?.data) {
@@ -114,9 +115,21 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
                 name="userId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User ID *</FormLabel>
+                    <FormLabel>Select User Id*</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Enter user ID" {...field} onChange={(e) => field.onChange(+e.target.value)} />
+                      <SelectSearch
+                        buttonClass={`w-full`}
+                        placeholder="Select User"
+                        disableSearch={false}
+                        items={
+                          getAllUserResponse?.data?.data?.data?.data?.map((item) => ({
+                            value: item.id,
+                            label: item.name,
+                          })) ?? []
+                        }
+                        value={field.value ?? ''}
+                        onChange={(value) => field.onChange(value ? Number(value) : undefined)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

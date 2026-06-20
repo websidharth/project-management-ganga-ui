@@ -1,7 +1,5 @@
-import GalleryPage from "@/components/common/image-uplod/get-all-images";
-import { MediaUploader } from "@/components/common/image-uplod/upload";
+import AdminMediaDashboard from "@/components/common/admin-media/media-dashboard";
 import { PageHeader } from '@/components/common/page-header';
-import { Card } from '@/components/ui/card';
 import config from '@/config';
 import { Metadata } from 'next';
 
@@ -11,19 +9,14 @@ export const metadata: Metadata = {
 
 export default function OrdersPage() {
   return (
-    <div className=" mx-auto max-w-8xl space-y-6">
+    <div className="mx-auto max-w-8xl space-y-6">
       <PageHeader
         title={`File Manager`}
-        description=""
+        description="Manage media uploads and resources with secure dynamic folders."
         variant="back"
       />
 
-      <Card>
-        <MediaUploader />
-      </Card>
-      <Card>
-        <GalleryPage />
-      </Card>
+      <AdminMediaDashboard />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { OrderDto } from '@/dtos/order.dto';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
+import { useRouter } from 'next/navigation';
 
 interface OrderListRowActionsProps<TData> {
   row: Row<TData>;
@@ -13,6 +14,7 @@ interface OrderListRowActionsProps<TData> {
 
 export function OrderRowActions<TData>({ row, editRecord, deleteRecord }: OrderListRowActionsProps<TData>) {
   const item = row.original as OrderDto;
+  const router = useRouter();
 
   return (
     <DropdownMenu modal={false}>
@@ -23,6 +25,9 @@ export function OrderRowActions<TData>({ row, editRecord, deleteRecord }: OrderL
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[160px]">
+        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push(`/admin/orders/${item.id}`)}>
+          View Details
+        </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" onClick={() => editRecord(item.id)}>
           Edit
         </DropdownMenuItem>
