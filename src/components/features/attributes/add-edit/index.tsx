@@ -30,6 +30,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
   const updateMutation = useUpdateAttribute();
   const { data: attrResponse, isLoading: isFetching } = useGetAttributeById(id ?? 0, isEdit);
 
+
   const form = useForm<CreateAttributeModel>({
     resolver: yupResolver(AttributeSchema),
     defaultValues: { name: '', unit: '0', status: StatusValues.Published, displayOrder: null },
@@ -81,22 +82,8 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
               )}
             />
 
-            {/* Unit */}
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. kg, cm, W (optional)" value={field.value ?? ''} onChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {/* Display Order */}
+
             <FormField
               control={form.control}
               name="displayOrder"
@@ -105,7 +92,7 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
                   <FormLabel>Display Order</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="e.g. 1, 2, 3 (optional)"
                       value={field.value ?? ''}
                       onChange={(e) => field.onChange(e.target.value === '' ? null : +e.target.value)}
@@ -116,7 +103,6 @@ export default function ManageAttribute({ id, isOpen, onClose }: ManageAttribute
               )}
             />
 
-            {/* Status */}
             <FormField
               control={form.control}
               name="status"

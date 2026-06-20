@@ -1,4 +1,5 @@
 import { OrderStatus } from '@/enums/order-status.enum';
+import { OrderItemDto } from './order-item.dto';
 
 export interface OrderDto {
   id: number;
@@ -15,4 +16,5 @@ export interface OrderDto {
   notes?: string | null;
   createdAt: Date;
   updatedAt: Date | null;
+  items?: OrderItemDto[];
 }

@@ -44,7 +44,23 @@ export const useOrderColumns = (editRecord: (id: number) => void, deleteRecord: 
         },
         meta: { sortingKey: 'createdAt' },
       },
-
+      {
+        id: 'items',
+        header: 'Order Items',
+        cell: ({ row }) => {
+          const items = row.original.items || [];
+          return (
+            <div className="flex flex-wrap gap-1 max-w-[250px]">
+              {items.map((item) => (
+                <Badge key={item.id} variant="outline" className="text-[10px] font-normal py-0.5 px-1.5">
+                  ID: {item.productId} ({item.quantity}x)
+                </Badge>
+              ))}
+              {items.length === 0 && <span className="text-xs text-muted-foreground">—</span>}
+            </div>
+          );
+        },
+      },
       {
         id: 'grandTotal',
         accessorKey: 'grandTotal',

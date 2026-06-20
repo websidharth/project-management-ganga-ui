@@ -1,39 +1,37 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import { MdOutlineDashboard } from 'react-icons/md';
+import { useMemo, useState } from 'react';
 import { TbLogout } from 'react-icons/tb';
 
-import { Roles } from '@/enums/roles.enum';
+import { useGetUserById } from '@/hooks/service-hooks/useUserList.service.hook';
 import useLogout from '@/hooks/use-logout';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import { useGetUserById } from '@/hooks/service-hooks/useUserList.service.hook';
 
 import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import CheckUserStatus from '@/components/account/check-user-status';
-import { SidebarItemRenderer } from './SidebarItem';
 import { SideBarMenu } from '../../../../data/sidebarMenu';
+import { SidebarItemRenderer } from './SidebarItem';
 
 type SidebarRole = string;
 
-const dashboardMenu = [
-  {
-    id: 'adminDashboard',
-    title: 'Dashboard',
-    url: '/admin/',
-    icon: MdOutlineDashboard,
-    role: [Roles.ADMIN],
-  },
-  {
-    id: 'userDashboard',
-    title: 'Dashboard',
-    url: '/dashboard/',
-    icon: MdOutlineDashboard,
-    role: [Roles.USER],
-  },
-];
+// const dashboardMenu = [
+//   {
+//     id: 'adminDashboard',
+//     title: 'Dashboard',
+//     url: '/admin/',
+//     icon: MdOutlineDashboard,
+//     role: [Roles.ADMIN],
+//   },
+//   {
+//     id: 'userDashboard',
+//     title: 'Dashboard',
+//     url: '/dashboard/',
+//     icon: MdOutlineDashboard,
+//     role: [Roles.USER],
+//   },
+// ];
 
 function SidebarSkeleton() {
   return (
@@ -67,7 +65,7 @@ export function NavMain() {
   }, [currentUser?.role]);
 
   const menuItems = useMemo(() => {
-    const allMenuItems = [...dashboardMenu, ...SideBarMenu];
+    const allMenuItems = [...SideBarMenu];
 
     return allMenuItems.filter((item) => item.role?.some((role) => userRoles.includes(role)));
   }, [userRoles]);

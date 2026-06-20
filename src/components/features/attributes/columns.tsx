@@ -1,13 +1,13 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { useMemo } from 'react';
-import { AttributeDto } from '@/dtos/attribute.dto';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
-import { Badge } from '../../ui/badge';
+import ActionTooltip from '@/components/common/tooltip-action-button';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
+import { AttributeDto } from '@/dtos/attribute.dto';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
-import ActionTooltip from '@/components/common/tooltip-action-button';
+import { ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
+import { Badge } from '../../ui/badge';
 import AttributeRowActions from './row-action';
 
 export const useAttributeColumns = (editRecord: (id: number) => void, deleteRecord: (id: number) => void) =>
@@ -26,14 +26,6 @@ export const useAttributeColumns = (editRecord: (id: number) => void, deleteReco
         header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Name" />,
         cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
         meta: { sortingKey: 'name' },
-      },
-      {
-        id: 'unit',
-        accessorKey: 'unit',
-        enableSorting: false,
-        enableHiding: false,
-        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Unit" />,
-        cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.unit ?? '—'}</span>,
       },
       {
         id: 'displayOrder',

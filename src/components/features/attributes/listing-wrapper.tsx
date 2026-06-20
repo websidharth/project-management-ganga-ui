@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { PageHeader } from '@/components/common/page-header';
 import { Card } from '@/components/ui/card';
+import { useState } from 'react';
 import AttributeList from '.';
 import ManageAttribute from './add-edit';
-import { PageHeader } from '@/components/common/page-header';
 
 export default function AttributeListingWrapper() {
   const [showAddModal, setShowAddModal] = useState(false);

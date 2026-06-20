@@ -1,25 +1,25 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { AttributeDto } from '@/dtos/attribute.dto';
-import { AttributeFilterParams } from '@/params/attribute.params';
-import { useGetAllAttributes, useDeleteAttribute } from '@/hooks/service-hooks/useAttributeService';
-import { useCustomDataTable } from '@/hooks/use-custom-table';
-import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
-import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
-import { CustomDataTable } from '../../Table/data-table';
-import { DataTablePagination } from '../../Table/data-table-pagination';
-import RecentPostSkeleton from '../../skelton/recent-post';
-import ConfirmBox from '../../common/confirm-box';
-import { toast } from '../../ui/use-toast';
+import config from '@/config';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { AttributeDto } from '@/dtos/attribute.dto';
+import { useDeleteAttribute, useGetAllAttributes } from '@/hooks/service-hooks/useAttributeService';
+import { useCustomDataTable } from '@/hooks/use-custom-table';
 import useModalShowHide from '@/hooks/use-modal-show-hide';
-import { useAttributeColumns } from './columns';
+import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
+import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
+import { AttributeFilterParams } from '@/params/attribute.params';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { CustomDataTable } from '../../Table/data-table';
+import { DataTablePagination } from '../../Table/data-table-pagination';
+import ConfirmBox from '../../common/confirm-box';
+import RecentPostSkeleton from '../../skelton/recent-post';
+import { toast } from '../../ui/use-toast';
 import ManageAttribute from './add-edit';
+import { useAttributeColumns } from './columns';
 import AttributeListFilter from './filter';
-import config from '@/config';
 
 export default function AttributeList() {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
@@ -55,7 +55,7 @@ export default function AttributeList() {
       setData(list);
       setRecordCount(Array.isArray(result) ? list.length : (result as any).totalRecord ?? list.length);
     }
-  }, [attributesResponse.status, attributesResponse.data]);
+  }, [attributesResponse.status, attributesResponse.data?.data?.data]);
 
   const { sorting, onSortingChange } = useTanstackTableSorting<AttributeDto>('name', 'asc', columns);
   const { onPaginationChange, pagination } = useTanstackTablePagination(filterParams.recordPerPage ?? config.recordPerPage);

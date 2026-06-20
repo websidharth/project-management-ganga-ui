@@ -1,5 +1,5 @@
 import { Roles } from '@/enums/roles.enum';
-import { MdDashboard, MdList, MdPerson, MdSend, MdShoppingCart, MdReceipt, MdPeople, MdAttachMoney, MdStore } from 'react-icons/md';
+import { MdDashboard, MdList, MdPeople, MdPerson, MdReceipt, MdSend, MdShoppingCart, MdStore } from 'react-icons/md';
 import { TbTemplate } from 'react-icons/tb';
 
 export interface SideBarMenuDto {
@@ -108,19 +108,20 @@ export const SideBarMenu: SideBarMenuDto[] = [
     role: [Roles.ADMIN],
     isActive: false,
   },
-  {
-    id: 'staff-salaries',
-    title: 'Staff Salaries',
-    icon: MdAttachMoney,
-    url: '/admin/staff-salaries/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
+
   {
     id: 'stores',
     title: 'Stores',
     icon: MdStore,
     url: '/admin/stores/',
+    role: [Roles.SUPER_ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'users',
+    title: 'Users',
+    icon: MdPerson,
+    url: '/admin/users/',
     role: [Roles.ADMIN],
     isActive: false,
   },

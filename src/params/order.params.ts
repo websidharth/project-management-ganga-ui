@@ -1,8 +1,10 @@
 import { PageFilterParams } from "./page.params";
 
 export interface OrderFilterParams extends PageFilterParams {
-  status?: string | null;
-  customerId?: string | null;
+  customerId?: string;
+  storeCode?: string;
+  storeId?: number;
+  status?: string;
 }
 
 export interface OrderItemFilterParams extends PageFilterParams {
