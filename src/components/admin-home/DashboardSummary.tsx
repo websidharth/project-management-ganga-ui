@@ -156,6 +156,12 @@ export default function DashboardHome() {
             </CardDescription>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/admin/settings/profile">
+              <Button variant="default" size="sm" className="gap-2">
+                <Star className="h-4 w-4" />
+                Edit Profile
+              </Button>
+            </Link>
             <Badge variant="outline" className="px-3 py-1">
               <Activity className="h-3 w-3 mr-1" />
               Live

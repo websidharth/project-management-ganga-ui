@@ -1,7 +1,7 @@
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import LoginModel from '@/models/LoginModel';
-import { CreateUserModel } from '@/models/user.model';
+import { CreateUserModel, UpdateUserModel } from '@/models/user.model';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -14,7 +14,7 @@ const useLogin = () => {
 
   return useMutation({
     mutationFn: mutationFn,
-    onSettled: (response) => {
+    onSettled: (response: { status?: number; data?: any } | undefined) => {
       if (response && response.status === 200 && response.data) {
         //invalidate query here if required
       }
@@ -81,8 +81,8 @@ const useCreateUser = () => {
   };
 
   return useMutation({
-    mutationFn,
-    onSettled: (response) => {
+
+    onSettled: (response: { status?: number; data?: any } | undefined) => {
       if (response && response.status === 200 && response.data) {
         // handle success
       }
@@ -93,5 +93,23 @@ const useCreateUser = () => {
   });
 };
 
+const useUpdateProfile = () => {
+  const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
 
-export { useLogin, useDbLogout, useLogoutAllSession, useRefreshToken, useCreateUser };
+  const mutationFn = async (model: UpdateUserModel) => {
+    return await unitOfService.AccountService.updateProfile(model);
+  };
+
+  return useMutation({
+    mutationFn,
+    onSettled: (response) => {
+      // You can invalidate queries or update session manually in the component
+    },
+    onError: (error) => {
+      return error;
+    },
+  });
+};
+
+export { useCreateUser, useDbLogout, useLogin, useLogoutAllSession, useRefreshToken, useUpdateProfile };
+

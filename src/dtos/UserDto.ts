@@ -27,6 +27,13 @@ export interface UserDto {
   tokenUpdated?: Date | null;
   refreshToken: string | null;
   status: boolean;
+  dateOfBirth?: Date | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  pincode?: string | null;
+  bio?: string | null;
 }
 
 export interface UserBasicDto {

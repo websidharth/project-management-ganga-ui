@@ -141,6 +141,14 @@ export const SideBarMenu: SideBarMenuDto[] = [
     role: [Roles.ADMIN],
     isActive: false,
   },
+  {
+    id: 'admin-profile',
+    title: 'Profile Settings',
+    icon: MdPerson,
+    url: '/admin/settings/profile',
+    role: [Roles.ADMIN, Roles.SUPER_ADMIN],
+    isActive: false,
+  },
   // {
   //     id: "newsletter",
   //     title: "Newsletter",

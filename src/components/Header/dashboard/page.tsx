@@ -14,12 +14,15 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import useLogout from '@/hooks/use-logout';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { BreadCrumb } from '../breadcrumb';
 import { ModeToggle } from './sidebar/thememode';
 
 export default function HeaderDashboard() {
   const { data: session } = useSession();
   const logout = useLogout();
+  const pathname = usePathname();
 
   return (
     <>
@@ -55,8 +58,12 @@ export default function HeaderDashboard() {
 
                   {/* <DropdownMenuLabel>Dashboard</DropdownMenuLabel> */}
                   <DropdownMenuSeparator />
-                  {/* <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Notifications</DropdownMenuItem> */}
+                  <DropdownMenuItem asChild>
+                    <Link href={pathname.startsWith('/admin') ? '/admin/settings/profile' : '/dashboard/settings/profile'} className="w-full cursor-pointer">
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  {/* <DropdownMenuItem>Notifications</DropdownMenuItem> */}
                   <DropdownMenuItem
                     onClick={async () => {
                       await logout();

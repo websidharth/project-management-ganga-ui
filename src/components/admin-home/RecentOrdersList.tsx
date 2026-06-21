@@ -67,8 +67,8 @@ export default function RecentOrdersList() {
   const orders: OrderDto[] = response?.data?.data?.data || [];
 
   return (
-    <Card className="shadow-xl shadow-primary/5 border-0 bg-background/80 backdrop-blur-2xl rounded-2xl overflow-hidden">
-      <CardHeader className="border-b border-border/40 bg-gradient-to-r from-card/80 to-muted/30 px-6 py-5">
+    <Card className="p-0">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-xl">

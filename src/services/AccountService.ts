@@ -4,7 +4,8 @@ import { LoginDto, refreshTokenResponseDto } from '@/dtos/LoginDto';
 import PlainDto from '@/dtos/PlainDto';
 import Response from '@/dtos/Response';
 import LoginModel from '@/models/LoginModel';
-import { CreateUserModel } from '@/models/user.model';
+import { CreateUserModel, UpdateUserModel } from '@/models/user.model';
+import { UserDto } from '@/dtos/UserDto';
 import { AxiosResponse } from 'axios';
 import { injectable } from 'inversify';
 import IAccountService from './interfaces/IAccountService';
@@ -49,5 +50,7 @@ export default class AccountService implements IAccountService {
     return this.httpService.externalCall().post<LoginDto, AxiosResponse<Response<LoginDto>>>('/auth/signup', model);
   }
 
-
+  updateProfile(model: UpdateUserModel): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call().put<UserDto, AxiosResponse<Response<UserDto>>>('/users/profile', model);
+  }
 }
