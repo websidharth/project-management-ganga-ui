@@ -8,134 +8,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
 import { useGetLowStockProducts } from '@/hooks/service-hooks/useProductService';
+import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 import {
   Activity,
   AlertCircle,
   AlertTriangle,
   ArrowRight,
   Clock,
-  DollarSign,
   Layers,
   Package,
   ShoppingBag,
   Star,
-  Tags,
-  TrendingDown,
-  TrendingUp
+  Tags
 } from 'lucide-react';
 import Link from 'next/link';
-import OrderList from '../features/orders';
+import DashboardStats from './DashboardStats';
+import RecentOrdersList from './RecentOrdersList';
 
-type StatCardProps = {
-  icon: React.ElementType;
-  title: string;
-  total: number;
-  recentCount?: number;
-  trend?: number;
-  iconColor: string;
-  bgColor: string;
-  href: string;
-  isCurrency?: boolean;
-};
-
-const StatCard = ({
-  icon: Icon,
-  title,
-  total,
-  recentCount,
-  trend,
-  iconColor,
-  bgColor,
-  href,
-  isCurrency
-}: StatCardProps) => {
-  // Extracting color for the glow effect based on bgColor
-  const glowColor = bgColor.includes('emerald') ? 'from-emerald-500/20'
-    : bgColor.includes('purple') ? 'from-purple-500/20'
-      : bgColor.includes('blue') ? 'from-blue-500/20'
-        : bgColor.includes('teal') ? 'from-teal-500/20'
-          : bgColor.includes('green') ? 'from-green-500/20'
-            : 'from-primary/20';
-
-  const borderGradient = bgColor.includes('emerald') ? 'from-emerald-400 via-emerald-100 to-emerald-500 dark:from-emerald-600 dark:via-emerald-900 dark:to-emerald-600'
-    : bgColor.includes('purple') ? 'from-purple-400 via-purple-100 to-purple-500 dark:from-purple-600 dark:via-purple-900 dark:to-purple-600'
-      : bgColor.includes('blue') ? 'from-blue-400 via-blue-100 to-blue-500 dark:from-blue-600 dark:via-blue-900 dark:to-blue-600'
-        : bgColor.includes('teal') ? 'from-teal-400 via-teal-100 to-teal-500 dark:from-teal-600 dark:via-teal-900 dark:to-teal-600'
-          : bgColor.includes('green') ? 'from-green-400 via-green-100 to-green-500 dark:from-green-600 dark:via-green-900 dark:to-green-600'
-            : 'from-primary/50 via-primary/20 to-primary/50';
-
-  const hoverBorderGradient = bgColor.includes('emerald') ? 'group-hover:from-emerald-500 group-hover:via-emerald-300 group-hover:to-emerald-600'
-    : bgColor.includes('purple') ? 'group-hover:from-purple-500 group-hover:via-purple-300 group-hover:to-purple-600'
-      : bgColor.includes('blue') ? 'group-hover:from-blue-500 group-hover:via-blue-300 group-hover:to-blue-600'
-        : bgColor.includes('teal') ? 'group-hover:from-teal-500 group-hover:via-teal-300 group-hover:to-teal-600'
-          : bgColor.includes('green') ? 'group-hover:from-green-500 group-hover:via-green-300 group-hover:to-green-600'
-            : 'group-hover:from-primary group-hover:via-primary/40 group-hover:to-primary';
-
-  const iconBgGradient = bgColor.includes('emerald') ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/40'
-    : bgColor.includes('purple') ? 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-purple-500/40'
-      : bgColor.includes('blue') ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/40'
-        : bgColor.includes('teal') ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-teal-500/40'
-          : bgColor.includes('green') ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-green-500/40'
-            : 'bg-gradient-to-br from-primary/80 to-primary shadow-primary/40';
-
-  return (
-    <Link href={href} className="block h-full outline-none group">
-      <div className={`relative h-full rounded-3xl bg-gradient-to-br ${borderGradient} ${hoverBorderGradient} p-[2px] transition-all duration-500 shadow-md hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 cursor-pointer`}>
-        <Card className="relative overflow-hidden bg-background border-0 h-full rounded-[calc(1.5rem-2px)] p-6 flex flex-col justify-between min-h-[170px]">
-
-          {/* Animated Background Gradient Blob */}
-          <div className={`absolute -right-8 -top-8 w-40 h-40 rounded-full blur-3xl bg-gradient-to-br ${glowColor} to-transparent opacity-40 group-hover:opacity-80 transition-opacity duration-700`} />
-
-          {/* Subtle Inner Glow Border */}
-          <div className="absolute inset-0 rounded-[calc(1.5rem-2px)] border border-white/20 dark:border-white/5 pointer-events-none" />
-
-          <div className="relative z-10 flex items-start justify-between w-full">
-            <div className="space-y-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                {title}
-              </span>
-              <div className="text-4xl font-extrabold tracking-tighter text-foreground group-hover:scale-105 origin-left transition-transform duration-500">
-                {isCurrency ? `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total.toLocaleString()}
-              </div>
-            </div>
-
-            {/* Premium Icon Container */}
-            <div className={`relative flex items-center justify-center w-12 h-12 rounded-2xl shadow-lg ${iconBgGradient} group-hover:-rotate-6 group-hover:scale-110 transition-all duration-500 ease-out`}>
-              {/* Glossy Overlay */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-white/40 pointer-events-none" />
-              <Icon className="h-5 w-5 relative z-10 text-white drop-shadow-md" />
-            </div>
-          </div>
-
-          <div className="relative z-10 flex items-center justify-between mt-8 pt-4 border-t border-border/40 w-full">
-            {/* Trend Indicator */}
-            {trend !== undefined ? (
-              <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${trend >= 0
-                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                }`}>
-                {trend >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                <span>{trend >= 0 ? '+' : ''}{trend}%</span>
-              </div>
-            ) : (
-              <div />
-            )}
-
-            {/* Recent Count Indicator */}
-            <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:animate-pulse" />
-              {recentCount !== undefined ? (
-                <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
-              ) : (
-                <span>Updated just now</span>
-              )}
-            </div>
-          </div>
-        </Card>
-      </div>
-    </Link>
-  );
-};
 
 const StatCardSkeleton = () => (
   <Card>
@@ -163,6 +52,14 @@ const RecentItemSkeleton = () => (
 export default function DashboardHome() {
   const { data, isLoading, isError, error } = useGetDashboardSummary();
   const { data: lowStockData, isLoading: isLowStockLoading } = useGetLowStockProducts();
+  const { currentUser } = useGetCurrentUser();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
 
   if (isLoading || isLowStockLoading) {
     return (
@@ -249,14 +146,13 @@ export default function DashboardHome() {
   return (
     <div className="min-h-screen ">
       <div className="space-y-8 p-4 md:p-8">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
-            <CardTitle className="">
-              Dashboard
+            <CardTitle className="text-2xl font-bold tracking-tight text-primary">
+              {getGreeting()} {currentUser?.name!}
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Welcome back! Here's what's happening with your store today.
+            <CardDescription className="text-muted-foreground text-base ">
+              Welcome back! Here's a quick overview of what's happening with your store today.
             </CardDescription>
           </div>
           <div className="flex items-center gap-3">
@@ -271,51 +167,11 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            icon={DollarSign}
-            title="Today's Sale"
-            total={summaryData?.todaySale}
-            isCurrency={true}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            bgColor="bg-emerald-50 dark:bg-emerald-950/40"
-            href="/admin/orders"
-          />
-          <StatCard
-            icon={DollarSign}
-            title="Total Month Sale"
-            total={summaryData.totalMonthSale}
-            isCurrency={true}
-            iconColor="text-purple-600 dark:text-purple-400"
-            bgColor="bg-purple-50 dark:bg-purple-950/40"
-            href="/admin/orders"
-          />
-          <StatCard
-            icon={Package}
-            title="Total Products"
-            total={summaryData.products.total}
-            recentCount={summaryData.products.recent.length}
-            iconColor="text-blue-600 dark:text-blue-400"
-            bgColor="bg-blue-50 dark:bg-blue-950/40"
-            href="/admin/products"
-          />
-          <StatCard
-            icon={Tags}
-            title="Total Attributes"
-            total={summaryData.attributes.total}
-            recentCount={summaryData.attributes.recent.length}
-            iconColor="text-teal-600 dark:text-teal-400"
-            bgColor="bg-teal-50 dark:bg-teal-950/40"
-            href="/admin/attributes"
-          />
-        </div>
+        <DashboardStats summaryData={summaryData} />
 
-        <Card>
-          <OrderList />
-        </Card>
+        <RecentOrdersList />
 
-        {/* Main Content Tabs */}
+
         <Card className="border-0 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 rounded-2xl overflow-hidden bg-background/60 backdrop-blur-xl">
           <Tabs defaultValue="products" className="w-full">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/50 px-6 py-4 bg-gradient-to-r from-card/80 to-muted/30">
@@ -493,7 +349,7 @@ export default function DashboardHome() {
                         className="group flex flex-col md:flex-row md:items-center justify-between p-4 bg-rose-50/30 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-500/20 hover:border-rose-300 dark:hover:border-rose-500/40 hover:shadow-md transition-all duration-300 rounded-2xl relative overflow-hidden"
                       >
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500" />
-                        
+
                         <div className="flex items-start md:items-center gap-4 flex-1 min-w-0 pl-2">
                           <div className="h-12 w-12 rounded-xl bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0 shadow-inner">
                             <AlertTriangle className="h-6 w-6" />
@@ -519,7 +375,7 @@ export default function DashboardHome() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-4 pl-4 border-l border-rose-200 dark:border-rose-900/50 mt-4 md:mt-0">
                           <div className="text-right">
                             <p className="text-sm text-muted-foreground mb-0.5">Price</p>

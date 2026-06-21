@@ -17,4 +17,13 @@ export interface OrderDto {
   createdAt: Date;
   updatedAt: Date | null;
   items?: OrderItemDto[];
+  customer?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  store?: {
+    name: string;
+    code: string;
+  };
 }

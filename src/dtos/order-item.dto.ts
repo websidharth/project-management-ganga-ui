@@ -8,4 +8,8 @@ export interface OrderItemDto {
   unitPrice: number;
   totalPrice: number;
   createdAt: Date;
+  product?: {
+    name: string;
+    description?: string;
+  };
 }
