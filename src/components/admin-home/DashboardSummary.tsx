@@ -7,22 +7,24 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
+import { useGetLowStockProducts } from '@/hooks/service-hooks/useProductService';
 import {
   Activity,
   AlertCircle,
+  AlertTriangle,
   ArrowRight,
   Clock,
+  DollarSign,
   Layers,
   Package,
   ShoppingBag,
   Star,
   Tags,
   TrendingDown,
-  TrendingUp,
-  DollarSign
+  TrendingUp
 } from 'lucide-react';
-import OrderList from '../features/orders';
 import Link from 'next/link';
+import OrderList from '../features/orders';
 
 type StatCardProps = {
   icon: React.ElementType;
@@ -47,55 +49,63 @@ const StatCard = ({
   href,
   isCurrency
 }: StatCardProps) => {
-  // Map bgColor to a vibrant gradient accent
-  const gradientAccent = bgColor.includes('emerald') ? 'from-emerald-400 to-emerald-600'
-                       : bgColor.includes('purple') ? 'from-purple-400 to-purple-600'
-                       : bgColor.includes('blue') ? 'from-blue-400 to-blue-600'
-                       : bgColor.includes('teal') ? 'from-teal-400 to-teal-600'
-                       : bgColor.includes('pink') ? 'from-pink-400 to-pink-600'
-                       : 'from-slate-400 to-slate-600';
+  // Extracting color for the glow effect based on bgColor
+  const glowColor = bgColor.includes('emerald') ? 'from-emerald-500/20'
+    : bgColor.includes('purple') ? 'from-purple-500/20'
+      : bgColor.includes('blue') ? 'from-blue-500/20'
+        : bgColor.includes('teal') ? 'from-teal-500/20'
+          : bgColor.includes('green') ? 'from-green-500/20'
+            : 'from-primary/20';
 
   return (
-    <Link href={href} className="block outline-none h-full">
-      <Card className="group relative overflow-hidden bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl p-6 flex flex-col h-full min-h-[160px]">
-        {/* Subtle Gradient Top Border Accent */}
-        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientAccent} opacity-80`} />
+    <Link href={href} className="block h-full outline-none">
+      <Card className="group relative overflow-hidden bg-background/80 backdrop-blur-2xl border border-border/40 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 cursor-pointer rounded-3xl p-6 flex flex-col justify-between h-full min-h-[170px]">
 
-        <div className="flex items-start justify-between mb-4 mt-1">
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        {/* Animated Background Gradient Blob */}
+        <div className={`absolute -right-8 -top-8 w-40 h-40 rounded-full blur-3xl bg-gradient-to-br ${glowColor} to-transparent opacity-40 group-hover:opacity-80 transition-opacity duration-700`} />
+
+        {/* Subtle Inner Glow Border */}
+        <div className="absolute inset-0 rounded-3xl border border-white/20 dark:border-white/5 pointer-events-none" />
+
+        <div className="relative z-10 flex items-start justify-between w-full">
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
               {title}
-            </h3>
-            <div className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            </span>
+            <div className="text-4xl font-extrabold tracking-tighter text-foreground group-hover:scale-105 origin-left transition-transform duration-500">
               {isCurrency ? `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total.toLocaleString()}
             </div>
           </div>
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientAccent} shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:-rotate-3 group-hover:scale-105`}>
-            <Icon className="h-5 w-5 text-white" />
+
+          {/* Premium Icon Container */}
+          <div className={`relative flex items-center justify-center w-12 h-12 rounded-2xl shadow-sm ${bgColor} group-hover:-rotate-6 group-hover:scale-110 transition-all duration-500 ease-out`}>
+            {/* Glossy Overlay */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-white/40 dark:via-white/5 dark:to-white/10 pointer-events-none" />
+            <Icon className={`h-5 w-5 relative z-10 ${iconColor} drop-shadow-sm`} />
           </div>
         </div>
 
-        <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60">
-          <div className="flex items-center justify-between text-xs">
-            {trend !== undefined ? (
-              <div className={`flex items-center gap-1 font-semibold ${trend >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                {trend >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-                <span>{trend >= 0 ? '+' : ''}{trend}%</span>
-                <span className="text-slate-400 dark:text-slate-500 font-normal ml-0.5">vs last month</span>
-              </div>
-            ) : (
-              <div />
-            )}
+        <div className="relative z-10 flex items-center justify-between mt-8 pt-4 border-t border-border/40 w-full">
+          {/* Trend Indicator */}
+          {trend !== undefined ? (
+            <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${trend >= 0
+              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+              : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              }`}>
+              {trend >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+              <span>{trend >= 0 ? '+' : ''}{trend}%</span>
+            </div>
+          ) : (
+            <div />
+          )}
 
+          {/* Recent Count Indicator */}
+          <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:animate-pulse" />
             {recentCount !== undefined ? (
-              <div className="text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
-                <Clock className="h-3.5 w-3.5" />
-                <span><span className="font-semibold text-slate-700 dark:text-slate-300">{recentCount}</span> new</span>
-              </div>
+              <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
             ) : (
-              <div className="text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" /> Updated just now
-              </div>
+              <span>Updated just now</span>
             )}
           </div>
         </div>
@@ -129,8 +139,9 @@ const RecentItemSkeleton = () => (
 
 export default function DashboardHome() {
   const { data, isLoading, isError, error } = useGetDashboardSummary();
+  const { data: lowStockData, isLoading: isLowStockLoading } = useGetLowStockProducts();
 
-  if (isLoading) {
+  if (isLoading || isLowStockLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
         <div className="space-y-8 p-4 md:p-8">
@@ -183,6 +194,7 @@ export default function DashboardHome() {
   }
 
   const summaryData = data?.data?.data;
+  const lowStockProducts = lowStockData?.data?.data || [];
 
   if (!summaryData) {
     return (
@@ -293,6 +305,15 @@ export default function DashboardHome() {
                   <Tags className="h-3.5 w-3.5" />
                   Recent Attributes
                 </TabsTrigger>
+                <TabsTrigger value="low-stock" className="h-8 px-4 text-xs font-semibold data-[state=active]:bg-rose-50 data-[state=active]:text-rose-600 dark:data-[state=active]:bg-rose-500/10 dark:data-[state=active]:text-rose-400 gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  Low Stock Alerts
+                  {lowStockProducts.length > 0 && (
+                    <span className="ml-1 bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                      {lowStockProducts.length}
+                    </span>
+                  )}
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="products" className="m-0 p-0">
@@ -307,6 +328,14 @@ export default function DashboardHome() {
                 <Link href="/attributes">
                   <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 px-2.5">
                     View All
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                </Link>
+              </TabsContent>
+              <TabsContent value="low-stock" className="m-0 p-0">
+                <Link href="/products">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 px-2.5">
+                    Manage Inventory
                     <ArrowRight className="h-3 w-3" />
                   </Button>
                 </Link>
@@ -408,6 +437,53 @@ export default function DashboardHome() {
                       Create first attribute
                     </Button>
                   </Link>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="low-stock" className="m-0 p-4 pt-2">
+              {lowStockProducts.length > 0 ? (
+                <div className="divide-y divide-border/30">
+                  {lowStockProducts.map((product: any) => (
+                    <div
+                      key={product.id}
+                      className="group flex items-center justify-between py-2.5 hover:bg-rose-50/50 dark:hover:bg-rose-500/5 transition-colors rounded-lg px-2 -mx-2"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <p className="font-medium text-sm text-foreground truncate">{product.name}</p>
+                            <Badge variant="destructive" className="text-[10px] px-1.5 py-0 border-none bg-rose-500/10 text-rose-600 hover:bg-rose-500/10 uppercase tracking-widest">
+                              {product.stock === 0 ? 'Out of Stock' : 'Low Stock'}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>SKU: {product.slug}</span>
+                            <span className="text-border/60">•</span>
+                            <span className="font-semibold text-rose-600 dark:text-rose-400">Stock: {product.stock}</span>
+                            <span className="text-border/60">•</span>
+                            <span>Threshold: {product.lowStockThreshold}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pl-2">
+                        <p className="text-sm font-semibold text-foreground">
+                          ${product.price?.toFixed(2)}
+                        </p>
+                        <Link href={`/products/${product.id}`}>
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-md opacity-40 group-hover:opacity-100 transition-opacity text-rose-600 hover:text-rose-700 hover:bg-rose-100 dark:hover:bg-rose-900/30">
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <Package className="h-10 w-10 mx-auto text-emerald-500/30 mb-2" />
+                  <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Inventory looks good!</p>
+                  <p className="text-xs text-muted-foreground mt-1">No products are currently low on stock.</p>
                 </div>
               )}
             </TabsContent>
