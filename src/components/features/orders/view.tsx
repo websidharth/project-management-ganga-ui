@@ -17,6 +17,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { container } from "@/config/ioc";
 import { TYPES } from "@/config/types";
 import { useGetOrderById } from "@/hooks/service-hooks/useOrderService";
@@ -201,16 +208,37 @@ export default function OrderDetailsView({ id, onEdit }: OrderDetailsViewProps) 
           <Button variant="outline" size="sm" className="h-9 font-medium shadow-sm flex-1 md:flex-initial" onClick={() => router.push("/admin/orders")}>
             <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 font-medium shadow-sm flex-1 md:flex-initial border-primary/20 text-primary hover:bg-primary/5"
-            onClick={generatePdf}
-            disabled={isGeneratingPdf}
-          >
-            <Download className={`h-4 w-4 mr-2 ${isGeneratingPdf ? "animate-bounce" : ""}`} />
-            {isGeneratingPdf ? "Generating..." : "Download Bill"}
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 font-medium shadow-sm flex-1 md:flex-initial border-primary/20 text-primary hover:bg-primary/5"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Preview Bill
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <DialogTitle>Bill Preview</DialogTitle>
+                <Button 
+                  size="sm" 
+                  onClick={generatePdf} 
+                  disabled={isGeneratingPdf}
+                  className="bg-primary hover:bg-primary/95 text-primary-foreground mr-6"
+                >
+                  <Download className={`h-4 w-4 mr-2 ${isGeneratingPdf ? "animate-bounce" : ""}`} />
+                  {isGeneratingPdf ? "Generating..." : "Download PDF"}
+                </Button>
+              </DialogHeader>
+              <div className="p-4 bg-muted/30 rounded-lg border">
+                <div ref={receiptRef} className="bg-white">
+                  <BillReceipt order={order} />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           {onEdit && (
             <Button size="sm" className="h-9 font-medium shadow-sm flex-1 md:flex-initial bg-primary hover:bg-primary/95 text-primary-foreground" onClick={() => onEdit(order.id)}>
               <Edit2 className="h-4 w-4 mr-2" /> Edit Order
@@ -275,10 +303,7 @@ export default function OrderDetailsView({ id, onEdit }: OrderDetailsViewProps) 
         </div>
       )}
 
-      {/* Hidden Receipt for PDF Generation */}
-      <div className="hidden">
-        <BillReceipt ref={receiptRef} order={order} />
-      </div>
+
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Details Panel */}

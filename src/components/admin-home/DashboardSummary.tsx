@@ -18,11 +18,11 @@ import {
   Star,
   Tags,
   TrendingDown,
-  TrendingUp
+  TrendingUp,
+  DollarSign
 } from 'lucide-react';
-import Link from 'next/link';
-import { FaRupeeSign } from 'react-icons/fa';
 import OrderList from '../features/orders';
+import Link from 'next/link';
 
 type StatCardProps = {
   icon: React.ElementType;
@@ -46,53 +46,63 @@ const StatCard = ({
   bgColor,
   href,
   isCurrency
-}: StatCardProps) => (
-  <Link href={href} className="block">
-    <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out cursor-pointer rounded-2xl p-6 flex flex-col justify-between h-full min-h-[160px]">
-      {/* Glow Effect on Hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+}: StatCardProps) => {
+  // Map bgColor to a vibrant gradient accent
+  const gradientAccent = bgColor.includes('emerald') ? 'from-emerald-400 to-emerald-600'
+                       : bgColor.includes('purple') ? 'from-purple-400 to-purple-600'
+                       : bgColor.includes('blue') ? 'from-blue-400 to-blue-600'
+                       : bgColor.includes('teal') ? 'from-teal-400 to-teal-600'
+                       : bgColor.includes('pink') ? 'from-pink-400 to-pink-600'
+                       : 'from-slate-400 to-slate-600';
 
-      <div className="flex items-start justify-between w-full">
-        <div className="space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">{title}</span>
-          <div className="text-4xl font-bold tracking-tight text-foreground transition-all duration-200 group-hover:text-primary">
-            {isCurrency ? `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total.toLocaleString()}
+  return (
+    <Link href={href} className="block outline-none h-full">
+      <Card className="group relative overflow-hidden bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl p-6 flex flex-col h-full min-h-[160px]">
+        {/* Subtle Gradient Top Border Accent */}
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradientAccent} opacity-80`} />
+
+        <div className="flex items-start justify-between mb-4 mt-1">
+          <div className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              {title}
+            </h3>
+            <div className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {isCurrency ? `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total.toLocaleString()}
+            </div>
+          </div>
+          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientAccent} shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:-rotate-3 group-hover:scale-105`}>
+            <Icon className="h-5 w-5 text-white" />
           </div>
         </div>
 
-        {/* Animated Icon Wrapper with matching glow/color */}
-        <div className={`flex items-center justify-center p-3 rounded-xl ${bgColor} group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all duration-300`}>
-          <Icon className={`h-6 w-6 ${iconColor}`} />
-        </div>
-      </div>
+        <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60">
+          <div className="flex items-center justify-between text-xs">
+            {trend !== undefined ? (
+              <div className={`flex items-center gap-1 font-semibold ${trend >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                {trend >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+                <span>{trend >= 0 ? '+' : ''}{trend}%</span>
+                <span className="text-slate-400 dark:text-slate-500 font-normal ml-0.5">vs last month</span>
+              </div>
+            ) : (
+              <div />
+            )}
 
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/45 w-full">
-        {/* Trend Indicator as a Badge */}
-        {trend !== undefined ? (
-          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${trend >= 0
-            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-            }`}>
-            {trend >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-            <span>{trend >= 0 ? '+' : ''}{trend}%</span>
+            {recentCount !== undefined ? (
+              <div className="text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
+                <Clock className="h-3.5 w-3.5" />
+                <span><span className="font-semibold text-slate-700 dark:text-slate-300">{recentCount}</span> new</span>
+              </div>
+            ) : (
+              <div className="text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" /> Updated just now
+              </div>
+            )}
           </div>
-        ) : (
-          <div />
-        )}
-
-        {/* Recent Count Indicator */}
-        <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground/70" />
-          {recentCount !== undefined ? (
-            <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
-          ) : (
-            <span>Updated just now</span>
-          )}
         </div>
-      </div>
-    </Card>
-  </Link>
-);
+      </Card>
+    </Link>
+  );
+};
 
 const StatCardSkeleton = () => (
   <Card>
@@ -229,31 +239,30 @@ export default function DashboardHome() {
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            icon={FaRupeeSign}
+            icon={DollarSign}
             title="Today's Sale"
             total={summaryData?.todaySale}
             isCurrency={true}
-            iconColor="text-emerald-600"
-            bgColor="bg-emerald-50 dark:bg-emerald-950/30"
+            iconColor="text-emerald-600 dark:text-emerald-400"
+            bgColor="bg-emerald-50 dark:bg-emerald-950/40"
             href="/admin/orders"
           />
           <StatCard
-            icon={FaRupeeSign}
+            icon={DollarSign}
             title="Total Month Sale"
             total={summaryData.totalMonthSale}
-
             isCurrency={true}
-            iconColor="text-purple-600"
-            bgColor="bg-purple-50 dark:bg-purple-950/30"
+            iconColor="text-purple-600 dark:text-purple-400"
+            bgColor="bg-purple-50 dark:bg-purple-950/40"
             href="/admin/orders"
-          /> <StatCard
+          />
+          <StatCard
             icon={Package}
             title="Total Products"
             total={summaryData.products.total}
             recentCount={summaryData.products.recent.length}
-
-            iconColor="text-blue-600"
-            bgColor="bg-blue-50 dark:bg-blue-950/30"
+            iconColor="text-blue-600 dark:text-blue-400"
+            bgColor="bg-blue-50 dark:bg-blue-950/40"
             href="/admin/products"
           />
           <StatCard
@@ -261,11 +270,10 @@ export default function DashboardHome() {
             title="Total Attributes"
             total={summaryData.attributes.total}
             recentCount={summaryData.attributes.recent.length}
-            iconColor="text-green-600"
-            bgColor="bg-green-50 dark:bg-green-950/30"
+            iconColor="text-teal-600 dark:text-teal-400"
+            bgColor="bg-teal-50 dark:bg-teal-950/40"
             href="/admin/attributes"
           />
-
         </div>
 
         <Card>

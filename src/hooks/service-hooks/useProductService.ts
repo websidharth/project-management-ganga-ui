@@ -90,6 +90,18 @@ const useDeleteProduct = () => {
     });
 };
 
+const useGetLowStockProducts = (params?: ProductFilterParams, enabled: boolean = true) => {
+    const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+
+    return useQuery({
+        queryKey: ['ProductService.getLowStock', params],
+        queryFn: async () => {
+            return await unitOfService.ProductService.getLowStock(params);
+        },
+        enabled,
+    });
+};
+
 
 
 export {
@@ -97,5 +109,6 @@ export {
     useGetAllProducts,
     useGetProductById,
     useUpdateProduct,
+    useGetLowStockProducts,
     useDeleteProduct,
 };

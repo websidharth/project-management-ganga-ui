@@ -44,6 +44,12 @@ export default class ProductService implements IProductService {
             .put<ProductDto, AxiosResponse<Response<ProductDto>>>(`/products/${id}`, model);
     }
 
+    getLowStock(params?: ProductFilterParams): Promise<AxiosResponse<Response<ListResponseDto<ProductDto>>>> {
+        return this.httpService
+            .call()
+            .get<ListResponseDto<ProductDto>, AxiosResponse<Response<ListResponseDto<ProductDto>>>>('/products/reports/low-stock', { params });
+    }
+
     delete(id: number | string): Promise<AxiosResponse<Response<void>>> {
         return this.httpService
             .call()
