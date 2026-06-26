@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FaAngleRight, FaAngleLeft } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
 import type { IconType } from 'react-icons';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 export interface PageHeaderProps {
   title: string;
@@ -19,7 +19,7 @@ export interface PageHeaderProps {
   buttonVariant?: string;
 }
 
-export function PageHeader({ title, description, variant = 'add', actionText, href, onClick, icon, buttonVariant = '' }: PageHeaderProps) {
+export function PageHeader({ title, description, variant = 'add', actionText, href, onClick, icon, buttonVariant = 'outline' }: PageHeaderProps) {
   const router = useRouter();
   const [canShowAction, setCanShowAction] = useState(true);
 

@@ -56,6 +56,12 @@ export interface DashboardProductAttributeDto {
   displayOrder: number;
 }
 
+export interface CategoryDistributionDto {
+  name: string;
+  count: number;
+  percentage: number;
+}
+
 export interface DashboardSummaryDto {
   products: {
     total: number;
@@ -67,4 +73,5 @@ export interface DashboardSummaryDto {
   };
   todaySale: number;
   totalMonthSale: number;
+  categoryDistribution?: CategoryDistributionDto[];
 }

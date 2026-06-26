@@ -26,7 +26,6 @@ export default function ProductsPage({ params }: ProductsPageProps) {
         title={`${id > 0 ? 'Edit' : 'Add'} Product`}
         description={`${id > 0 ? 'Update' : 'Create'} product details and manage inventory`}
         variant="back"
-
       />
       <Card>
         <ManageProduct id={id} />

@@ -17,18 +17,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" {...props} className="p-2 rounded-lg">
+    <Sidebar collapsible="icon" {...props} className="p-2 rounded-lg bg-accent">
       <div className="text-end absolute -end-5 top-5 m-1 z-20 ">
         <SidebarTrigger className=" bg-primary rounded-full  h-8 w-8  text-white" />
       </div>
-      <SidebarHeader>
+      <SidebarHeader className='bg-accent'>
         <div className="text-center">
           <Link href="/" className="inline-block" title={`${config.appName}`}>
             <Image src={open ? logo : icon} width={180} height={50} alt="ShotMailer" className="dark:grayscale w-[180px] h-[50px]" />
           </Link>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='bg-accent'>
         <ScrollArea className="h-svh pe-2 block">
           <NavMain />
         </ScrollArea>

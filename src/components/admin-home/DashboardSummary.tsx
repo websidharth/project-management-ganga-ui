@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
 import { useGetLowStockProducts } from '@/hooks/service-hooks/useProductService';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
@@ -17,14 +16,27 @@ import {
   Clock,
   Layers,
   Package,
+  Receipt,
   ShoppingBag,
   Star,
   Tags
 } from 'lucide-react';
 import Link from 'next/link';
+import { ScrollArea } from '../ui/scroll-area';
 import DashboardStats from './DashboardStats';
 import RecentOrdersList from './RecentOrdersList';
 
+
+const PROGRESS_COLORS = [
+  'bg-gradient-to-r from-amber-400 to-amber-500',
+  'bg-gradient-to-r from-emerald-400 to-emerald-500',
+  'bg-gradient-to-r from-violet-400 to-violet-500',
+  'bg-gradient-to-r from-blue-400 to-blue-500',
+  'bg-gradient-to-r from-sky-400 to-sky-500',
+  'bg-gradient-to-r from-rose-400 to-rose-500',
+  'bg-gradient-to-r from-teal-400 to-teal-500',
+  'bg-gradient-to-r from-pink-400 to-pink-500',
+];
 
 const StatCardSkeleton = () => (
   <Card>
@@ -145,7 +157,7 @@ export default function DashboardHome() {
 
   return (
     <div className="min-h-screen ">
-      <div className="space-y-8 p-4 md:p-8">
+      <div className="space-y-6 p-2">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
             <CardTitle className="text-2xl font-bold tracking-tight text-primary">
@@ -175,178 +187,98 @@ export default function DashboardHome() {
 
         <DashboardStats summaryData={summaryData} />
 
-        <RecentOrdersList />
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+          <div className="col-span-4">
+            <Card className="p-0">
+              <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+                <CardTitle className="flex items-center gap-2">
+                  <div className="p-1 bg-primary/10 rounded-sm">
+                    <Receipt className="w-5 h-5 text-primary" />
+                  </div>
+                  Recent Orders
+                </CardTitle>
+                <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+                  View All
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </CardHeader>
+              <CardContent className="p-0">
+                <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
+                  <RecentOrdersList />
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="col-span-2">
+            <Card className="p-0">
+              <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+                <CardTitle className="flex items-center gap-2">
+                  <div className="p-1 bg-primary/10 rounded-sm">
+                    <Receipt className="w-5 h-5 text-primary" />
+                  </div>
+                  Products Orders
+                </CardTitle>
 
-
-        <Card className="border-0 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 rounded-2xl overflow-hidden bg-background/60 backdrop-blur-xl">
-          <Tabs defaultValue="products" className="w-full">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/50 px-6 py-4 bg-gradient-to-r from-card/80 to-muted/30">
-              <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1">
-                <TabsTrigger value="products" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
-                  <Package className="h-4 w-4" />
-                  Recent Products
-                </TabsTrigger>
-                <TabsTrigger value="attributes" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
-                  <Tags className="h-4 w-4" />
-                  Recent Attributes
-                </TabsTrigger>
-                <TabsTrigger value="low-stock" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-rose-50 data-[state=active]:text-rose-600 dark:data-[state=active]:bg-rose-500/15 dark:data-[state=active]:text-rose-400 transition-all gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  Low Stock Alerts
-                  {lowStockProducts.length > 0 && (
-                    <span className="bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse">
-                      {lowStockProducts.length}
-                    </span>
+              </CardHeader>
+              <CardContent className="p-0">
+                <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
+                  {summaryData.categoryDistribution && summaryData.categoryDistribution.length > 0 ? (
+                    <div className="space-y-4 w-full">
+                      {summaryData.categoryDistribution.slice(0, 6).map((cat: any, index: number) => (
+                        <div key={cat.name} className="space-y-1.5">
+                          <div className="flex justify-between items-center text-sm font-medium">
+                            <span className="text-muted-foreground">{cat.name}</span>
+                            <span className="font-bold text-foreground">
+                              {cat.count} ({cat.percentage}%)
+                            </span>
+                          </div>
+                          <Progress
+                            value={cat.percentage}
+                            color={PROGRESS_COLORS[index % PROGRESS_COLORS.length]}
+                            className="h-2 rounded-full bg-slate-100 dark:bg-slate-800"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                      <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                        <Layers className="h-8 w-8 text-muted-foreground/50" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">No category data available</p>
+                    </div>
                   )}
-                </TabsTrigger>
-              </TabsList>
+                </ScrollArea>
+              </CardContent>
+            </Card>
 
-              <TabsContent value="products" className="m-0 p-0 sm:mt-0 mt-4">
-                <Link href="/admin/products">
-                  <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
-                    View All Products
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </TabsContent>
-              <TabsContent value="attributes" className="m-0 p-0 sm:mt-0 mt-4">
-                <Link href="/admin/attributes">
-                  <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
-                    View All Attributes
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </TabsContent>
-              <TabsContent value="low-stock" className="m-0 p-0 sm:mt-0 mt-4">
-                <Link href="/admin/products">
-                  <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors">
-                    Manage Inventory
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </TabsContent>
-            </div>
 
-            <div className="p-2">
-              <TabsContent value="products" className="m-0 p-4 pt-2 focus-visible:outline-none">
-                {summaryData.products.recent.length > 0 ? (
-                  <div className="grid gap-3">
-                    {summaryData.products.recent.map((product, index) => (
-                      <div
-                        key={product.id}
-                        className="group flex items-center justify-between p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl"
-                      >
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
-                            <Package className="h-5 w-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1">
-                              <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{product.name}</h4>
-                              {index === 0 && (
-                                <Badge className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-sm">
-                                  New
-                                </Badge>
-                              )}
-                              {product.stock < 10 && (
-                                <Badge variant="destructive" className="text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm">
-                                  Low Stock
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1.5"><Tags className="h-3.5 w-3.5" /> {product.sku}</span>
-                              <span className="w-1 h-1 rounded-full bg-border" />
-                              <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> Stock: <strong className="text-foreground">{product.stock}</strong></span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 pl-4 border-l border-border/40">
-                          <div className="text-right">
-                            <p className="text-sm md:text-base font-bold text-foreground">
-                              ${product.price.toFixed(2)}
-                            </p>
-                          </div>
-                          <Link href={`/admin/products/${product.id}`}>
-                            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
-                              <ArrowRight className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                      <ShoppingBag className="h-10 w-10 text-muted-foreground/50" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent products</h3>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">You haven't added any products recently. Start building your catalog.</p>
-                    <Link href="/admin/products/create">
-                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
-                        Create Product
-                      </Button>
-                    </Link>
-                  </div>
+          </div>
+        </div>
+
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+
+          <Card className="p-0">
+            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-1 bg-primary/10 rounded-sm">
+                  <AlertTriangle className="w-5 h-5 text-primary" />
+                </div>
+                Low Stock Alerts  {lowStockProducts.length > 0 && (
+                  <span className="bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse">
+                    {lowStockProducts.length}
+                  </span>
                 )}
-              </TabsContent>
-
-              <TabsContent value="attributes" className="m-0 p-4 pt-2 focus-visible:outline-none">
-                {summaryData.attributes.recent.length > 0 ? (
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {summaryData.attributes.recent.map((attribute) => (
-                      <div
-                        key={attribute.id}
-                        className="group flex flex-col p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl relative overflow-hidden"
-                      >
-                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Link href={`/admin/attributes/${attribute.id}`}>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm shadow-sm hover:bg-background">
-                              <ArrowRight className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
-                              <Star className="h-4 w-4" />
-                            </div>
-                            <h4 className="font-semibold text-base text-foreground truncate">{attribute.name}</h4>
-                          </div>
-                          <Badge
-                            className={`text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm ${attribute.status === 'Published'
-                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
-                              : 'bg-muted text-muted-foreground'
-                              }`}
-                          >
-                            {attribute.status}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span className="font-medium">Unit:</span>
-                          <span className="bg-muted px-2 py-0.5 rounded-md text-xs">{attribute.unit || 'N/A'}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                      <Star className="h-10 w-10 text-muted-foreground/50" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent attributes</h3>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">Enhance your products by creating custom attributes.</p>
-                    <Link href="/admin/attributes/create">
-                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
-                        Create Attribute
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="low-stock" className="m-0 p-4 pt-2 focus-visible:outline-none">
+              </CardTitle>
+              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+                View All
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
                 {lowStockProducts.length > 0 ? (
                   <div className="grid gap-3">
                     {lowStockProducts.map((product: any) => (
@@ -420,10 +352,220 @@ export default function DashboardHome() {
                     </Link>
                   </div>
                 )}
-              </TabsContent>
-            </div>
-          </Tabs>
-        </Card>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          <Card className="p-0">
+            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-1 bg-primary/10 rounded-sm">
+                  <Package className="w-5 h-5 text-primary" />
+                </div>
+                Recent Products
+              </CardTitle>
+              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+                View All
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
+                {summaryData.products.recent.length > 0 ? (
+                  <div className="grid gap-3">
+                    {summaryData.products.recent.map((product, index) => (
+                      <div
+                        key={product.id}
+                        className="group flex items-center justify-between p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl"
+                      >
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                            <Package className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-1">
+                              <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{product.name}</h4>
+                              {index === 0 && (
+                                <Badge className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-sm">
+                                  New
+                                </Badge>
+                              )}
+                              {product.stock < 10 && (
+                                <Badge variant="destructive" className="text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm">
+                                  Low Stock
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-muted-foreground">
+                              <span className="flex items-center gap-1.5"><Tags className="h-3.5 w-3.5" /> {product.sku}</span>
+                              <span className="w-1 h-1 rounded-full bg-border" />
+                              <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> Stock: <strong className="text-foreground">{product.stock}</strong></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 pl-4 border-l border-border/40">
+                          <div className="text-right">
+                            <p className="text-sm md:text-base font-bold text-foreground">
+                              ${product.price.toFixed(2)}
+                            </p>
+                          </div>
+                          <Link href={`/admin/products/${product.id}`}>
+                            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
+                              <ArrowRight className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                      <ShoppingBag className="h-10 w-10 text-muted-foreground/50" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent products</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">You haven't added any products recently. Start building your catalog.</p>
+                    <Link href="/admin/products/create">
+                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
+                        Create Product
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          <Card className="p-0">
+            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-1 bg-primary/10 rounded-sm">
+                  <Tags className="w-5 h-5 text-primary" />
+                </div>
+                Recent Attributes              </CardTitle>
+              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+                View All
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
+                {summaryData.attributes.recent.length > 0 ? (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {summaryData.attributes.recent.map((attribute) => (
+                      <div
+                        key={attribute.id}
+                        className="group flex flex-col p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl relative overflow-hidden"
+                      >
+                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Link href={`/admin/attributes/${attribute.id}`}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm shadow-sm hover:bg-background">
+                              <ArrowRight className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                              <Star className="h-4 w-4" />
+                            </div>
+                            <h4 className="font-semibold text-base text-foreground truncate">{attribute.name}</h4>
+                          </div>
+                          <Badge
+                            className={`text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm ${attribute.status === 'Published'
+                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
+                              : 'bg-muted text-muted-foreground'
+                              }`}
+                          >
+                            {attribute.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span className="font-medium">Unit:</span>
+                          <span className="bg-muted px-2 py-0.5 rounded-md text-xs">{attribute.unit || 'N/A'}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                      <Star className="h-10 w-10 text-muted-foreground/50" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent attributes</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">Enhance your products by creating custom attributes.</p>
+                    <Link href="/admin/attributes/create">
+                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
+                        Create Attribute
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+
+
+          <div className="lg:col-span-4">
+            <Card className="border-0 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 rounded-2xl overflow-hidden bg-background/60 backdrop-blur-xl">
+              <Tabs defaultValue="products" className="w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/50 px-6 py-4 bg-gradient-to-r from-card/80 to-muted/30">
+                  <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1">
+                    <TabsTrigger value="products" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
+                      <Package className="h-4 w-4" />
+                      Recent Products
+                    </TabsTrigger>
+                    <TabsTrigger value="attributes" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
+                      <Tags className="h-4 w-4" />
+                      Recent Attributes
+                    </TabsTrigger>
+
+                  </TabsList>
+
+                  <TabsContent value="products" className="m-0 p-0 sm:mt-0 mt-4">
+                    <Link href="/admin/products">
+                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
+                        View All Products
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </TabsContent>
+                  <TabsContent value="attributes" className="m-0 p-0 sm:mt-0 mt-4">
+                    <Link href="/admin/attributes">
+                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
+                        View All Attributes
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </TabsContent>
+                  <TabsContent value="low-stock" className="m-0 p-0 sm:mt-0 mt-4">
+                    <Link href="/admin/products">
+                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors">
+                        Manage Inventory
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </TabsContent>
+                </div>
+
+                <div className="p-2">
+                  <TabsContent value="products" className="m-0 p-4 pt-2 focus-visible:outline-none">
+
+                  </TabsContent>
+
+                  <TabsContent value="attributes" className="m-0 p-4 pt-2 focus-visible:outline-none">
+
+                  </TabsContent>
+
+
+                </div>
+              </Tabs>
+            </Card>
+          </div>
+        </div> */}
 
         {/* Quick Stats Footer */}
         <div className="grid gap-5 md:grid-cols-3">

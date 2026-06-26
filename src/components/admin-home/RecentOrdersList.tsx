@@ -1,12 +1,12 @@
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { OrderDto } from '@/dtos/order.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
 import { useGetAllOrders } from '@/hooks/service-hooks/useOrderService';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, Package, Receipt, ShoppingBag } from 'lucide-react';
+import { Package, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
 const getStatusBadge = (status: OrderStatus) => {
@@ -67,49 +67,45 @@ export default function RecentOrdersList() {
   const orders: OrderDto[] = response?.data?.data?.data || [];
 
   return (
-    <Card className="p-0">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <div className="p-2 bg-primary/10 rounded-xl">
-              <Receipt className="w-5 h-5 text-primary" />
-            </div>
-            Recent Orders
-          </CardTitle>
-          <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
-            View All
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        {orders.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
-              <Package className="w-8 h-8 text-muted-foreground/50" />
-            </div>
-            <p>No recent orders found.</p>
+    <div>
+      {orders.length === 0 ? (
+        <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
+          <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
+            <Package className="w-8 h-8 text-muted-foreground/50" />
           </div>
-        ) : (
-          <div className="divide-y divide-border/40">
-            {orders.map((order) => (
-              <div key={order.id} className="p-4 sm:p-6 hover:bg-muted/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
-                <div className="flex items-start gap-4">
-                  <div className="hidden sm:flex mt-1 w-10 h-10 rounded-full bg-primary/5 items-center justify-center border border-primary/10 group-hover:bg-primary/10 transition-colors">
-                    <ShoppingBag className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-3">
+          <CardDescription>No recent orders found.</CardDescription>
+        </div>
+      ) : (
+        <div className="divide-y divide-border/40">
+          {orders.map((order) => (
+            <div key={order.id} className="p-1  hover:bg-muted/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+              <div className="flex items-start gap-4">
+                <div className="hidden sm:flex mt-1 w-10 h-10 rounded-full bg-primary/5 items-center justify-center border border-primary/10 group-hover:bg-primary/10 transition-colors">
+                  <ShoppingBag className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2.5 text-sm text-muted-foreground">
                       <Link href={`/admin/orders/${order.id}`} className="font-semibold text-foreground hover:text-primary transition-colors block text-base">
                         {order.orderNumber}
                       </Link>
-                      {order.store && (
-                        <Badge variant="secondary" className="text-[10px] h-5 px-2 bg-secondary/40 hover:bg-secondary/60 text-secondary-foreground/80 font-medium border-0 transition-colors">
+                      <div>
+                        {getStatusBadge(order.status)}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5 text-sm text-muted-foreground">
+                      {/* {order.store && (
+                        <small className="">
                           Store: {order.store.name || order.store.code}
-                        </Badge>
-                      )}
+                        </small>
+                      )} */}
+                      <small>{new Date(order.orderDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</small>
+                      <span className="w-1 h-1 rounded-full bg-border/80"></span>
+                      <small>{formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}</small>
+
+
                       {order.items && order.items.length > 0 && (
-                        <TooltipProvider delayDuration={200}>
+                        <TooltipProvider >
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Badge variant="outline" className="text-[10px] h-5 px-2 text-muted-foreground border-border/50 font-medium cursor-help transition-colors hover:bg-muted/50">
@@ -144,37 +140,27 @@ export default function RecentOrdersList() {
                           </Tooltip>
                         </TooltipProvider>
                       )}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2.5 text-sm text-muted-foreground mt-1.5">
-                      {order.customer ? (
+                      {order?.customer?.firstName && (
                         <span className="font-medium text-foreground/70 flex items-center gap-1">
-                          <span className="text-muted-foreground/50">Cust:</span> {order.customer.firstName} {order.customer.lastName}
-                        </span>
-                      ) : order.customerId && (
-                        <span className="font-medium text-foreground/70 flex items-center gap-1">
-                          <span className="text-muted-foreground/50">Cust:</span> {order.customerId}
+                          <small className="text-muted-foreground/50">Cust:</small> {order.customer.firstName} {order.customer.lastName}
                         </span>
                       )}
-                      {order.customerId && <span className="w-1 h-1 rounded-full bg-border/80"></span>}
-                      <span>{new Date(order.orderDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                      <span className="w-1 h-1 rounded-full bg-border/80"></span>
-                      <span>{formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}</span>
                     </div>
+
                   </div>
-                </div>
-                <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
-                  <div className="font-extrabold text-foreground text-lg">
-                    ${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </div>
-                  <div>
-                    {getStatusBadge(order.status)}
-                  </div>
+
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              <div className="flex flex-row  items-center sm:items-end justify-between sm:justify-center gap-2">
+
+                <div className="font-extrabold text-foreground text-lg">
+                  ${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

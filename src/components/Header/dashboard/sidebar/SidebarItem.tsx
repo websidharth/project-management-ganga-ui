@@ -1,9 +1,9 @@
 'use client';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton } from '@/components/ui/sidebar';
-import Link from 'next/link';
+import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
 import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { SideBarMenuDto } from '../../../../data/sidebarMenu';
@@ -76,7 +76,7 @@ export const SidebarItemRenderer: React.FC<SidebarItemRendererProps> = ({ item, 
       ) : (
         <SidebarMenuSubItem key={item.id}>
           <SidebarMenuButton tooltip={item.title} isActive={matchPath} asChild className="">
-            <Link href={item.url || ''} onClick={onClick} className="">
+            <Link href={item.url || ''} onClick={onClick} className="text-foreground">
               {Icon && <Icon />}
               <span>{item.title}</span>
             </Link>

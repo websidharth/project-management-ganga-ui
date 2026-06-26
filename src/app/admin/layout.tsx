@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AppSidebar />
           <SidebarInset>
             <HeaderDashboard />
-            <div className="h-full bg-accent  w-full p-3 md:p-3 xl:p-7">{children}</div>
+            <div className="h-full bg-accent  w-full p-3 ">{children}</div>
           </SidebarInset>
         </SidebarProvider>
       </div>

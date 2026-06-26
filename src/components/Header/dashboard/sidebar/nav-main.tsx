@@ -1,13 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { TbLogout } from 'react-icons/tb';
 
 import { useGetUserById } from '@/hooks/service-hooks/useUserList.service.hook';
 import useLogout from '@/hooks/use-logout';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 
-import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarMenu } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import CheckUserStatus from '@/components/account/check-user-status';
@@ -82,14 +81,14 @@ export function NavMain() {
             <SidebarItemRenderer key={item.id} index={index} openIndex={openIndex} setOpenIndex={setOpenIndex} item={item} />
           ))}
 
-          <SidebarMenuSubItem>
+          {/* <SidebarMenuSubItem>
             <SidebarMenuButton asChild tooltip="Logout">
               <button type="button" onClick={logout} className="flex w-full cursor-pointer items-center gap-2">
                 <TbLogout />
                 <span>Log out</span>
               </button>
             </SidebarMenuButton>
-          </SidebarMenuSubItem>
+          </SidebarMenuSubItem> */}
         </SidebarMenu>
       </SidebarGroup>
 
