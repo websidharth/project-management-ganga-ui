@@ -258,74 +258,63 @@ export default function DashboardHome() {
 
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-
-          <Card className="p-0">
-            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+          {/* Card 1: Low Stock Alerts */}
+          <Card className="p-4 rounded-2xl border border-border/50 bg-background/50 shadow-sm flex flex-col gap-4">
+            <CardHeader className="p-0 flex-row justify-between items-center pb-2 border-b border-border/50">
               <CardTitle className="flex items-center gap-2">
-                <div className="p-1 bg-primary/10 rounded-sm">
-                  <AlertTriangle className="w-5 h-5 text-primary" />
+                <div className="p-1.5 bg-rose-500/10 rounded-lg text-rose-600 dark:text-rose-400">
+                  <AlertTriangle className="w-4 h-4" />
                 </div>
-                Low Stock Alerts  {lowStockProducts.length > 0 && (
+                <span className="text-base font-bold text-foreground">Low Stock Alerts</span>
+                {lowStockProducts.length > 0 && (
                   <span className="bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse">
                     {lowStockProducts.length}
                   </span>
                 )}
               </CardTitle>
-              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+              <Link href="/admin/products" className="text-xs font-semibold text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
                 View All
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 pt-1 flex-1">
               <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
                 {lowStockProducts.length > 0 ? (
-                  <div className="grid gap-3">
+                  <div className="flex flex-col gap-3">
                     {lowStockProducts.map((product: any) => (
                       <div
                         key={product.id}
-                        className="group flex flex-col md:flex-row md:items-center justify-between p-4 bg-rose-50/30 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-500/20 hover:border-rose-300 dark:hover:border-rose-500/40 hover:shadow-md transition-all duration-300 rounded-2xl relative overflow-hidden"
+                        className="group flex flex-col p-3 bg-rose-50/20 dark:bg-rose-950/10 border border-rose-100/80 dark:border-rose-900/30 hover:border-rose-300 dark:hover:border-rose-700/50 transition-all duration-300 rounded-xl relative overflow-hidden"
                       >
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500" />
-
-                        <div className="flex items-start md:items-center gap-4 flex-1 min-w-0 pl-2">
-                          <div className="h-12 w-12 rounded-xl bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0 shadow-inner">
-                            <AlertTriangle className="h-6 w-6" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1.5">
-                              <h4 className="font-bold text-base text-foreground truncate">{product.name}</h4>
-                              <Badge variant="destructive" className="text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm animate-pulse">
-                                {product.stock === 0 ? 'Out of Stock' : 'Low Stock'}
-                              </Badge>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1.5"><Tags className="h-3.5 w-3.5" /> SKU: {product.slug}</span>
-                              <div className="flex items-center gap-4 bg-background/50 rounded-lg px-3 py-1 border border-border/50">
-                                <span className="flex items-center gap-1.5">
-                                  Current Stock: <strong className="text-rose-600 dark:text-rose-400 text-base">{product.stock}</strong>
-                                </span>
-                                <span className="w-1 h-1 rounded-full bg-border" />
-                                <span className="flex items-center gap-1.5">
-                                  Threshold: <strong className="text-foreground">{product.lowStockThreshold}</strong>
-                                </span>
-                              </div>
-                            </div>
+                        
+                        <div className="flex items-center justify-between gap-2 mb-1.5 pl-1.5">
+                          <h4 className="font-bold text-sm text-foreground truncate max-w-[130px]">{product.name}</h4>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Badge variant="destructive" className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 bg-rose-500 text-white rounded-md">
+                              {product.stock === 0 ? 'Out' : `${product.stock} left`}
+                            </Badge>
+                            <Link href={`/admin/products/${product.id}`}>
+                              <Button variant="secondary" size="icon" className="h-6 w-6 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 transition-transform hover:scale-105">
+                                <ArrowRight className="h-3.5 w-3.5" />
+                              </Button>
+                            </Link>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 pl-4 border-l border-rose-200 dark:border-rose-900/50 mt-4 md:mt-0">
-                          <div className="text-right">
-                            <p className="text-sm text-muted-foreground mb-0.5">Price</p>
-                            <p className="text-lg font-bold text-foreground">
-                              ${product.price?.toFixed(2)}
-                            </p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground pl-1.5">
+                          <span className="truncate">SKU: {product.slug}</span>
+                          <span className="font-semibold text-foreground">${product.price?.toFixed(2)}</span>
+                        </div>
+
+                        <div className="mt-2 px-1.5 py-1 bg-background/50 dark:bg-card/50 rounded-lg flex items-center justify-between text-[11px]">
+                          <span>Stock: <strong className="text-rose-600 dark:text-rose-400 font-bold">{product.stock}</strong> / {product.lowStockThreshold || 5}</span>
+                          <div className="w-16 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                            <div 
+                              className="bg-rose-500 h-full transition-all" 
+                              style={{ width: `${Math.min((product.stock / (product.lowStockThreshold || 5)) * 100, 100)}%` }}
+                            />
                           </div>
-                          <Link href={`/admin/products/${product.id}`}>
-                            <Button variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 dark:bg-rose-900/50 dark:hover:bg-rose-900/80 dark:text-rose-300 transition-all shadow-sm group-hover:scale-110">
-                              <ArrowRight className="h-5 w-5" />
-                            </Button>
-                          </Link>
                         </div>
                       </div>
                     ))}
@@ -334,19 +323,19 @@ export default function DashboardHome() {
                   <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
                     <div className="relative">
                       <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full animate-pulse" />
-                      <div className="h-24 w-24 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/40 dark:to-emerald-800/40 flex items-center justify-center mb-6 relative border border-emerald-200 dark:border-emerald-800/50 shadow-lg">
-                        <Package className="h-12 w-12 text-emerald-600 dark:text-emerald-400" />
-                        <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-emerald-500 rounded-full border-4 border-background flex items-center justify-center shadow-sm">
-                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/40 dark:to-emerald-800/40 flex items-center justify-center mb-4 relative border border-emerald-200 dark:border-emerald-800/50 shadow-lg">
+                        <Package className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+                        <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center shadow-sm">
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Inventory looks great!</h3>
-                    <p className="text-base text-muted-foreground mb-6 max-w-sm">All your products are well-stocked. You're ready to fulfill incoming orders.</p>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Inventory looks great!</h3>
+                    <p className="text-xs text-muted-foreground mb-4 max-w-sm">All products are well-stocked.</p>
                     <Link href="/admin/products">
-                      <Button variant="outline" className="rounded-full px-6 border-emerald-200 hover:bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:hover:bg-emerald-900/30 dark:text-emerald-400 transition-all">
+                      <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:hover:bg-emerald-900/30 dark:text-emerald-400 transition-all">
                         View All Inventory
                       </Button>
                     </Link>
@@ -356,62 +345,56 @@ export default function DashboardHome() {
             </CardContent>
           </Card>
 
-          <Card className="p-0">
-            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+          {/* Card 2: Recent Products */}
+          <Card className="p-4 rounded-2xl border border-border/50 bg-background/50 shadow-sm flex flex-col gap-4">
+            <CardHeader className="p-0 flex-row justify-between items-center pb-2 border-b border-border/50">
               <CardTitle className="flex items-center gap-2">
-                <div className="p-1 bg-primary/10 rounded-sm">
-                  <Package className="w-5 h-5 text-primary" />
+                <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
+                  <Package className="w-4 h-4" />
                 </div>
-                Recent Products
+                <span className="text-base font-bold text-foreground">Recent Products</span>
               </CardTitle>
-              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+              <Link href="/admin/products" className="text-xs font-semibold text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
                 View All
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 pt-1 flex-1">
               <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
                 {summaryData.products.recent.length > 0 ? (
-                  <div className="grid gap-3">
+                  <div className="flex flex-col gap-3">
                     {summaryData.products.recent.map((product, index) => (
                       <div
                         key={product.id}
-                        className="group flex items-center justify-between p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl"
+                        className="group flex items-center justify-between p-3 bg-background border border-border/40 hover:border-primary/20 hover:shadow-sm transition-all duration-300 rounded-xl"
                       >
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
-                            <Package className="h-5 w-5" />
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="h-9 w-9 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+                            <Package className="h-4.5 w-4.5" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1">
-                              <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{product.name}</h4>
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <h4 className="font-semibold text-xs md:text-sm text-foreground truncate">{product.name}</h4>
                               {index === 0 && (
-                                <Badge className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-sm">
+                                <Badge className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-sm rounded">
                                   New
                                 </Badge>
                               )}
-                              {product.stock < 10 && (
-                                <Badge variant="destructive" className="text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm">
-                                  Low Stock
-                                </Badge>
-                              )}
                             </div>
-                            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1.5"><Tags className="h-3.5 w-3.5" /> {product.sku}</span>
-                              <span className="w-1 h-1 rounded-full bg-border" />
-                              <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> Stock: <strong className="text-foreground">{product.stock}</strong></span>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="truncate">SKU: {product.sku}</span>
+                              <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+                              <span>Stock: <strong className="text-foreground">{product.stock}</strong></span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 pl-4 border-l border-border/40">
-                          <div className="text-right">
-                            <p className="text-sm md:text-base font-bold text-foreground">
-                              ${product.price.toFixed(2)}
-                            </p>
-                          </div>
+                        <div className="flex items-center gap-2 pl-3 border-l border-border/40 shrink-0">
+                          <span className="text-xs md:text-sm font-bold text-foreground">
+                            ${product.price.toFixed(2)}
+                          </span>
                           <Link href={`/admin/products/${product.id}`}>
-                            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
-                              <ArrowRight className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
+                              <ArrowRight className="h-3.5 w-3.5" />
                             </Button>
                           </Link>
                         </div>
@@ -420,13 +403,12 @@ export default function DashboardHome() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                      <ShoppingBag className="h-10 w-10 text-muted-foreground/50" />
+                    <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                      <ShoppingBag className="h-8 w-8 text-muted-foreground/50" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent products</h3>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">You haven't added any products recently. Start building your catalog.</p>
+                    <h3 className="text-sm font-semibold text-foreground mb-1">No recent products</h3>
                     <Link href="/admin/products/create">
-                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
+                      <Button size="sm" className="rounded-full px-4 shadow-md hover:shadow-lg transition-shadow">
                         Create Product
                       </Button>
                     </Link>
@@ -436,66 +418,69 @@ export default function DashboardHome() {
             </CardContent>
           </Card>
 
-          <Card className="p-0">
-            <CardHeader className="p-0 flex-row justify-between items-center border-b border-border/50 pb-4">
+          {/* Card 3: Recent Attributes */}
+          <Card className="p-4 rounded-2xl border border-border/50 bg-background/50 shadow-sm flex flex-col gap-4">
+            <CardHeader className="p-0 flex-row justify-between items-center pb-2 border-b border-border/50">
               <CardTitle className="flex items-center gap-2">
-                <div className="p-1 bg-primary/10 rounded-sm">
-                  <Tags className="w-5 h-5 text-primary" />
+                <div className="p-1.5 bg-teal-500/10 rounded-lg text-teal-600 dark:text-teal-400">
+                  <Tags className="w-4 h-4" />
                 </div>
-                Recent Attributes              </CardTitle>
-              <Link href="/admin/orders" className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
+                <span className="text-base font-bold text-foreground">Recent Attributes</span>
+              </CardTitle>
+              <Link href="/admin/attributes" className="text-xs font-semibold text-primary hover:text-primary/80 flex items-center gap-1 group transition-colors">
                 View All
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 pt-1 flex-1">
               <ScrollArea className="max-h-72 overflow-y-auto pe-2 block">
                 {summaryData.attributes.recent.length > 0 ? (
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="flex flex-col gap-3">
                     {summaryData.attributes.recent.map((attribute) => (
                       <div
                         key={attribute.id}
-                        className="group flex flex-col p-4 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl relative overflow-hidden"
+                        className="group flex items-center justify-between p-3 bg-background border border-border/40 hover:border-primary/20 hover:shadow-sm transition-all duration-300 rounded-xl"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="h-9 w-9 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Star className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <h4 className="font-semibold text-xs md:text-sm text-foreground truncate">{attribute.name}</h4>
+                              <Badge
+                                className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 border-none rounded ${
+                                  attribute.status === 'Published'
+                                    ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
+                                    : 'bg-muted text-muted-foreground'
+                                }`}
+                              >
+                                {attribute.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <span>Unit: <strong className="text-foreground">{attribute.unit || 'N/A'}</strong></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 pl-3 border-l border-border/40 shrink-0">
                           <Link href={`/admin/attributes/${attribute.id}`}>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm shadow-sm hover:bg-background">
-                              <ArrowRight className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
+                              <ArrowRight className="h-3.5 w-3.5" />
                             </Button>
                           </Link>
-                        </div>
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
-                              <Star className="h-4 w-4" />
-                            </div>
-                            <h4 className="font-semibold text-base text-foreground truncate">{attribute.name}</h4>
-                          </div>
-                          <Badge
-                            className={`text-[10px] uppercase tracking-wider px-2 py-0.5 border-none shadow-sm ${attribute.status === 'Published'
-                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
-                              : 'bg-muted text-muted-foreground'
-                              }`}
-                          >
-                            {attribute.status}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span className="font-medium">Unit:</span>
-                          <span className="bg-muted px-2 py-0.5 rounded-md text-xs">{attribute.unit || 'N/A'}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                    <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                      <Star className="h-10 w-10 text-muted-foreground/50" />
+                    <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                      <Star className="h-8 w-8 text-muted-foreground/50" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">No recent attributes</h3>
-                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">Enhance your products by creating custom attributes.</p>
+                    <h3 className="text-sm font-semibold text-foreground mb-1">No recent attributes</h3>
                     <Link href="/admin/attributes/create">
-                      <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-shadow">
+                      <Button size="sm" className="rounded-full px-4 shadow-md hover:shadow-lg transition-shadow">
                         Create Attribute
                       </Button>
                     </Link>
