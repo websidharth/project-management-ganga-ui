@@ -21,73 +21,90 @@ const StatCard = ({
   total,
   recentCount,
   trend,
-  iconColor,
   bgColor,
   href,
   isCurrency
 }: StatCardProps) => {
-  // Extracting color for the glow effect based on bgColor
-  const glowColor = bgColor.includes('emerald') ? 'from-emerald-500/20'
-    : bgColor.includes('purple') ? 'from-purple-500/20'
-      : bgColor.includes('blue') ? 'from-blue-500/20'
-        : bgColor.includes('teal') ? 'from-teal-500/20'
-          : bgColor.includes('green') ? 'from-green-500/20'
-            : 'from-primary/20';
+  const theme = bgColor.includes('emerald') ? 'emerald'
+    : bgColor.includes('purple') ? 'purple'
+      : bgColor.includes('blue') ? 'blue'
+        : bgColor.includes('teal') ? 'teal'
+          : bgColor.includes('green') ? 'green'
+            : 'indigo';
 
-  const borderGradient = bgColor.includes('emerald') ? 'from-emerald-400 via-emerald-100 to-emerald-500 dark:from-emerald-600 dark:via-emerald-900 dark:to-emerald-600'
-    : bgColor.includes('purple') ? 'from-purple-400 via-purple-100 to-purple-500 dark:from-purple-600 dark:via-purple-900 dark:to-purple-600'
-      : bgColor.includes('blue') ? 'from-blue-400 via-blue-100 to-blue-500 dark:from-blue-600 dark:via-blue-900 dark:to-blue-600'
-        : bgColor.includes('teal') ? 'from-teal-400 via-teal-100 to-teal-500 dark:from-teal-600 dark:via-teal-900 dark:to-teal-600'
-          : bgColor.includes('green') ? 'from-green-400 via-green-100 to-green-500 dark:from-green-600 dark:via-green-900 dark:to-green-600'
-            : 'from-primary/50 via-primary/20 to-primary/50';
-
-  const hoverBorderGradient = bgColor.includes('emerald') ? 'group-hover:from-emerald-500 group-hover:via-emerald-300 group-hover:to-emerald-600'
-    : bgColor.includes('purple') ? 'group-hover:from-purple-500 group-hover:via-purple-300 group-hover:to-purple-600'
-      : bgColor.includes('blue') ? 'group-hover:from-blue-500 group-hover:via-blue-300 group-hover:to-blue-600'
-        : bgColor.includes('teal') ? 'group-hover:from-teal-500 group-hover:via-teal-300 group-hover:to-teal-600'
-          : bgColor.includes('green') ? 'group-hover:from-green-500 group-hover:via-green-300 group-hover:to-green-600'
-            : 'group-hover:from-primary group-hover:via-primary/40 group-hover:to-primary';
-
-  const iconBgGradient = bgColor.includes('emerald') ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/40'
-    : bgColor.includes('purple') ? 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-purple-500/40'
-      : bgColor.includes('blue') ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/40'
-        : bgColor.includes('teal') ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-teal-500/40'
-          : bgColor.includes('green') ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-green-500/40'
-            : 'bg-gradient-to-br from-primary/80 to-primary shadow-primary/40';
+  const themeClasses = {
+    emerald: {
+      borderGradient: 'from-emerald-400 via-emerald-100 to-emerald-500 dark:from-emerald-600 dark:via-emerald-900 dark:to-emerald-600',
+      hoverBorderGradient: 'group-hover:from-emerald-500 group-hover:via-emerald-300 group-hover:to-emerald-600',
+      bgGlow: 'from-emerald-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/40 text-white',
+      pulseDot: 'bg-emerald-500',
+    },
+    purple: {
+      borderGradient: 'from-purple-400 via-purple-100 to-purple-500 dark:from-purple-600 dark:via-purple-900 dark:to-purple-600',
+      hoverBorderGradient: 'group-hover:from-purple-500 group-hover:via-purple-300 group-hover:to-purple-600',
+      bgGlow: 'from-purple-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-purple-500/40 text-white',
+      pulseDot: 'bg-purple-500',
+    },
+    blue: {
+      borderGradient: 'from-blue-400 via-blue-100 to-blue-500 dark:from-blue-600 dark:via-blue-900 dark:to-blue-600',
+      hoverBorderGradient: 'group-hover:from-blue-500 group-hover:via-blue-300 group-hover:to-blue-600',
+      bgGlow: 'from-blue-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-blue-500/40 text-white',
+      pulseDot: 'bg-blue-500',
+    },
+    teal: {
+      borderGradient: 'from-teal-400 via-teal-100 to-teal-500 dark:from-teal-600 dark:via-teal-900 dark:to-teal-600',
+      hoverBorderGradient: 'group-hover:from-teal-500 group-hover:via-teal-300 group-hover:to-teal-600',
+      bgGlow: 'from-teal-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-teal-500/40 text-white',
+      pulseDot: 'bg-teal-500',
+    },
+    green: {
+      borderGradient: 'from-green-400 via-green-100 to-green-500 dark:from-green-600 dark:via-green-900 dark:to-green-600',
+      hoverBorderGradient: 'group-hover:from-green-500 group-hover:via-green-300 group-hover:to-green-600',
+      bgGlow: 'from-emerald-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-green-400 to-green-600 shadow-green-500/40 text-white',
+      pulseDot: 'bg-emerald-500',
+    },
+    indigo: {
+      borderGradient: 'from-primary/50 via-primary/20 to-primary/50',
+      hoverBorderGradient: 'group-hover:from-primary group-hover:via-primary/40 group-hover:to-primary',
+      bgGlow: 'from-indigo-500/10 to-transparent',
+      iconBgGradient: 'bg-gradient-to-br from-primary/80 to-primary shadow-primary/40 text-white',
+      pulseDot: 'bg-indigo-500',
+    }
+  }[theme];
 
   return (
-    <Link href={href} className="block h-full outline-none group">
-      <div className={`relative h-full rounded-3xl bg-gradient-to-br ${borderGradient} ${hoverBorderGradient} p-[2px] transition-all duration-500 shadow-md hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 cursor-pointer`}>
-        <Card className="relative overflow-hidden bg-background border-0 h-full rounded-[calc(1.5rem-2px)] p-6 flex flex-col justify-between min-h-[170px]">
+    <Link href={href} className="block h-full group">
+      <div className={`relative h-full rounded-[1.8rem] bg-gradient-to-br ${themeClasses.borderGradient} ${themeClasses.hoverBorderGradient} p-[1.5px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1.5 cursor-pointer`}>
+        <Card className="relative overflow-hidden bg-background/95 border-0 h-full rounded-[calc(1.8rem-1.5px)] p-5 flex flex-col justify-between min-h-[165px]">
+          
+          {/* Glow Element */}
+          <div className={`absolute -right-6 -top-6 w-32 h-32 rounded-full blur-3xl opacity-35 group-hover:opacity-55 transition-opacity duration-500 bg-gradient-to-br ${themeClasses.bgGlow}`} />
 
-          {/* Animated Background Gradient Blob */}
-          <div className={`absolute -right-8 -top-8 w-40 h-40 rounded-full blur-3xl bg-gradient-to-br ${glowColor} to-transparent opacity-40 group-hover:opacity-80 transition-opacity duration-700`} />
-
-          {/* Subtle Inner Glow Border */}
-          <div className="absolute inset-0 rounded-[calc(1.5rem-2px)] border border-white/20 dark:border-white/5 pointer-events-none" />
-
-          <div className="relative z-10 flex items-start justify-between w-full">
-            <div className="space-y-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
+          <div className="relative z-10 flex items-start justify-between w-full mt-1">
+            <div className="space-y-1.5 flex-1 min-w-0">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground/60 block">
                 {title}
               </span>
-              <div className="text-4xl font-extrabold tracking-tighter text-foreground group-hover:scale-105 origin-left transition-transform duration-500">
+              <div className="text-3xl font-black tracking-tight text-foreground transition-all duration-300 truncate">
                 {isCurrency ? `$${total?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : total?.toLocaleString()}
               </div>
             </div>
 
-            {/* Premium Icon Container */}
-            <div className={`relative flex items-center justify-center w-12 h-12 rounded-2xl shadow-lg ${iconBgGradient} group-hover:-rotate-6 group-hover:scale-110 transition-all duration-500 ease-out`}>
-              {/* Glossy Overlay */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-white/40 pointer-events-none" />
-              <Icon className="h-5 w-5 relative z-10 text-white drop-shadow-md" />
+            {/* Solid Gradient Icon Style from attachment */}
+            <div className={`relative flex items-center justify-center w-11 h-11 rounded-2xl shadow-md ${themeClasses.iconBgGradient} transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 shrink-0`}>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none" />
+              <Icon className="h-5 w-5 relative z-10 text-white drop-shadow-sm" />
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center justify-between mt-8 pt-4 border-t border-border/40 w-full">
-            {/* Trend Indicator */}
+          <div className="relative z-10 flex items-center justify-between mt-5 pt-3 border-t border-border/20 w-full">
             {trend !== undefined ? (
-              <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${trend >= 0
+              <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-extrabold tracking-wider ${trend >= 0
                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                 : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                 }`}>
@@ -95,16 +112,21 @@ const StatCard = ({
                 <span>{trend >= 0 ? '+' : ''}{trend}%</span>
               </div>
             ) : (
-              <div />
+              <div className="flex items-center gap-1 text-[9px] font-extrabold tracking-wider bg-slate-500/5 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md">
+                <span className={`w-1.5 h-1.5 rounded-full animate-ping mr-1 ${themeClasses.pulseDot}`} />
+                <span>ACTIVE</span>
+              </div>
             )}
 
-            {/* Recent Count Indicator */}
-            <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:animate-pulse" />
+            <div className="text-[10px] text-muted-foreground flex items-center gap-1.5 font-semibold">
+              <span className="relative flex h-2 w-2">
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${themeClasses.pulseDot} opacity-75`}></span>
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${themeClasses.pulseDot}`}></span>
+              </span>
               {recentCount !== undefined ? (
-                <span><strong className="text-foreground font-semibold">{recentCount}</strong> new</span>
+                <span><strong className="text-foreground font-bold">{recentCount}</strong> new</span>
               ) : (
-                <span>Updated just now</span>
+                <span>Live synced</span>
               )}
             </div>
           </div>

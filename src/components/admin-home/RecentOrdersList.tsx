@@ -7,7 +7,7 @@ import { OrderDto } from '@/dtos/order.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
 import { useGetAllOrders } from '@/hooks/service-hooks/useOrderService';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, Package, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Calendar, Clock, Package, ShoppingBag, User } from 'lucide-react';
 import Link from 'next/link';
 
 const getStatusBadge = (status: OrderStatus) => {
@@ -105,32 +105,39 @@ export default function RecentOrdersList() {
             return (
               <div
                 key={order.id}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-background border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 rounded-2xl gap-3"
+                className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-background border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 rounded-2xl gap-4"
               >
-                <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                  <div className={`flex w-9 h-9 rounded-xl items-center justify-center border shrink-0 group-hover:scale-105 transition-transform ${getStatusIconStyles(order.status)}`}>
-                    <ShoppingBag className="w-4.5 h-4.5" />
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className={`flex w-11 h-11 rounded-2xl items-center justify-center border shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-105 ${getStatusIconStyles(order.status)}`}>
+                    <ShoppingBag className="w-5 h-5" />
                   </div>
-                  <div className="flex-1 min-w-0 space-y-0.5">
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-center gap-2.5">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="font-bold text-xs md:text-sm text-foreground hover:text-primary transition-colors truncate"
+                        className="font-extrabold text-sm md:text-base text-foreground hover:text-primary transition-colors truncate"
                       >
                         {order.orderNumber}
                       </Link>
                       {getStatusBadge(order.status)}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
-                      <span>{new Date(order.orderDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                      <span className="w-1 h-1 rounded-full bg-border shrink-0" />
-                      <span>{formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}</span>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5 opacity-60" />
+                        {new Date(order.orderDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 opacity-60" />
+                        {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                      </span>
 
                       {customerName && (
                         <>
-                          <span className="w-1 h-1 rounded-full bg-border shrink-0" />
-                          <span className="font-semibold text-foreground/75 truncate max-w-[120px]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
+                          <span className="flex items-center gap-1 font-semibold text-foreground/75 truncate max-w-[150px]">
+                            <User className="w-3.5 h-3.5 opacity-60" />
                             {customerName}
                           </span>
                         </>
@@ -138,11 +145,12 @@ export default function RecentOrdersList() {
 
                       {order.items && order.items.length > 0 && (
                         <>
-                          <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Badge variant="outline" className="text-[9px] h-4.5 px-1.5 text-muted-foreground border-border/50 font-medium cursor-help transition-colors hover:bg-muted/50 rounded">
+                                <Badge variant="outline" className="text-[10px] h-5 px-2 text-muted-foreground border-border/50 font-medium cursor-help transition-colors hover:bg-muted/50 rounded flex items-center gap-1">
+                                  <Package className="w-3 h-3 opacity-60" />
                                   {order.items.reduce((sum, item) => sum + item.quantity, 0)} Items
                                 </Badge>
                               </TooltipTrigger>
@@ -179,15 +187,17 @@ export default function RecentOrdersList() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 pl-3 border-l border-border/40 shrink-0 self-end sm:self-center">
-                  <span className="text-xs md:text-sm font-extrabold text-foreground">
-                    ${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </span>
-                  <Link href={`/admin/orders/${order.id}`}>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </Link>
+                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                  <div className="bg-muted/50 dark:bg-muted/20 border border-border/40 hover:border-primary/20 px-3.5 py-2 rounded-2xl flex items-center gap-2.5 transition-all duration-300">
+                    <span className="text-base font-extrabold text-foreground">
+                      ${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <Link href={`/admin/orders/${order.id}`}>
+                      <Button variant="ghost" size="icon" className="h-6.5 w-6.5 rounded-full hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all duration-300">
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             );
