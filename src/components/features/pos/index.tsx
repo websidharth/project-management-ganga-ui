@@ -224,52 +224,86 @@ export default function PurchasePage() {
                 const isLowStock = product.stock <= (product.lowStockThreshold || 5);
 
                 return (
-                  <Card key={product.id} className="group relative overflow-hidden bg-card border border-border/50 hover:border-primary/20 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl flex flex-col justify-between h-[340px]">
-                    <div className="h-[180px] bg-slate-100/50 relative overflow-hidden flex items-center justify-center border-b border-border/30">
+                  <Card key={product.id} className="group relative overflow-hidden bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800/60 hover:border-primary/30 dark:hover:border-primary/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_35px_-8px_rgba(0,0,0,0.12)] transition-all duration-500 rounded-[28px] flex flex-col justify-between h-[360px] backdrop-blur-md">
+                    {/* Image Area */}
+                    <div className="h-[190px] bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-950 dark:to-slate-900/50 relative overflow-hidden flex items-center justify-center border-b border-slate-100 dark:border-slate-800/40">
                       {product.images && product.images[0] ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={product.images[0]} alt={product.name} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                        <img 
+                          src={product.images[0]} 
+                          alt={product.name} 
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out" 
+                        />
                       ) : (
-                        <div className="text-4xl text-slate-300 group-hover:scale-110 transition-transform duration-300">📦</div>
+                        <div className="flex flex-col items-center justify-center gap-2 group-hover:scale-105 transition-transform duration-500">
+                          <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 text-indigo-500/80 dark:text-indigo-400/80">
+                            <ShoppingBag className="w-8 h-8" />
+                          </div>
+                        </div>
                       )}
 
-                      {product.stock > 0 && isLowStock && (
-                        <Badge className="absolute top-3 left-3 border-none bg-rose-500 text-white font-extrabold text-[10px] shadow-sm rounded-md uppercase tracking-wider px-2 py-0.5">
-                          Low Stock
-                        </Badge>
-                      )}
+                      {/* Stock status tag (top-left) */}
+                      <div className="absolute top-3.5 left-3.5">
+                        {product.stock <= 0 ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-lg shadow-rose-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            Sold Out
+                          </span>
+                        ) : isLowStock ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-lg shadow-amber-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            Low Stock
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-lg shadow-emerald-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            In Stock
+                          </span>
+                        )}
+                      </div>
 
+                      {/* Glassmorphic Overlay for Sold Out */}
                       {product.stock <= 0 && (
-                        <div className="absolute inset-0 bg-background/80 flex items-center justify-center backdrop-blur-[2px]">
-                          <Badge className="bg-rose-500 text-white font-black text-xs border-none shadow-md px-3 py-1 rounded-md uppercase tracking-widest">Out of Stock</Badge>
+                        <div className="absolute inset-0 bg-slate-950/40 dark:bg-slate-950/60 flex items-center justify-center backdrop-blur-[3px] transition-all duration-300">
+                          <div className="px-4 py-2 rounded-xl bg-white/10 dark:bg-black/20 border border-white/20 backdrop-blur-md shadow-2xl scale-95 group-hover:scale-100 transition-transform duration-500">
+                            <span className="text-white font-black text-xs uppercase tracking-widest">OUT OF STOCK</span>
+                          </div>
                         </div>
                       )}
                     </div>
 
+                    {/* Content Area */}
                     <div className="p-4 flex-1 flex flex-col justify-between">
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                          <span className={`text-[11px] font-extrabold uppercase tracking-wide ${product.stock <= 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                            {product.stock > 0 ? `${product.stock} available` : 'Sold out'}
-                          </span>
-                        </div>
-                        <h3 className="text-sm font-bold text-slate-800 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      <div className="space-y-1.5">
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${
+                          product.stock <= 0 ? 'text-rose-500/80' : isLowStock ? 'text-amber-500/80' : 'text-emerald-500/80'
+                        }`}>
+                          {product.stock > 0 ? `${product.stock} Units Available` : 'No Stock'}
+                        </span>
+                        <h3 className="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-primary transition-colors min-h-[40px]">
                           {product.name}
                         </h3>
                       </div>
 
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-lg font-black text-slate-800">${product.price.toFixed(2)}</span>
+                      {/* Footer Actions */}
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/60">
+                        <span className="text-lg font-black text-slate-900 dark:text-white">${product.price.toFixed(2)}</span>
+                        
                         {inCartQty > 0 ? (
-                          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 rounded-xl p-0.5 border border-border/40">
-                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg" onClick={() => handleRemoveFromCart(product.id)}>
+                          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 rounded-xl p-1 border border-slate-200/40 dark:border-slate-800/40 shadow-inner">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-7 w-7 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all active:scale-95" 
+                              onClick={() => handleRemoveFromCart(product.id)}
+                            >
                               <Minus className="h-3.5 w-3.5" />
                             </Button>
-                            <span className="w-5 text-center text-xs font-bold text-slate-800 dark:text-slate-200">{inCartQty}</span>
+                            <span className="w-6 text-center text-xs font-black text-slate-800 dark:text-slate-200">{inCartQty}</span>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 rounded-lg"
+                              className="h-7 w-7 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all active:scale-95"
                               onClick={() => handleAddToCart(product)}
                               disabled={inCartQty >= product.stock}
                             >
@@ -281,8 +315,13 @@ export default function PurchasePage() {
                             size="sm"
                             onClick={() => handleAddToCart(product)}
                             disabled={product.stock <= 0}
-                            className="h-8 rounded-xl font-bold px-4 shadow-md shadow-primary/5 hover:shadow-lg transition-all"
+                            className={`h-8.5 rounded-xl font-bold px-4 transition-all duration-300 shadow-md ${
+                              product.stock <= 0 
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 border border-slate-200/40 dark:border-slate-800/40 shadow-none' 
+                                : 'bg-primary hover:bg-primary/90 text-white shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0'
+                            }`}
                           >
+                            <Plus className="w-3.5 h-3.5 mr-1" />
                             Add
                           </Button>
                         )}

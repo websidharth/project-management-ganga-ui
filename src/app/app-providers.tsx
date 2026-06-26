@@ -11,7 +11,7 @@ import ReactQueryProvider from './ReactQueryProvider';
 export default function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <NextTopLoader color="#67be8c" showSpinner={true} />
+      <NextTopLoader color="#3880b7" showSpinner={true} />
       <ReactQueryProvider>
         <ReduxStoreProvider>
           <AuthProvider>

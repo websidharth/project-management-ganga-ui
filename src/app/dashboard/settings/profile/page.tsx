@@ -1,15 +1,16 @@
 'use client';
 
+import { ProfileImageUploader } from '@/components/common/admin-media/profile-image-uploader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import { useUpdateProfile } from '@/hooks/service-hooks/useAccountService';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import { ProfileImageUploader } from '@/components/common/admin-media/profile-image-uploader';
 import IAccountService from '@/services/interfaces/IAccountService';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +19,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Textarea } from '@/components/ui/textarea';
 
 const profileFormSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters.' }),
@@ -89,19 +89,20 @@ export default function ProfilePage() {
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSubmitting(true);
     try {
+      const { dateOfBirth, ...restOfData } = data;
       const payload = {
-        ...data,
-        dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString() : undefined,
+        ...restOfData,
+        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
       };
 
       const response = await updateProfileMutation.mutateAsync(payload);
-      
+
       if (response && (response.status === 200 || response.status === 201)) {
         toast({
           variant: 'success',
           title: 'Profile updated successfully',
         });
-        
+
         if (update) {
           await update({
             ...currentUser,

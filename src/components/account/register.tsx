@@ -90,9 +90,9 @@ export default function RegisterModule() {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John" {...field} />
+                    <Input placeholder="John" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,9 +103,9 @@ export default function RegisterModule() {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Doe" {...field} />
+                    <Input placeholder="Doe" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,9 +118,9 @@ export default function RegisterModule() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Business Email</FormLabel>
+                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Business Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="name@company.com" {...field} />
+                  <Input type="email" placeholder="name@company.com" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -132,9 +132,9 @@ export default function RegisterModule() {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Phone Number</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="+1 (555) 000-0000" {...field} />
+                  <Input type="tel" placeholder="+1 (555) 000-0000" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -146,9 +146,9 @@ export default function RegisterModule() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Create a password" {...field} />
+                  <Input type="password" placeholder="Create a password" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -159,8 +159,11 @@ export default function RegisterModule() {
             control={form.control}
             name="isRegisterbyShop"
             render={({ field }) => (
-              <FormItem className="flex items-center gap-3">
-                <FormLabel className="mt-2">Register as Shop</FormLabel>
+              <FormItem className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/30 p-3 rounded-2xl border border-slate-200/40 dark:border-slate-800/40">
+                <div className="flex-1">
+                  <FormLabel className="text-xs font-bold text-slate-700 dark:text-slate-300">Register as Shop Account</FormLabel>
+                  <p className="text-[10px] text-slate-400">Establish a store inventory profile rather than standard credentials.</p>
+                </div>
                 <FormControl>
                   <Switch checked={field.value ?? false} onCheckedChange={field.onChange} />
                 </FormControl>
@@ -172,18 +175,19 @@ export default function RegisterModule() {
           <Button
             type="submit"
             icon={FaArrowUpRightFromSquare}
-            className="w-full  transition-all duration-300 hover:scale-[1.02]"
+            className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white font-extrabold transition-all duration-300 hover:scale-[1.01] shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-95 mt-2"
             loading={showLoader}
           >
             {isLoading ? 'Creating account...' : 'Create Account'}
           </Button>
-          <div className="my-4 text-center">
-            <CardDescription>
+          
+          <div className="my-5 text-center">
+            <p className="text-xs text-slate-500">
               Already have an account?
-              <Link href="/login" className="font-medium text-blue-500 hover:text-blue-400 transition-colors ms-1">
+              <Link href="/login" className="font-extrabold text-primary hover:underline transition-colors ms-1">
                 Log in now
               </Link>
-            </CardDescription>
+            </p>
           </div>
         </form>
       </Form>

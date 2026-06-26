@@ -120,9 +120,9 @@ export default function LoginModule() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email Address*</FormLabel>
+                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} className="" />
+                  <Input placeholder="name@example.com" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,9 +134,9 @@ export default function LoginModule() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password*</FormLabel>
+                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Enter your password" {...field} className="" />
+                  <Input type="password" placeholder="••••••••" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -153,7 +153,7 @@ export default function LoginModule() {
             type="submit"
             icon={FaArrowUpRightFromSquare}
             iconPlacement="right"
-            className="w-full transition-all duration-300 hover:scale-[1.02]"
+            className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white font-extrabold transition-all duration-300 hover:scale-[1.01] shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-95"
             loading={showLoader}
           >
             {showLoader ? 'Signing in...' : 'Sign In'}
@@ -161,13 +161,13 @@ export default function LoginModule() {
         </form>
       </Form>
 
-      <div className="my-4 text-center">
-        <CardDescription>
+      <div className="my-5 text-center">
+        <p className="text-xs text-slate-500">
           Don&apos;t have an account?
-          <Link href="/sign-up" className="font-medium text-blue-500 hover:text-blue-400 transition-colors ms-1">
+          <Link href="/sign-up" className="font-extrabold text-primary hover:underline transition-colors ms-1">
             Sign up now
           </Link>
-        </CardDescription>
+        </p>
       </div>
     </div>
   );
