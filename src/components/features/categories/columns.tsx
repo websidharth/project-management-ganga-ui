@@ -54,7 +54,7 @@ export const useCategoryColumns = (editRecord: (id: number) => void, deleteRecor
         header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <ActionTooltip variant="edit" tooltip="Edit Record" onClick={() => editRecord(+row.original.id)} />
+            <ActionTooltip variant="edit" tooltip="Edit Record"    />
             <ActionTooltip variant="delete" tooltip="Delete Record" onClick={() => deleteRecord(+row.original.id)} />
           </div>
         ),

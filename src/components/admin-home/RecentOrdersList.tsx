@@ -3,9 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
 import { OrderDto } from '@/dtos/order.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
 import { useGetAllOrders } from '@/hooks/service-hooks/useOrderService';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowRight, Calendar, Clock, Package, ShoppingBag, User } from 'lucide-react';
 import Link from 'next/link';
@@ -49,6 +52,8 @@ const getStatusIconStyles = (status: OrderStatus) => {
 };
 
 export default function RecentOrdersList() {
+  const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+
   const { data: response, isLoading, isError } = useGetAllOrders({ page: 1, recordPerPage: 5 });
 
   if (isLoading) {
@@ -103,9 +108,7 @@ export default function RecentOrdersList() {
               : null;
 
             return (
-              <div
-                key={order.id}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-background border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 rounded-2xl gap-4"
+              <div key={order.id} className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-background border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 rounded-2xl gap-4"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className={`flex w-11 h-11 rounded-2xl items-center justify-center border shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-105 ${getStatusIconStyles(order.status)}`}>
@@ -115,7 +118,7 @@ export default function RecentOrdersList() {
                     <div className="flex items-center gap-2.5">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="font-extrabold text-sm md:text-base text-foreground hover:text-primary transition-colors truncate"
+                        className="font-bold text-sm md:text-base text-foreground hover:text-primary transition-colors truncate"
                       >
                         {order.orderNumber}
                       </Link>
@@ -125,7 +128,11 @@ export default function RecentOrdersList() {
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 opacity-60" />
-                        {new Date(order.orderDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+
+                        <span className="text-sm text-muted-foreground">
+                          {order.orderDate ? unitOfService.DateTimeService.convertToLocalDate(order.orderDate, true) : '—'}
+                        </span>
+
                       </span>
                       <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
                       <span className="flex items-center gap-1">

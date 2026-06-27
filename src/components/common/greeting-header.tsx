@@ -4,9 +4,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import { Plus, Send } from 'lucide-react';
+import { Activity, Clock, Plus, Send, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { Badge } from '../ui/badge';
 
 export default function GreetingHeader() {
   const { currentUser } = useGetCurrentUser();
@@ -23,11 +24,24 @@ export default function GreetingHeader() {
             {greeting}, <span className="capitalize">{userName}!</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground text-xs">
-            Manage templates, preview content, and send test emails before publishing to your audience.
+            Welcome back! Here's a quick overview of what's happening with your store today.
           </CardDescription>
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <Badge variant="outline" className="px-3 py-1">
+            <Activity className="h-3 w-3 mr-1" />
+            Live
+          </Badge>
+          <Button icon={Star} variant="default" size="sm" asChild className="gap-2">
+            <Link href="/admin/settings/profile">
+              Edit Profile
+            </Link>
+          </Button>
+
+          <Button icon={Clock} variant="outline" size="sm">
+            Last 30 days
+          </Button>
           <Button type="button" iconPlacement="right" icon={Plus} className="gap-2">
             <Link href="/create-newsletter" target="_blank" className="flex items-center">
               Create Template
