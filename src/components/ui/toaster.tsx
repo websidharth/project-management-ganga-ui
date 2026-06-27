@@ -186,9 +186,9 @@ export function Toaster() {
                 <Icon className="w-5 h-5" />
               </div>
               <div className="grid gap-0.5 flex-1 min-w-0">
-                {title && <ToastTitle className="font-bold text-sm leading-snug">{title}</ToastTitle>}
+                {title && <ToastTitle className="font-bold text-sm text-foreground leading-snug">{title}</ToastTitle>}
                 {description && (
-                  <ToastDescription className="text-xs opacity-85 leading-relaxed">{description}</ToastDescription>
+                  <ToastDescription className="text-xs text-muted-foreground leading-relaxed">{description}</ToastDescription>
                 )}
               </div>
             </div>

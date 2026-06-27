@@ -1,18 +1,18 @@
 'use client';
-import { getSession, signIn, useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { toast } from '@/components/ui/use-toast';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { LoginModel } from '@/models/login.model';
-import LoginSchema from '@/schema/LoginSchema';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useRoleRedirect } from '@/hooks/use-role-base-redirection';
+import { toast } from '@/components/ui/use-toast';
 import { UserDto } from '@/dtos/UserDto';
+import { useRoleRedirect } from '@/hooks/use-role-base-redirection';
+import { LoginModel } from '@/models/login.model';
+import LoginSchema from '@/schema/LoginSchema';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { getSession, signIn, useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import { CardDescription } from '../ui/card';
 
@@ -120,9 +120,9 @@ export default function LoginModule() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email Address</FormLabel>
+                <FormLabel>Email Address*</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
+                  <Input placeholder="name@example.com" {...field} className="" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,9 +134,9 @@ export default function LoginModule() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Password</FormLabel>
+                <FormLabel>Password*</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} className="h-11 rounded-xl border-slate-200/60 dark:border-slate-800/60 focus-visible:ring-primary/25 bg-white/50 dark:bg-slate-900/50" />
+                  <Input type="password" placeholder="Enter your password" {...field} className="" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -153,7 +153,7 @@ export default function LoginModule() {
             type="submit"
             icon={FaArrowUpRightFromSquare}
             iconPlacement="right"
-            className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white font-extrabold transition-all duration-300 hover:scale-[1.01] shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-95"
+            className="w-full transition-all duration-300 hover:scale-[1.02]"
             loading={showLoader}
           >
             {showLoader ? 'Signing in...' : 'Sign In'}
@@ -161,13 +161,13 @@ export default function LoginModule() {
         </form>
       </Form>
 
-      <div className="my-5 text-center">
-        <p className="text-xs text-slate-500">
+      <div className="my-4 text-center">
+        <CardDescription>
           Don&apos;t have an account?
-          <Link href="/sign-up" className="font-extrabold text-primary hover:underline transition-colors ms-1">
+          <Link href="/sign-up" className="font-medium text-blue-500 hover:text-blue-400 transition-colors ms-1">
             Sign up now
           </Link>
-        </p>
+        </CardDescription>
       </div>
     </div>
   );
