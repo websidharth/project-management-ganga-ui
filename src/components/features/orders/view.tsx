@@ -54,6 +54,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import BillReceipt from "./bill-receipt";
+import OrderWhatsApp from "@/components/common/OrderWhatsApp";
 
 interface OrderDetailsViewProps {
   id: number;
@@ -239,6 +240,7 @@ export default function OrderDetailsView({ id, onEdit }: OrderDetailsViewProps) 
               </div>
             </DialogContent>
           </Dialog>
+          <OrderWhatsApp order={order} />
           {onEdit && (
             <Button size="sm" className="h-9 font-medium shadow-sm flex-1 md:flex-initial bg-primary hover:bg-primary/95 text-primary-foreground" onClick={() => onEdit(order.id)}>
               <Edit2 className="h-4 w-4 mr-2" /> Edit Order

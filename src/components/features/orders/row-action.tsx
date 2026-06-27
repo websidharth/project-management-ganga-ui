@@ -16,6 +16,28 @@ export function OrderRowActions<TData>({ row, editRecord, deleteRecord }: OrderL
   const item = row.original as OrderDto;
   const router = useRouter();
 
+  const sendWhatsAppMessage = () => {
+    if (!item) return;
+
+    // Format the message
+    const message = `Order Details:
+Order #: ${item.orderNumber || item.id || 'N/A'}
+Date: ${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}
+Total: $${item.grandTotal || '0.00'}
+
+Items:
+${item.items && item.items.length > 0 
+  ? item.items.map(oItem => `- Product ID: ${oItem.productId} x${oItem.quantity || 1} - $${oItem.unitPrice}`).join('\n')
+  : 'No items'}
+
+Customer ID: ${item.customerId || 'N/A'}`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const rawPhone = '1234567890'; // Change to actual test or customer phone number
+    const phoneNumber = rawPhone.replace(/[^\d+]/g, ''); 
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+  };
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -28,6 +50,9 @@ export function OrderRowActions<TData>({ row, editRecord, deleteRecord }: OrderL
         <DropdownMenuItem className="cursor-pointer" onClick={() => router.push(`/admin/orders/${item.id}`)}>
           View Details
         </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={sendWhatsAppMessage}>
+          Send on WhatsApp
+        </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" onClick={() => editRecord(item.id)}>
           Edit
         </DropdownMenuItem>
@@ -38,3 +63,4 @@ export function OrderRowActions<TData>({ row, editRecord, deleteRecord }: OrderL
     </DropdownMenu>
   );
 }
+
