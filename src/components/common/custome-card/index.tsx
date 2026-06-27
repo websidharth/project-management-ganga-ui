@@ -159,7 +159,7 @@ export default function SectionCard({
         className={cn(showScroll ? 'p-0' : 'p-1', 'p-0 pt-1 flex-1', contentClassName)}
       >
         {showScroll ? (
-          <ScrollArea className={cn('overflow-y-auto pe-2', `max-h-${maxHeight}`)}>
+          <ScrollArea className={cn('overflow-y-auto pe-2', `max-h-72 ${maxHeight}`)}>
             {children}
           </ScrollArea>
         ) : (
