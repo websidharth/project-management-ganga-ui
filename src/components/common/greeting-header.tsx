@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import { Activity, Plus, Send, Star } from 'lucide-react';
+import { Activity, Plus, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Badge } from '../ui/badge';
@@ -43,7 +43,7 @@ export default function GreetingHeader() {
               Create Order
             </Link>
           </Button>
-          <Button iconPlacement="right" icon={Send} asChild>
+          <Button asChild>
             <Link href="/template/create" >
               Send Test
             </Link>

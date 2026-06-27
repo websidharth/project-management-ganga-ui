@@ -1,11 +1,22 @@
 import { Roles } from '@/enums/roles.enum';
-import { MdDashboard, MdList, MdPeople, MdPerson, MdReceipt, MdSend, MdShoppingCart, MdStore } from 'react-icons/md';
-import { TbTemplate } from 'react-icons/tb';
+import { 
+  LayoutDashboard, 
+  FolderTree, 
+  Tags, 
+  Sliders, 
+  Package, 
+  ShoppingBag, 
+  Receipt, 
+  Users, 
+  Store, 
+  User,
+  List
+} from 'lucide-react';
 
 export interface SideBarMenuDto {
   id: string;
   title: string;
-  icon: any; // React component from react-icons
+  icon: any; // React component
   url: string;
   class?: string;
   submenu?: SideBarSubMenuDto[];
@@ -37,7 +48,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'dashboard',
     title: 'Dashboard',
-    icon: MdDashboard,
+    icon: LayoutDashboard,
     url: '/dashboard',
     isActive: false,
     role: [Roles.USER],
@@ -45,65 +56,48 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'dashboard',
     title: 'Dashboard',
-    icon: MdDashboard,
+    icon: LayoutDashboard,
     url: '/admin',
     isActive: false,
     role: [Roles.ADMIN],
   },
   {
-    id: 'products',
-    title: 'Products',
-    icon: TbTemplate,
-    url: '/admin/products/',
+    id: 'categories',
+    title: 'Categories',
+    icon: FolderTree,
+    url: '/admin/categories/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'brand-names',
+    title: 'Brand Names',
+    icon: Tags,
+    url: '/admin/brand-names/',
     role: [Roles.ADMIN],
     isActive: false,
   },
   {
     id: 'attributes',
     title: 'Attributes',
-    icon: TbTemplate,
+    icon: Sliders,
     url: '/admin/attributes/',
     role: [Roles.ADMIN],
     isActive: false,
   },
-
   {
-    id: 'categories',
-    title: 'Categories',
-    icon: MdSend,
-    url: '/admin/categories/',
+    id: 'products',
+    title: 'Products',
+    icon: Package,
+    url: '/admin/products/',
     role: [Roles.ADMIN],
     isActive: false,
   },
 
-  {
-    id: 'brand-names',
-    title: 'Brand Names',
-    icon: MdList,
-    url: '/admin/brand-names/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
-  {
-    id: 'positions',
-    title: 'Positions',
-    icon: MdList,
-    url: '/admin/positions/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
-  {
-    id: 'departments',
-    title: 'Departments',
-    icon: TbTemplate,
-    url: '/admin/departments/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
   {
     id: 'orders',
     title: 'Orders',
-    icon: MdShoppingCart,
+    icon: ShoppingBag,
     url: '/admin/orders/',
     role: [Roles.ADMIN],
     isActive: false,
@@ -111,7 +105,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'purchase',
     title: 'Purchase',
-    icon: MdReceipt,
+    icon: Receipt,
     url: '/admin/purchase/',
     role: [Roles.ADMIN],
     isActive: false,
@@ -119,7 +113,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'staff',
     title: 'Staff',
-    icon: MdPeople,
+    icon: Users,
     url: '/admin/staff/',
     role: [Roles.ADMIN],
     isActive: false,
@@ -128,7 +122,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'stores',
     title: 'Stores',
-    icon: MdStore,
+    icon: Store,
     url: '/admin/stores/',
     role: [Roles.SUPER_ADMIN],
     isActive: false,
@@ -136,23 +130,16 @@ export const SideBarMenu: SideBarMenuDto[] = [
   {
     id: 'users',
     title: 'Users',
-    icon: MdPerson,
+    icon: User,
     url: '/admin/users/',
-    role: [Roles.ADMIN],
+    role: [Roles.SUPER_ADMIN],
     isActive: false,
   },
-  {
-    id: 'admin-profile',
-    title: 'Profile Settings',
-    icon: MdPerson,
-    url: '/admin/settings/profile',
-    role: [Roles.ADMIN, Roles.SUPER_ADMIN],
-    isActive: false,
-  },
+
   // {
   //     id: "newsletter",
   //     title: "Newsletter",
-  //     icon: MdPerson,
+  //     icon: User,
   //     url: "",
   //     role: [Roles.ADMIN],
   //     isActive: true,
@@ -160,7 +147,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
   //         {
   //             id: "email-sent",
   //             title: "Email Sent",
-  //             icon: MdPerson,
+  //             icon: User,
   //             url: "/admin/email-sent",
   //             role: [Roles.ADMIN],
   //             isActive: false,
@@ -168,20 +155,19 @@ export const SideBarMenu: SideBarMenuDto[] = [
   //                 {
   //                     id: "SendNewsletter2",
   //                     title: "Send Newsletter",
-  //                     icon: MdSend,
+  //                     icon: FolderTree,
   //                     url: "/send-newsletter",
   //                     role: [Roles.ADMIN],
   //                     isActive: false,
   //                 }
   //             ]
   //         },
-
   //     ]
   // },
   {
     id: 'user',
     title: 'Sidharth Kumar',
-    icon: MdPerson,
+    icon: User,
     url: '',
     role: [Roles.USER],
     isActive: true,
@@ -189,7 +175,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
       {
         id: 'profile',
         title: 'Profile',
-        icon: MdList,
+        icon: List,
         url: '/dashboard/edit-profile',
         role: [Roles.USER],
         isActive: false,

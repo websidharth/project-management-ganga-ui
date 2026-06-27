@@ -65,6 +65,8 @@ export default function DashboardHome() {
   const { data, isLoading, isError, error } = useGetDashboardSummary();
   const { data: lowStockData, isLoading: isLowStockLoading } = useGetLowStockProducts();
   const { currentUser } = useGetCurrentUser();
+  const summaryData = data?.data?.data;
+  const lowStockProducts = lowStockData?.data?.data?.data || [];
 
 
   if (isLoading || isLowStockLoading) {
@@ -94,7 +96,7 @@ export default function DashboardHome() {
     );
   }
 
-  if (isError) {
+  if (isError || !summaryData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4 md:p-8">
         <Card className="border-red-200 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20">
@@ -118,35 +120,6 @@ export default function DashboardHome() {
       </div>
     );
   }
-
-  const summaryData = data?.data?.data;
-  const lowStockProducts = lowStockData?.data?.data?.data || [];
-
-  if (!summaryData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4 md:p-8">
-        <Card className="border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-950/20 dark:to-yellow-900/20">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center gap-4 text-center">
-              <div className="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-                <AlertCircle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-300">No Data Available</h3>
-                <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
-                  Start adding products and attributes to see your dashboard statistics.
-                </p>
-              </div>
-              <Link href="/products/create">
-                <Button>Add Your First Product</Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
 
 
   return (
