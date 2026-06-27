@@ -7,10 +7,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import useLogout from '@/hooks/use-logout';
 import { useSession } from 'next-auth/react';
@@ -29,14 +27,15 @@ export default function HeaderDashboard() {
       <header className="sticky top-0 z-20 w-full  border-b border-b-slate-200/50 shadow-sm">
         <Card className="!p-0 bg-card shadow-none rounded-0">
           <div className="flex justify-between items-center px-4 py-2">
-            <div className="hidden xl:block ">
+
+            <div className="hidden xl:flex items-center justify-between gap-5">
+              <SidebarTrigger className="   h-4 w-4  " />
               <BreadCrumb />
             </div>
-            <div className="flex items-center justify-end ">
+            <div className="flex items-center justify-end gap-4">
               <div>
                 <ModeToggle />
               </div>
-              <Separator orientation="vertical" />
               <DropdownMenu>
                 <DropdownMenuTrigger className={` flex justify-center  overflow-hidden items-center relative bg-blue size-12 rounded-full`}>
                   <Avatar className=" w-[30px] h-[30px]  ring-1 ring-green-500 ring-offset-[2px] ring-offset-background">
@@ -56,8 +55,8 @@ export default function HeaderDashboard() {
                     </div>
                   </div>
 
-                  {/* <DropdownMenuLabel>Dashboard</DropdownMenuLabel> */}
-                  <DropdownMenuSeparator />
+
+
                   <DropdownMenuItem asChild>
                     <Link href={pathname.startsWith('/admin') ? '/admin/settings/profile' : '/dashboard/settings/profile'} className="w-full cursor-pointer">
                       Profile
@@ -73,11 +72,10 @@ export default function HeaderDashboard() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Separator orientation="vertical" />
               <div className="block xl:hidden">
                 <Logo width={100} height={50} className="dark:grayscale w-[100px] h-[50px]" />
               </div>
-              <Separator orientation="vertical" />
+
               <div className="block xl:hidden">
                 <SidebarTrigger className="" />
               </div>
