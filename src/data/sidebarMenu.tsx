@@ -1,16 +1,16 @@
 import { Roles } from '@/enums/roles.enum';
-import { 
-  LayoutDashboard, 
-  FolderTree, 
-  Tags, 
-  Sliders, 
-  Package, 
-  ShoppingBag, 
-  Receipt, 
-  Users, 
-  Store, 
+import {
+  FolderTree,
+  LayoutDashboard,
+  List,
+  Package,
+  Receipt,
+  ShoppingBag,
+  Sliders,
+  Store,
+  Tags,
   User,
-  List
+  Users
 } from 'lucide-react';
 
 export interface SideBarMenuDto {
@@ -132,7 +132,7 @@ export const SideBarMenu: SideBarMenuDto[] = [
     title: 'Users',
     icon: User,
     url: '/admin/users/',
-    role: [Roles.SUPER_ADMIN],
+    role: [Roles.SUPER_ADMIN, Roles.ADMIN],
     isActive: false,
   },
 
