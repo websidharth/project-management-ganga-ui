@@ -1,7 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
@@ -10,8 +8,30 @@ import { OrderStatus } from '@/enums/order-status.enum';
 import { useGetAllOrders } from '@/hooks/service-hooks/useOrderService';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, Calendar, Clock, Package, ShoppingBag, User } from 'lucide-react';
+import { ArrowRight, Calendar, CheckCircle2, Clock, FileText, Package, RotateCcw, ShoppingBag, Truck, User, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { DashboardEmptyState } from '../skelton/empty-states';
+import ProductsOrdersSkeleton from '../skelton/products-orders';
+import { CardDescription } from '../ui/card';
+
+const getStatusIcon = (status: OrderStatus) => {
+  switch (status) {
+    case OrderStatus.Pending:
+      return <Clock className="w-5 h-5" />;
+    case OrderStatus.Confirmed:
+      return <FileText className="w-5 h-5" />;
+    case OrderStatus.Shipped:
+      return <Truck className="w-5 h-5" />;
+    case OrderStatus.Delivered:
+      return <CheckCircle2 className="w-5 h-5" />;
+    case OrderStatus.Cancelled:
+      return <XCircle className="w-5 h-5" />;
+    case OrderStatus.Returned:
+      return <RotateCcw className="w-5 h-5" />;
+    default:
+      return <ShoppingBag className="w-5 h-5" />;
+  }
+};
 
 const getStatusBadge = (status: OrderStatus) => {
   switch (status) {
@@ -58,35 +78,12 @@ export default function RecentOrdersList() {
 
   if (isLoading) {
     return (
-      <Card className="shadow-lg border-0 bg-background/60 backdrop-blur-xl">
-        <CardHeader className="border-b border-border/50 pb-4">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-primary" />
-            Recent Orders
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="divide-y divide-border/50">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="p-4 flex items-center justify-between">
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-                <div className="space-y-2 text-right">
-                  <Skeleton className="h-5 w-20 ml-auto" />
-                  <Skeleton className="h-6 w-24 ml-auto rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <ProductsOrdersSkeleton />
     );
   }
 
   if (isError) {
-    return null;
+    return <CardDescription>{response?.data?.message || 'Something went wrong.'}</CardDescription>;
   }
 
   const orders: OrderDto[] = response?.data?.data?.data || [];
@@ -94,101 +91,121 @@ export default function RecentOrdersList() {
   return (
     <div>
       {orders.length === 0 ? (
-        <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
-          <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
-            <Package className="w-8 h-8 text-muted-foreground/50" />
-          </div>
-          <CardDescription>No recent orders found.</CardDescription>
-        </div>
+        <DashboardEmptyState
+          title="Recent Orders"
+          description="No recent orders found."
+          ctaUrl="/admin/products"
+          ctaTitle="View All Products"
+          icon={Package}
+        />
+
       ) : (
-        <div className="flex flex-col gap-3 p-1">
+        <div className="space-y-1">
           {orders.map((order) => {
             const customerName = order?.customer
               ? (order.customer.firstName || `${order.customer.firstName || ''} ${order.customer.lastName || ''}`.trim())
               : null;
 
             return (
-              <div key={order.id} className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-background border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 rounded-2xl gap-4"
+              <div key={order.id} className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-background border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 rounded-lg gap-4"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className={`flex w-11 h-11 rounded-2xl items-center justify-center border shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-105 ${getStatusIconStyles(order.status)}`}>
-                    <ShoppingBag className="w-5 h-5" />
+                    {getStatusIcon(order.status)}
                   </div>
                   <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex items-center gap-2.5">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="font-bold text-sm md:text-base text-foreground hover:text-primary transition-colors truncate"
+                        className="font-mono font-bold text-[13px] md:text-sm tracking-tight text-foreground hover:text-primary transition-all duration-200 px-2 py-0.5 bg-muted/50 hover:bg-muted/80 border border-border/40 rounded-md"
                       >
                         {order.orderNumber}
                       </Link>
                       {getStatusBadge(order.status)}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 opacity-60" />
-
-                        <span className="text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-medium select-none">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span className="text-[11px]">
                           {order.orderDate ? unitOfService.DateTimeService.convertToLocalDate(order.orderDate, true) : '—'}
                         </span>
-
                       </span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 opacity-60" />
-                        {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+
+                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/70 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-sky-600 dark:text-sky-400 font-medium select-none">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span className="text-[11px]">{formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}</span>
                       </span>
 
                       {customerName && (
-                        <>
-                          <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
-                          <span className="flex items-center gap-1 font-semibold text-foreground/75 truncate max-w-[150px]">
-                            <User className="w-3.5 h-3.5 opacity-60" />
-                            {customerName}
-                          </span>
-                        </>
+                        <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-[150px] select-none">
+                          <User className="w-3.5 h-3.5" />
+                          <span className="text-[11px]">{customerName}</span>
+                        </span>
                       )}
 
                       {order.items && order.items.length > 0 && (
-                        <>
-                          <span className="w-1.5 h-1.5 rounded-full bg-border shrink-0" />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Badge variant="outline" className="text-[10px] h-5 px-2 text-muted-foreground border-border/50 font-medium cursor-help transition-colors hover:bg-muted/50 rounded flex items-center gap-1">
-                                  <Package className="w-3 h-3 opacity-60" />
-                                  {order.items.reduce((sum, item) => sum + item.quantity, 0)} Items
-                                </Badge>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" className="p-3 max-w-[260px] shadow-xl border-border/50 bg-background/95 backdrop-blur-md">
-                                <div className="space-y-2">
-                                  <p className="font-semibold text-xs text-muted-foreground border-b border-border/50 pb-1.5 mb-1.5">Products in Order</p>
-                                  <ul className="space-y-1.5 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {order.items.map(item => (
-                                      <li key={item.id} className="text-xs flex items-center justify-between gap-4 group/item">
-                                        <div className="flex flex-col">
-                                          <span className="truncate font-medium text-foreground group-hover/item:text-primary transition-colors">{item.product?.name || `Product #${item.productId}`}</span>
-                                          <span className="text-[10px] text-muted-foreground/70">${item.unitPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })} each</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span className="text-muted-foreground whitespace-nowrap bg-muted/50 px-1.5 py-0.5 rounded-md">x{item.quantity}</span>
-                                          <span className="font-semibold text-foreground/80">${item.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                        </div>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                  {(order.discount > 0 || order.tax > 0) && (
-                                    <div className="border-t border-border/50 pt-1.5 mt-1.5 text-[10px] flex justify-between text-muted-foreground">
-                                      <span>Discount: ${order.discount}</span>
-                                      <span>Tax: ${order.tax}</span>
-                                    </div>
-                                  )}
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge variant="outline" className="text-[11px] h-6 px-2.5 bg-amber-50/70 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/40 text-amber-600 dark:text-amber-400 hover:bg-amber-100/50 dark:hover:bg-amber-900/40 font-semibold cursor-help transition-all duration-300 rounded-full flex items-center gap-1.5 shadow-sm">
+                                <Package className="w-3.5 h-3.5" />
+                                {order.items.reduce((sum, item) => sum + item.quantity, 0)} Items
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="p-3.5 w-[290px] shadow-2xl border-border bg-background/95 backdrop-blur-md rounded-xl select-none">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between border-b border-border/50 pb-2 mb-1">
+                                  <p className="font-bold text-xs text-foreground flex items-center gap-1.5">
+                                    <Package className="w-3.5 h-3.5 text-primary opacity-80" />
+                                    Products in Order
+                                  </p>
+                                  <Badge variant="secondary" className="text-[10px] h-4.5 px-1.5 py-0 bg-primary/10 text-primary border-none font-semibold">
+                                    {order.items.length} {order.items.length === 1 ? 'type' : 'types'}
+                                  </Badge>
                                 </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </>
+                                <ul className="space-y-2.5 max-h-[180px] overflow-y-auto pr-1.5 custom-scrollbar">
+                                  {order.items.map(item => (
+                                    <li key={item.id} className="text-xs flex items-start justify-between gap-3 group/item">
+                                      <div className="flex flex-col min-w-0 flex-1">
+                                        <span className="truncate font-semibold text-foreground group-hover/item:text-primary transition-colors text-[11px] leading-tight">
+                                          {item.product?.name || `Product #${item.productId}`}
+                                        </span>
+                                        <span className="text-[10px] text-muted-foreground/80 mt-0.5">
+                                          ${item.unitPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })} each
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-2.5 shrink-0 self-center">
+                                        <span className="text-[10px] font-bold text-muted-foreground bg-muted border border-border/40 px-1.5 py-0.5 rounded">
+                                          x{item.quantity}
+                                        </span>
+                                        <span className="font-bold text-foreground text-right min-w-[55px]">
+                                          ${item.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        </span>
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                                {(order.discount > 0 || order.tax > 0) && (
+                                  <div className="border-t border-border/50 pt-2 mt-1 space-y-1">
+                                    {order.discount > 0 && (
+                                      <div className="flex justify-between text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                        <span>Discount</span>
+                                        <span>-${Number(order.discount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                      </div>
+                                    )}
+                                    {order.tax > 0 && (
+                                      <div className="flex justify-between text-[10px] text-muted-foreground font-medium">
+                                        <span>Tax</span>
+                                        <span>+${Number(order.tax).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                     </div>
                   </div>

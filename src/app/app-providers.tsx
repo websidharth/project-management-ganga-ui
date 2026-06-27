@@ -1,5 +1,6 @@
 'use client';
 import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import AuthProvider from '@/context/AuthProvider';
 import { ThemeProvider } from '@/context/theme-provider';
 import TokenRefresher from '@/context/tokenRefresher';
@@ -17,7 +18,9 @@ export default function AppProviders({ children }: { children: React.ReactNode }
           <AuthProvider>
             <TokenRefresher />
             <ThemeProvider defaultTheme="system" storageKey="tci-ui-theme">
-              <Suspense>{children}</Suspense>
+              <TooltipProvider>
+                <Suspense>{children}</Suspense>
+              </TooltipProvider>
               <Toaster />
             </ThemeProvider>
           </AuthProvider>

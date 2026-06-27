@@ -22,6 +22,7 @@ import {
 import Link from 'next/link';
 import SectionCard from '../common/custome-card';
 import GreetingHeader from '../common/greeting-header';
+import { DashboardEmptyState } from '../skelton/empty-states';
 import DashboardStats from './DashboardStats';
 import RecentOrdersList from './RecentOrdersList';
 
@@ -65,12 +66,6 @@ export default function DashboardHome() {
   const { data: lowStockData, isLoading: isLowStockLoading } = useGetLowStockProducts();
   const { currentUser } = useGetCurrentUser();
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
-  };
 
   if (isLoading || isLowStockLoading) {
     return (
@@ -202,12 +197,12 @@ export default function DashboardHome() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                    <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                      <Layers className="h-8 w-8 text-muted-foreground/50" />
-                    </div>
-                    <p className="text-sm text-muted-foreground">No category data available</p>
-                  </div>
+                  <DashboardEmptyState
+                    title="No recent products"
+                    ctaUrl="/admin/products/create"
+                    ctaTitle="Create Product"
+                    icon={ShoppingBag}
+                  />
                 )}
               </>
             </SectionCard>
@@ -272,26 +267,13 @@ export default function DashboardHome() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full animate-pulse" />
-                  <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/40 dark:to-emerald-800/40 flex items-center justify-center mb-4 relative border border-emerald-200 dark:border-emerald-800/50 shadow-lg">
-                    <Package className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
-                    <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center shadow-sm">
-                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-1">Inventory looks great!</h3>
-                <p className="text-xs text-muted-foreground mb-4 max-w-sm">All products are well-stocked.</p>
-                <Link href="/admin/products">
-                  <Button variant="outline" size="sm" className="rounded-full border-emerald-200 hover:bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:hover:bg-emerald-900/30 dark:text-emerald-400 transition-all">
-                    View All Inventory
-                  </Button>
-                </Link>
-              </div>
+              <DashboardEmptyState
+                title="Inventory looks great!"
+                description="All products are well-stocked."
+                ctaUrl="/admin/products"
+                ctaTitle="View All Products"
+                icon={Package}
+              />
             )}
           </SectionCard>
 
@@ -342,17 +324,12 @@ export default function DashboardHome() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <ShoppingBag className="h-8 w-8 text-muted-foreground/50" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground mb-1">No recent products</h3>
-                <Link href="/admin/products/create">
-                  <Button size="sm" className="rounded-full px-4 shadow-md hover:shadow-lg transition-shadow">
-                    Create Product
-                  </Button>
-                </Link>
-              </div>
+              <DashboardEmptyState
+                title="No recent attributes"
+                ctaUrl="/admin/attributes/create"
+                ctaTitle="Create Attribute"
+                icon={Star}
+              />
             )}
           </SectionCard>
 
@@ -401,85 +378,19 @@ export default function DashboardHome() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <Star className="h-8 w-8 text-muted-foreground/50" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground mb-1">No recent attributes</h3>
-                <Link href="/admin/attributes/create">
-                  <Button size="sm" className="rounded-full px-4 shadow-md hover:shadow-lg transition-shadow">
-                    Create Attribute
-                  </Button>
-                </Link>
-              </div>
+              <DashboardEmptyState
+                title="No recent attributes"
+                ctaUrl="/admin/attributes/create"
+                ctaTitle="Create Attribute"
+                icon={Star}
+              />
             )}
           </SectionCard>
 
 
         </div>
 
-        {/* <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
 
-
-          <div className="lg:col-span-4">
-            <Card className="border-0 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 rounded-2xl overflow-hidden bg-background/60 backdrop-blur-xl">
-              <Tabs defaultValue="products" className="w-full">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/50 px-6 py-4 bg-gradient-to-r from-card/80 to-muted/30">
-                  <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1">
-                    <TabsTrigger value="products" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
-                      <Package className="h-4 w-4" />
-                      Recent Products
-                    </TabsTrigger>
-                    <TabsTrigger value="attributes" className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all gap-2">
-                      <Tags className="h-4 w-4" />
-                      Recent Attributes
-                    </TabsTrigger>
-
-                  </TabsList>
-
-                  <TabsContent value="products" className="m-0 p-0 sm:mt-0 mt-4">
-                    <Link href="/admin/products">
-                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
-                        View All Products
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </TabsContent>
-                  <TabsContent value="attributes" className="m-0 p-0 sm:mt-0 mt-4">
-                    <Link href="/admin/attributes">
-                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
-                        View All Attributes
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </TabsContent>
-                  <TabsContent value="low-stock" className="m-0 p-0 sm:mt-0 mt-4">
-                    <Link href="/admin/products">
-                      <Button variant="ghost" size="sm" className="h-9 text-sm gap-2 px-4 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors">
-                        Manage Inventory
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </TabsContent>
-                </div>
-
-                <div className="p-2">
-                  <TabsContent value="products" className="m-0 p-4 pt-2 focus-visible:outline-none">
-
-                  </TabsContent>
-
-                  <TabsContent value="attributes" className="m-0 p-4 pt-2 focus-visible:outline-none">
-
-                  </TabsContent>
-
-
-                </div>
-              </Tabs>
-            </Card>
-          </div>
-        </div> */}
-
-        {/* Quick Stats Footer */}
         <div className="grid gap-5 md:grid-cols-3">
           <Card className="group relative overflow-hidden bg-card border border-border/50 hover:border-blue-500/20 shadow-sm transition-all duration-300 rounded-xl p-4 flex flex-col justify-between">
             <div className="flex items-center gap-3.5">
@@ -529,6 +440,7 @@ export default function DashboardHome() {
             <Progress value={64} className="h-1.5 mt-3.5 bg-indigo-500/10 [&>div]:bg-indigo-500" />
           </Card>
         </div>
+
       </div>
     </div>
   );

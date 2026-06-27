@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
-import { Activity, Clock, Plus, Send, Star } from 'lucide-react';
+import { Activity, Plus, Send, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Badge } from '../ui/badge';
@@ -33,22 +33,18 @@ export default function GreetingHeader() {
             <Activity className="h-3 w-3 mr-1" />
             Live
           </Badge>
-          <Button icon={Star} variant="default" size="sm" asChild className="gap-2">
+          <Button icon={Star} variant="default" size="sm" asChild >
             <Link href="/admin/settings/profile">
               Edit Profile
             </Link>
           </Button>
-
-          <Button icon={Clock} variant="outline" size="sm">
-            Last 30 days
-          </Button>
-          <Button type="button" iconPlacement="right" icon={Plus} className="gap-2">
-            <Link href="/create-newsletter" target="_blank" className="flex items-center">
-              Create Template
+          <Button iconPlacement="right" icon={Plus} asChild>
+            <Link href="/create-newsletter"  >
+              Create Order
             </Link>
           </Button>
-          <Button type="button" iconPlacement="right" icon={Send} className="gap-2">
-            <Link href="/template/create" className="flex items-center">
+          <Button iconPlacement="right" icon={Send} asChild>
+            <Link href="/template/create" >
               Send Test
             </Link>
           </Button>
