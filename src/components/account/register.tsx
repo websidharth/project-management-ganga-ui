@@ -83,8 +83,8 @@ export default function RegisterModule() {
         )}
       </div>
       <Form {...form}>
-        <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form autoComplete="off" onSubmit={handleSubmit(submitData)}>
+          <div className="grid grid-cols-2 gap-1">
             <FormField
               control={control}
               name="firstName"
@@ -134,7 +134,7 @@ export default function RegisterModule() {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="+1 (555) 000-0000" {...field} />
+                  <Input type="text" placeholder="(555) 000-0000" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

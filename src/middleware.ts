@@ -19,7 +19,7 @@ export default withAuth(function middleware(req) {
   // Role-based page restrictions
   const accessControlMap: Record<string, Roles> = {
     '/admin/': Roles.ADMIN,
-    '/dashboard/': Roles.USER,
+    '/dashboard/': Roles.USER || Roles.STAFF,
   };
 
   for (const [prefix, requiredRole] of Object.entries(accessControlMap)) {
