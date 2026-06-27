@@ -1,16 +1,12 @@
+import EKarobarHome from '@/components/home/eKarobarHome';
 import type { Metadata } from 'next';
-import LoginModule from '@/components/account/login';
-import AuthStaticLayout from '@/components/layout/authSimpleSlider'; 
 
 export const metadata: Metadata = {
-  title: 'Login - Admin Dashboard',
-  description: 'Login to access the admin dashboard and manage your products, categories, and more.',
+  title: 'eKarobar - Manage Your Business Anytime, Anywhere',
+  description: 'Track invoices, payments, expenses, and taxes with our automated financial dashboard.',
 };
 
 export default function Page() {
-  return (
-    <>
-      <AuthStaticLayout formComponent={<LoginModule />} title="Welcome back" description="Use your credentials to sign in." />
-    </>
-  );
+  return <EKarobarHome />;
 }
+
