@@ -18,9 +18,10 @@ import { useForm } from 'react-hook-form';
 interface ManageUserProps {
   isOpen: boolean;
   onClose: (refresh: boolean) => void;
+  role?: string;
 }
 
-export default function ManageUser({ isOpen, onClose }: ManageUserProps) {
+export default function ManageUser({ isOpen, onClose, role }: ManageUserProps) {
   const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
   const createUser = useCreateUserByAdmin();
 
@@ -33,7 +34,7 @@ export default function ManageUser({ isOpen, onClose }: ManageUserProps) {
       phone: '',
       password: '',
       isRegisterbyShop: false,
-      role: '',
+      role: role,
     },
   });
 

@@ -45,6 +45,28 @@ export const useOrderColumns = (editRecord: (id: number) => void, deleteRecord: 
         ),
       },
       {
+        id: 'createdByName',
+        accessorKey: 'createdByName',
+        header: ({ column }) => <DataTableColumnHeader column={column} className="text-xs font-semibold uppercase" title="Created By" />,
+        cell: ({ row }) => {
+          const createdByName = row.original.createdByName;
+          if (!createdByName) return <span className="text-xs text-muted-foreground">—</span>;
+          return (
+            <div className="flex items-center gap-2">
+              <div className="p-1 rounded bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                <User className="h-3 w-3" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-foreground">{createdByName}</span>
+                {row.original.createdById && (
+                  <span className="text-[10px] text-muted-foreground">ID: {row.original.createdById}</span>
+                )}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
         id: 'createdAt',
         accessorKey: 'createdAt',
         enableSorting: false,

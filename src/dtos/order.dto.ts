@@ -14,6 +14,8 @@ export interface OrderDto {
   grandTotal: number;
   status: OrderStatus;
   notes?: string | null;
+  createdById?: string;
+  createdByName?: string;
   createdAt: Date;
   updatedAt: Date | null;
   items?: OrderItemDto[];

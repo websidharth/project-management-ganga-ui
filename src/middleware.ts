@@ -17,13 +17,13 @@ export default withAuth(function middleware(req) {
   const roles = rolesObject;
 
   // Role-based page restrictions
-  const accessControlMap: Record<string, Roles> = {
-    '/admin/': Roles.ADMIN,
-    '/dashboard/': Roles.USER || Roles.STAFF,
+  const accessControlMap: Record<string, Roles[]> = {
+    '/admin/': [Roles.ADMIN],
+    '/dashboard/': [Roles.USER, Roles.STAFF],
   };
 
-  for (const [prefix, requiredRole] of Object.entries(accessControlMap)) {
-    if (pageUrl.startsWith(prefix) && !roles.includes(requiredRole)) {
+  for (const [prefix, requiredRoles] of Object.entries(accessControlMap)) {
+    if (pageUrl.startsWith(prefix) && !requiredRoles.some(role => roles.includes(role))) {
       const redirectUrl = new URL('/access-denied', req.url);
       redirectUrl.searchParams.set('fromMiddleware', 'true');
       return NextResponse.redirect(redirectUrl);
