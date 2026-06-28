@@ -14,14 +14,26 @@ import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import ECardListRowActions from './row-action';
+
 
 const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
 
-export const useUserColumns = () =>
+export const useUserColumns = (editRecord?: (id: string) => void, deleteRecord?: (id: string) => void) =>
   useMemo<ColumnDef<UserDto>[]>(
     () => [
 
-
+      {
+        id: 'actions',
+        cell: ({ row }) => {
+          return (
+            <ECardListRowActions
+              row={row}
+              editRecord={editRecord ? () => editRecord(row.original?.usersId) : () => { }}
+              deleteRecord={deleteRecord ? () => deleteRecord(row.original?.usersId) : () => { }} />
+          );
+        },
+      },
       {
         id: 'user',
         accessorKey: 'name',
@@ -154,7 +166,8 @@ export const useUserColumns = () =>
           </div>
         ),
         meta: { sortingKey: 'status' },
-      },
+      }
+
     ],
-    []
+    [editRecord, deleteRecord]
   );
