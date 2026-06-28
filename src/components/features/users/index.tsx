@@ -32,6 +32,7 @@ export default function UserList() {
     search: searchParams.get('search') || '',
     page: +(searchParams.get('page') || 1),
     recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
+    role: 'USER',
   });
 
   const columns = useUserColumns(
@@ -79,6 +80,7 @@ export default function UserList() {
       search: undefined,
       page: 1,
       recordPerPage: config.recordPerPage,
+      role: 'USER',
     });
   };
 

@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios';
 export default interface IUserListService {
   getAll(p?: UserListParams): Promise<AxiosResponse<Response<ListResponseDto<UserDto>>>>;
   getById(id: string): Promise<AxiosResponse<Response<UserDto>>>;
-  update(id: string, model: FormData): Promise<AxiosResponse<Response<UserDto>>>;
+  update(id: string, model: any): Promise<AxiosResponse<Response<UserDto>>>;
 
   // updateCommentStatus(commentId: number, model: ForumQuestionsOrCommentStatusModel): Promise<AxiosResponse<Response<ForumQuestionsDto>>>;
 

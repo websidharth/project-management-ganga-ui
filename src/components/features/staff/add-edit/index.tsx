@@ -53,8 +53,6 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
   const form = useForm<CreateStaffModel>({
     resolver: yupResolver(StaffSchema),
     defaultValues: {
-      userId: 0,
-      storeId: 0,
       position: null,
       department: null,
       hireDate: new Date(),
@@ -69,8 +67,6 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
     if (isEdit && staffResponse?.data?.data) {
       const s = staffResponse.data.data;
       reset({
-        userId: s.userId,
-        storeId: s.storeId,
         position: s.position,
         department: s.department,
         hireDate: s.hireDate ? new Date(s.hireDate) : undefined,
@@ -108,48 +104,7 @@ export default function ManageStaff({ id, isOpen, onClose }: ManageStaffProps) {
 
         <Form {...form}>
           <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="space-y-4">
-            {/* Row 1: User ID, Store ID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="userId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Select User Id*</FormLabel>
-                    <FormControl>
-                      <SelectSearch
-                        buttonClass={`w-full`}
-                        placeholder="Select User"
-                        disableSearch={false}
-                        items={
-                          getAllUserResponse?.data?.data?.data?.data?.map((item) => ({
-                            value: item.id,
-                            label: item.name,
-                          })) ?? []
-                        }
-                        value={field.value ?? ''}
-                        onChange={(value) => field.onChange(value ? Number(value) : undefined)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="storeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Store ID *</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Enter store ID" {...field} onChange={(e) => field.onChange(+e.target.value)} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {/* Removed Row 1: User ID, Store ID */}
 
             {/* Row 2: Department, Position */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

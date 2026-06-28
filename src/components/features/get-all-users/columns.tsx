@@ -1,27 +1,39 @@
 'use client';
 
-import { useMemo } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
-import { GoCheckCircleFill } from 'react-icons/go';
-import { IoMdCloseCircle } from 'react-icons/io';
-import { BsEnvelope, BsPhone } from 'react-icons/bs';
-import { UserDto } from '@/dtos/UserDto';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { UserDto } from '@/dtos/UserDto';
+import { ColumnDef } from '@tanstack/react-table';
 import { Dot } from 'lucide-react';
+import { useMemo } from 'react';
+import { BsEnvelope, BsPhone } from 'react-icons/bs';
+import { GoCheckCircleFill } from 'react-icons/go';
+import { IoMdCloseCircle } from 'react-icons/io';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 
-import { TYPES } from '@/config/types';
 import { container } from '@/config/ioc';
+import { TYPES } from '@/config/types';
 import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import ECardListRowActions from './row-action';
+
 
 const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
- 
-export const useUserColumns = () =>
+
+export const useUserColumns = (editRecord?: (id: string) => void, deleteRecord?: (id: string) => void) =>
   useMemo<ColumnDef<UserDto>[]>(
     () => [
- 
-    
+
+      {
+        id: 'actions',
+        cell: ({ row }) => {
+          return (
+            <ECardListRowActions
+              row={row}
+              editRecord={editRecord ? () => editRecord(row.original?.usersId) : () => { }}
+              deleteRecord={deleteRecord ? () => deleteRecord(row.original?.usersId) : () => { }} />
+          );
+        },
+      },
       {
         id: 'user',
         accessorKey: 'name',
@@ -70,6 +82,7 @@ export const useUserColumns = () =>
                 <BsPhone size={12} />
                 <span>{user.phone}</span>
               </div>
+              <span className="text-xs text-muted-foreground block">@{row.original.role}</span>
             </div>
           );
         },
@@ -153,7 +166,8 @@ export const useUserColumns = () =>
           </div>
         ),
         meta: { sortingKey: 'status' },
-      },
+      }
+
     ],
-    []
+    [editRecord, deleteRecord]
   );

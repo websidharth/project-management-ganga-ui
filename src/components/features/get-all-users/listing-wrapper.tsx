@@ -1,27 +1,27 @@
 'use client';
-import { useState } from 'react';
+import { PageHeader } from '@/components/common/page-header';
 import { Card } from '@/components/ui/card';
+import { useState } from 'react';
 import GetAllUserss from '.';
 import ManageUser from './add-edit';
-import { PageHeader } from '@/components/common/page-header';
 
-export default function GetAllUsersListingWrapper() {
+export default function GetAllUsersListingWrapper({ role }: { role?: string }) {
   const [showAddModal, setShowAddModal] = useState(false);
 
   return (
     <>
-      <PageHeader 
-        title={`All Users List`} 
-        description="Manage all users" 
-        variant="add" 
+      {role}
+      <PageHeader
+        title={`${role ? 'Customer' : 'All Users'} List`}
+        variant="add"
         actionText="Add User"
-        onClick={() => setShowAddModal(true)} 
+        onClick={() => setShowAddModal(true)}
       />
       <Card className="overflow-hidden space-y-4">
-        <GetAllUserss />
+        <GetAllUserss role={role} />
       </Card>
 
-      {showAddModal && <ManageUser isOpen={showAddModal} onClose={() => setShowAddModal(false)} />}
+      {showAddModal && <ManageUser isOpen={showAddModal} onClose={() => setShowAddModal(false)} role={role} />}
     </>
   );
 }

@@ -10,6 +10,7 @@ export interface PageFilterParams {
 export interface ProductFilterParams extends PageFilterParams {
     categoryId?: string | null;
     status?: string | null;
+    storeCode?: string | null;
 }
 
 export interface ProductAttributeFilterParams extends PageFilterParams {

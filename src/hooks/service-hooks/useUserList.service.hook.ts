@@ -37,7 +37,7 @@ const useUpdateUser = () => {
 
   const queryClient = useQueryClient();
 
-  const mutationFn = async (args: { id: string; model: FormData }) => {
+  const mutationFn = async (args: { id: string; model: any }) => {
     return unitOfService.UserListService.update(args.id, args.model);
   };
 

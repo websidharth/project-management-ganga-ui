@@ -27,8 +27,8 @@ export default class UserListService implements IUserListService {
   getById(id: string): Promise<AxiosResponse<Response<UserDto>>> {
     return this.httpService.call().get<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`);
   }
-  update(id: string, model: FormData): Promise<AxiosResponse<Response<UserDto>>> {
-    return this.httpService.call('multipart/form-data').put<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`, model);
+  update(id: string, model: any): Promise<AxiosResponse<Response<UserDto>>> {
+    return this.httpService.call().put<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`, model);
   }
   delete(id: string): Promise<AxiosResponse<Response<UserDto>>> {
     return this.httpService.call().delete<UserDto, AxiosResponse<Response<UserDto>>>(`/users/${id}`);

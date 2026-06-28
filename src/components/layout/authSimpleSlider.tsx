@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import React from 'react';
 import Logo from '../common/Logo';
 
 export interface AuthFullPageLayoutProps {
@@ -31,8 +31,6 @@ export default function AuthFullPageLayout({
       </div>
 
       <div className="grid min-h-screen lg:grid-cols-1">
-
-
         <section className="flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <Card className="w-full max-w-md border-border/50 shadow-xl">
             <CardHeader className="space-y-2 text-center">
@@ -42,7 +40,7 @@ export default function AuthFullPageLayout({
             </CardHeader>
             <CardContent>
               {formComponent}
-              <p className="mt-4 text-center text-xs text-muted-foreground ">By continuing, you agree to our terms and privacy policy.</p>
+              <small className="mt-4 text-center text-muted-foreground">By continuing, you agree to our terms and privacy policy.</small>
             </CardContent>
           </Card>
         </section>

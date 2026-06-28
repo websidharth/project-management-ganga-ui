@@ -1,11 +1,11 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '../../Table/data-table-column-header';
-import { useMemo } from 'react';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import IUnitOfService from '@/services/interfaces/IUnitOfService';
 import { UserDto } from '@/dtos/UserDto';
+import IUnitOfService from '@/services/interfaces/IUnitOfService';
+import { ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
+import { DataTableColumnHeader } from '../../Table/data-table-column-header';
 import { Badge } from '../../ui/badge';
 import { UserRowActions } from './row-action';
 
@@ -25,6 +25,7 @@ export const useUserColumns = (editRecord?: (id: string) => void, deleteRecord?:
           <div className="space-y-0.5">
             <span className="font-medium block">{row.original.name}</span>
             <span className="text-xs text-muted-foreground block">@{row.original.userName}</span>
+            <span className="text-xs text-muted-foreground block">@{row.original.role}</span>
           </div>
         ),
       },
