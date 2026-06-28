@@ -1,12 +1,13 @@
 import { CreateUserModel } from '@/models/user.model';
 import * as Yup from 'yup';
+import { emailField, nameField, passwordField, phoneField } from './customeSchema';
 
 export const SignupSchema: Yup.ObjectSchema<CreateUserModel> = Yup.object().shape({
-  firstName: Yup.string().required('First name is required').min(3, 'Name must be at least 3 characters'),
-  lastName: Yup.string().required('Last name is required').min(3, 'Name must be at least 3 characters'),
-  email: Yup.string().required('Email is required').email('Invalid email address'),
-  password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
-  phone: Yup.string().min(10, 'Phone number must be at least 10 digits').optional(),
+  firstName: nameField(),
+  lastName: nameField(),
+  email: emailField(),
+  password: passwordField(),
+  phone: phoneField(),
   isRegisterbyShop: Yup.boolean().optional(),
   role: Yup.string().optional(),
 });

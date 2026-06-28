@@ -1,20 +1,20 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import config from '@/config';
 import { UserDto } from '@/dtos/UserDto';
 import { useGetAllUserList } from '@/hooks/service-hooks/useUserList.service.hook';
-import RecentPostSkeleton from '../../skelton/recent-post';
-import { CustomDataTable } from '../../Table/data-table';
-import { DataTablePagination } from '../../Table/data-table-pagination';
-import {  useUserColumns } from './columns';
 import { useCustomDataTable } from '@/hooks/use-custom-table';
-import config from '@/config';
 import { useTanstackTablePagination } from '@/hooks/use-tanstack-table-pagination';
 import { useTanstackTableSorting } from '@/hooks/use-tanstack-table-sorting';
 import { UserListParams } from '@/params/user-list.params';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import RecentPostSkeleton from '../../skelton/recent-post';
+import { CustomDataTable } from '../../Table/data-table';
+import { DataTablePagination } from '../../Table/data-table-pagination';
+import { useUserColumns } from './columns';
 import UserListListFilter from './filter';
 
-export default function GetAllUserss() {
+export default function GetAllUserss({ role }: { role?: string }) {
   const [data, setData] = useState<UserDto[]>([]);
   const [recordCount, setRecordCount] = useState<number>(0);
   const searchParams = useSearchParams();
@@ -22,6 +22,7 @@ export default function GetAllUserss() {
 
   const [filterParams, setFilterParams] = useState<UserListParams>({
     status: searchParams.get('status') || '',
+    role: searchParams.get('role') || role,
     page: +(searchParams.get('page') || 1),
     q: searchParams.get('q') || '',
     recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
@@ -29,7 +30,7 @@ export default function GetAllUserss() {
     sortDirection: searchParams.get('sortDirection') || 'desc',
   });
 
-  const getAllUserResponse = useGetAllUserList();
+  const getAllUserResponse = useGetAllUserList(filterParams);
   useEffect(() => {
     if (getAllUserResponse.status === 'success' && getAllUserResponse.data?.data?.data?.data) {
       setData(getAllUserResponse?.data?.data?.data?.data);
@@ -82,6 +83,7 @@ export default function GetAllUserss() {
     setFilterParams(() => {
       return {
         status: searchParams.get('status') || '',
+        role: searchParams.get('role') || role,
         page: +(searchParams.get('page') || 1),
         q: searchParams.get('q') || '',
         recordPerPage: +(searchParams.get('recordPerPage') || config.recordPerPage),
@@ -110,7 +112,6 @@ export default function GetAllUserss() {
   return (
     <>
       <div className="space-y-4">
-        {/* <ManageVerify /> */}
 
         <UserListListFilter
           table={table}

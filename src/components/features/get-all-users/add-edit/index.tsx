@@ -1,5 +1,4 @@
 'use client';
-import { SelectSearch } from '@/components/common/select-search';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -7,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { container } from '@/config/ioc';
 import { TYPES } from '@/config/types';
-import { Roles } from '@/enums/roles.enum';
 import { useCreateUserByAdmin } from '@/hooks/service-hooks/useUserList.service.hook';
 import { CreateUserModel } from '@/models/user.model';
 import UserSchema from '@/schema/userSchema';
@@ -60,7 +58,7 @@ export default function ManageUser({ isOpen, onClose, role }: ManageUserProps) {
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
         </DialogHeader>
-
+        {role}
         <Form {...form}>
           <form autoComplete="off" onSubmit={handleSubmit(submitData)} className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
@@ -134,29 +132,7 @@ export default function ManageUser({ isOpen, onClose, role }: ManageUserProps) {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Role</FormLabel>
-                  <FormControl>
-                    <SelectSearch
-                      buttonClass="w-full"
-                      placeholder="Select Role"
-                      disableSearch={true}
-                      items={[Roles.STAFF, Roles.USER].map(role => ({
-                        value: role,
-                        label: role,
-                      }))}
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value)} // Remove Number conversion
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={() => onClose(false)} disabled={isLoading}>
                 Cancel

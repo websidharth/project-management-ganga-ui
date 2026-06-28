@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
 import { Activity, Plus } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { FaUser } from 'react-icons/fa6';
@@ -12,6 +13,7 @@ import { Badge } from '../ui/badge';
 
 export default function GreetingHeader() {
   const { currentUser } = useGetCurrentUser();
+  const { data: session, status } = useSession();
   const userName = useMemo(() => currentUser?.name?.trim() || 'User', [currentUser?.name]);
 
   const hour = new Date().getHours();
@@ -27,6 +29,7 @@ export default function GreetingHeader() {
           <CardDescription className="text-muted-foreground text-xs">
             Welcome back! Here's a quick overview of what's happening with your store today.
           </CardDescription>
+          <small> {currentUser?.role} |  {currentUser?.storeCode}</small>
         </div>
 
         <div className="flex flex-wrap gap-2">
