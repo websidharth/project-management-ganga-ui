@@ -1,52 +1,54 @@
 'use client';
-import { useState } from 'react';
+import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
 import { useGetAllProducts } from '@/hooks/service-hooks/useProductService';
 import { useCreatePurchase } from '@/hooks/service-hooks/usePurchaseService';
-import { toast } from '@/components/ui/use-toast';
-import { Trash2, Plus, UploadCloud } from 'lucide-react';
+import { ReceiveStockFormValues, receiveStockSchema } from '@/schema/receiveStockSchema';
+import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-
-interface PurchaseItemState {
-  productId: number | '';
-  quantity: number | '';
-  unitCost: number | '';
-}
+import { CheckCircle2, FileText, Plus, UploadCloud, X } from 'lucide-react';
+import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { PurchaseItemRow } from './purchase-item-row';
 
 export default function ReceiveStockPage() {
-  const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [supplierName, setSupplierName] = useState('');
-  const [notes, setNotes] = useState('');
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
-  const [items, setItems] = useState<PurchaseItemState[]>([
-    { productId: '', quantity: '', unitCost: '' }
-  ]);
   const [isUploading, setIsUploading] = useState(false);
 
   const { data: productsData } = useGetAllProducts();
   const products = productsData?.data?.data?.data || [];
   const createPurchase = useCreatePurchase();
 
-  const handleAddItem = () => {
-    setItems([...items, { productId: '', quantity: '', unitCost: '' }]);
-  };
-
-  const handleRemoveItem = (index: number) => {
-    if (items.length > 1) {
-      setItems(items.filter((_, i) => i !== index));
+  const form = useForm<ReceiveStockFormValues>({
+    resolver: yupResolver(receiveStockSchema),
+    defaultValues: {
+      supplierName: '',
+      invoiceNumber: '',
+      notes: '',
+      items: [{ productId: undefined as any, quantity: undefined as any, unitCost: undefined as any }],
+      totalAmount: 0
     }
-  };
+  });
 
-  const handleItemChange = (index: number, field: keyof PurchaseItemState, value: any) => {
-    const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setItems(newItems);
-  };
+  const { control, handleSubmit, watch, reset } = form;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'items'
+  });
+
+  const watchedItems = watch('items');
+
+  const totalCalculatedAmount = watchedItems?.reduce((acc, item) => {
+    if (item?.quantity && item?.unitCost) {
+      return acc + (Number(item.quantity) * Number(item.unitCost));
+    }
+    return acc;
+  }, 0) || 0;
 
   const uploadInvoiceToCloudinary = async (file: File): Promise<string> => {
     try {
@@ -66,13 +68,7 @@ export default function ReceiveStockPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (items.some(item => !item.productId || !item.quantity || !item.unitCost)) {
-      toast({ variant: 'destructive', title: 'Validation Error', description: 'Please fill out all item fields.' });
-      return;
-    }
-
+  const onSubmit = async (data: ReceiveStockFormValues) => {
     try {
       setIsUploading(true);
       let invoiceUrl = '';
@@ -80,32 +76,26 @@ export default function ReceiveStockPage() {
         invoiceUrl = await uploadInvoiceToCloudinary(invoiceFile);
       }
 
-      const formattedItems = items.map(item => ({
+      const formattedItems = data.items.map(item => ({
         productId: Number(item.productId),
         quantity: Number(item.quantity),
         unitCost: Number(item.unitCost),
         totalCost: Number(item.quantity) * Number(item.unitCost)
       }));
 
-      const totalAmount = formattedItems.reduce((acc, item) => acc + item.totalCost, 0);
-
       await createPurchase.mutateAsync({
-        invoiceNumber,
-        supplierName,
-        notes,
-        invoiceUrl,
-        totalAmount,
-        items: formattedItems
+        invoiceNumber: data.invoiceNumber || undefined,
+        supplierName: data.supplierName || undefined,
+        notes: data.notes || undefined,
+        invoiceUrl: invoiceUrl || undefined,
+        totalAmount: totalCalculatedAmount,
+        items: formattedItems as any
       });
 
       toast({ variant: 'success', title: 'Success', description: 'Stock received successfully!' });
-      
-      // Reset form
-      setInvoiceNumber('');
-      setSupplierName('');
-      setNotes('');
+
+      reset();
       setInvoiceFile(null);
-      setItems([{ productId: '', quantity: '', unitCost: '' }]);
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Error', description: error.message || 'Failed to receive stock' });
     } finally {
@@ -113,138 +103,164 @@ export default function ReceiveStockPage() {
     }
   };
 
-  const totalCalculatedAmount = items.reduce((acc, item) => {
-    if (item.quantity && item.unitCost) {
-      return acc + (Number(item.quantity) * Number(item.unitCost));
-    }
-    return acc;
-  }, 0);
-
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-800">Receive Stock</h2>
-          <p className="text-muted-foreground mt-1">Add multiple products to your inventory and upload supplier invoice.</p>
-        </div>
-      </div>
+    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+      <PageHeader
+        title={`Add Stock (${fields.length} Item${fields.length !== 1 ? 's' : ''})`}
+        description="Add incoming products to your inventory and attach supplier invoices for record-keeping."
+        actionText="Receive Stock"
+        href="/admin/receive-stock"
+      />
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Products to Add</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {items.map((item, index) => (
-                <div key={index} className="flex items-end gap-3 p-4 border rounded-lg bg-slate-50/50">
-                  <div className="flex-1 space-y-2">
-                    <Label>Product</Label>
-                    <Select
-                      value={item.productId.toString()}
-                      onValueChange={(val) => handleItemChange(index, 'productId', Number(val))}
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+          {/* Left Column: Products List */}
+          <div className="xl:col-span-2 space-y-6">
+
+            <div className="space-y-2">
+              {fields.map((field, index) => (
+                <PurchaseItemRow
+                  key={field.id}
+                  control={control}
+                  index={index}
+                  products={products}
+                  onRemove={() => remove(index)}
+                  canRemove={fields.length > 1}
+                />
+              ))}
+              <div className="pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  icon={Plus}
+                  className="w-full h-12 border-dashed border-2 text-slate-600 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
+                  onClick={() => append({ productId: undefined as any, quantity: undefined as any, unitCost: undefined as any, totalCost: undefined as any })}
+                >
+                  Add Another Product
+                </Button>
+              </div>
+            </div>
+
+
+
+          </div>
+
+          {/* Right Column: Details & Submit */}
+          <div className="space-y-6">
+            <Card className="border-0 p-0 shadow-md ring-1 ring-slate-200 sticky top-6">
+              <CardHeader className="border-b bg-slate-50/50 p-2">
+                <CardTitle className="text-xs">Purchase Details</CardTitle>
+                <small>Supplier information and invoice.</small>
+              </CardHeader>
+              <CardContent className="p-2 space-y-2">
+
+                <FormField
+                  control={control}
+                  name="supplierName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Supplier Name <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Acme Corp" {...field} value={field.value || ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
+                  name="invoiceNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Invoice Number <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. INV-12345" {...field} value={field.value || ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-2">
+                  <FormLabel>Invoice File <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                  {!invoiceFile ? (
+                    <div
+                      className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-50 hover:border-primary transition-all group"
+                      onClick={() => document.getElementById('invoice-upload')?.click()}
                     >
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Select product" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map((p: any) => (
-                          <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <Input
+                        id="invoice-upload"
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
+                      />
+                      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/10 transition-colors">
+                        <UploadCloud className="w-6 h-6 text-slate-500 group-hover:text-primary transition-colors" />
+                      </div>
+                      <p className="text-sm text-slate-700 font-medium mb-1">Click to upload invoice</p>
+                      <p className="text-xs text-slate-500">PDF, JPG, PNG up to 10MB</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-4 rounded-xl border border-primary/20 bg-primary/5">
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="p-2 bg-white rounded-lg shadow-sm">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="truncate">
+                          <p className="text-sm font-semibold text-slate-800 truncate">{invoiceFile.name}</p>
+                          <p className="text-xs text-slate-500">{(invoiceFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        </div>
+                      </div>
+                      <Button type="button" variant="ghost" size="icon" className="text-slate-400 hover:text-red-500 shrink-0" onClick={() => setInvoiceFile(null)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <FormField
+                  control={control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes <span className="text-slate-400 font-normal">(Optional)</span></FormLabel>
+                      <FormControl>
+                        <Textarea className="bg-slate-50 resize-none" rows={3} placeholder="Any additional details..." {...field} value={field.value || ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="pt-6 border-t border-slate-200">
+                  <div className="flex justify-between items-end mb-6">
+                    <span className="text-slate-500 font-semibold">Total Est. Cost</span>
+                    <span className="text-3xl font-black text-slate-800">${totalCalculatedAmount.toFixed(2)}</span>
                   </div>
-                  <div className="w-24 space-y-2">
-                    <Label>Quantity</Label>
-                    <Input 
-                      type="number" 
-                      min="1" 
-                      className="bg-white"
-                      value={item.quantity} 
-                      onChange={(e) => handleItemChange(index, 'quantity', e.target.value)} 
-                    />
-                  </div>
-                  <div className="w-28 space-y-2">
-                    <Label>Unit Cost ($)</Label>
-                    <Input 
-                      type="number" 
-                      min="0" 
-                      step="0.01" 
-                      className="bg-white"
-                      value={item.unitCost} 
-                      onChange={(e) => handleItemChange(index, 'unitCost', e.target.value)} 
-                    />
-                  </div>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                    onClick={() => handleRemoveItem(index)}
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full text-base font-semibold shadow-md hover:shadow-lg transition-all"
+                    disabled={createPurchase.isPending || isUploading || fields.length === 0}
                   >
-                    <Trash2 className="w-5 h-5" />
+                    {createPurchase.isPending || isUploading ? (
+                      'Processing...'
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-5 h-5 mr-2" /> Complete Receive Stock
+                      </>
+                    )}
                   </Button>
                 </div>
-              ))}
-              
-              <Button type="button" variant="outline" className="w-full border-dashed" onClick={handleAddItem}>
-                <Plus className="w-4 h-4 mr-2" /> Add Another Product
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Purchase Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Supplier Name (Optional)</Label>
-                <Input value={supplierName} onChange={(e) => setSupplierName(e.target.value)} placeholder="e.g. Acme Corp" />
-              </div>
-              <div className="space-y-2">
-                <Label>Invoice Number (Optional)</Label>
-                <Input value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} placeholder="e.g. INV-12345" />
-              </div>
-              <div className="space-y-2">
-                <Label>Invoice File (Optional)</Label>
-                <div className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => document.getElementById('invoice-upload')?.click()}>
-                  <Input 
-                    id="invoice-upload" 
-                    type="file" 
-                    accept="image/*,.pdf" 
-                    className="hidden" 
-                    onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
-                  />
-                  <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                  <span className="text-sm text-slate-500 font-medium">
-                    {invoiceFile ? invoiceFile.name : "Click to upload invoice"}
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Notes (Optional)</Label>
-                <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any additional details..." />
-              </div>
-
-              <div className="pt-4 border-t mt-4 flex justify-between items-center">
-                <span className="font-bold text-slate-600">Total Est. Cost</span>
-                <span className="text-xl font-black text-primary">${totalCalculatedAmount.toFixed(2)}</span>
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full mt-4" 
-                disabled={createPurchase.isPending || isUploading || items.length === 0}
-              >
-                {createPurchase.isPending || isUploading ? 'Processing...' : 'Complete Receive Stock'}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </form>
+              </CardContent>
+            </Card>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
