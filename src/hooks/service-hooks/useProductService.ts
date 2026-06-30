@@ -104,6 +104,18 @@ const useGetLowStockProducts = (params?: ProductFilterParams, enabled: boolean =
 
 
 
+const useGetStockHistory = (id: number | string, params?: { page?: number, recordPerPage?: number }, enabled: boolean = true) => {
+    const unitOfService = container.get<IUnitOfService>(TYPES.IUnitOfService);
+
+    return useQuery({
+        queryKey: ['ProductService.getStockHistory', id, params],
+        queryFn: async () => {
+            return await unitOfService.ProductService.getStockHistory(id, params);
+        },
+        enabled: enabled && !!id,
+    });
+};
+
 export {
     useCreateProduct,
     useGetAllProducts,
@@ -111,4 +123,5 @@ export {
     useUpdateProduct,
     useGetLowStockProducts,
     useDeleteProduct,
+    useGetStockHistory,
 };

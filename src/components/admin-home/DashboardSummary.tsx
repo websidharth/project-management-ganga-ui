@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DashboardSummaryDto, ProductDistribution } from '@/dtos/dashboard-summary.dto';
 import { useGetDashboardSummary } from '@/hooks/service-hooks/useDashboardService';
 import { useGetLowStockProducts } from '@/hooks/service-hooks/useProductService';
 import useGetCurrentUser from '@/hooks/useGetCurrentUser';
@@ -20,6 +21,7 @@ import {
   Tags
 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import SectionCard from '../common/custome-card';
 import GreetingHeader from '../common/greeting-header';
 import { DashboardEmptyState } from '../skelton/empty-states';
@@ -62,14 +64,25 @@ const RecentItemSkeleton = () => (
 );
 
 export default function DashboardHome() {
-  const { data, isLoading, isError, error } = useGetDashboardSummary();
+  //const { data, isLoading, isError, error } = useGetDashboardSummary();
   const { data: lowStockData, isLoading: isLowStockLoading } = useGetLowStockProducts();
   const { currentUser } = useGetCurrentUser();
-  const summaryData = data?.data?.data;
+  //const summaryData = data?.data?.data;
   const lowStockProducts = lowStockData?.data?.data?.data || [];
 
 
-  if (isLoading || isLowStockLoading) {
+  const getDashboardSummaryResponse = useGetDashboardSummary();
+
+  const [data, setData] = useState<DashboardSummaryDto>();
+  const [recordCount, setRecordCount] = useState<number>(0);
+  useEffect(() => {
+    if (getDashboardSummaryResponse.isSuccess && getDashboardSummaryResponse.data?.data?.data) {
+      setData(getDashboardSummaryResponse.data.data.data);
+    }
+  }, [getDashboardSummaryResponse.isSuccess, getDashboardSummaryResponse.data?.data?.data]);
+
+
+  if (getDashboardSummaryResponse.isLoading || isLowStockLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
         <div className="space-y-8 p-4 md:p-8">
@@ -96,7 +109,7 @@ export default function DashboardHome() {
     );
   }
 
-  if (isError || !summaryData) {
+  if (getDashboardSummaryResponse.isError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4 md:p-8">
         <Card className="border-red-200 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20">
@@ -108,8 +121,8 @@ export default function DashboardHome() {
               <div>
                 <h3 className="text-lg font-semibold text-red-800 dark:text-red-300">Failed to Load Dashboard</h3>
                 <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                  {error instanceof Error ? error.message : 'Please try again later.'}
-                </p>
+                  {/* {getDashboardSummaryResponse.isError ? (getDashboardSummaryResponse.error instanceof Error ? getDashboardSummaryResponse.error.message : 'Please try again later.'} */}
+                  Error </p>
               </div>
               <Button variant="outline" onClick={() => window.location.reload()}>
                 Try Again
@@ -128,7 +141,7 @@ export default function DashboardHome() {
         <GreetingHeader />
 
 
-        <DashboardStats summaryData={summaryData} />
+        <DashboardStats summaryData={data} />
 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
           <div className="col-span-4">
@@ -145,24 +158,24 @@ export default function DashboardHome() {
           </div>
           <div className="col-span-2">
             <SectionCard
-              title="Products Orders"
+              title="Products Stock"
               icon={Receipt}
               href="/admin/orders"
               ctaTitle="View All Orders"
             >
               <>
-                {summaryData.categoryDistribution && summaryData.categoryDistribution.length > 0 ? (
+                {data?.productDistribution && data?.productDistribution.length > 0 ? (
                   <div className="space-y-4 w-full">
-                    {summaryData.categoryDistribution.slice(0, 6).map((cat: any, index: number) => (
-                      <div key={cat.name} className="space-y-1.5">
+                    {data?.productDistribution.map((product: ProductDistribution, index: number) => (
+                      <div key={product.name} className="space-y-1.5">
                         <div className="flex justify-between items-center text-sm font-medium">
-                          <span className="text-muted-foreground">{cat.name}</span>
+                          <span className="text-muted-foreground">{product.name}</span>
                           <span className="font-bold text-foreground">
-                            {cat.count} ({cat.percentage}%)
+                            {product.stock}/ {product.count} |  ({product.percentage}%)
                           </span>
                         </div>
                         <Progress
-                          value={cat.percentage}
+                          value={product.percentage}
                           color={PROGRESS_COLORS[index % PROGRESS_COLORS.length]}
                           className="h-2 rounded-full bg-slate-100 dark:bg-slate-800"
                         />
@@ -256,9 +269,9 @@ export default function DashboardHome() {
             href="/admin/orders"
             ctaTitle="View All Orders"
           >
-            {summaryData.products.recent.length > 0 ? (
+            {data && data?.products?.length > 0 ? (
               <div className="flex flex-col gap-3">
-                {summaryData.products.recent.map((product, index) => (
+                {data?.products.map((product, index) => (
                   <div
                     key={product.id}
                     className="group flex items-center justify-between p-3 bg-background border border-border/40 hover:border-primary/20 hover:shadow-sm transition-all duration-300 rounded-xl"
@@ -267,28 +280,39 @@ export default function DashboardHome() {
                       <div className="h-9 w-9 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
                         <Package className="h-4.5 w-4.5" />
                       </div>
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <h4 className="font-semibold text-xs md:text-sm text-foreground truncate">{product.name}</h4>
+                          <h4 className="font-semibold text-xs md:text-sm text-foreground truncate">
+                            {product.name}
+                          </h4>
                           {index === 0 && (
                             <Badge className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-sm rounded">
                               New
                             </Badge>
                           )}
                         </div>
+
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span className="truncate">SKU: {product.sku}</span>
+                          <span className="truncate">SKU: {product.lowStockThreshold}</span>
                           <span className="w-1 h-1 rounded-full bg-border shrink-0" />
-                          <span>Stock: <strong className="text-foreground">{product.stock}</strong></span>
+                          <span>
+                            Stock: <strong className="text-foreground">{product.stock}</strong>
+                          </span>
                         </div>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-2 pl-3 border-l border-border/40 shrink-0">
                       <span className="text-xs md:text-sm font-bold text-foreground">
                         ${product.price.toFixed(2)}
                       </span>
                       <Link href={`/admin/products/${product.id}`}>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        >
                           <ArrowRight className="h-3.5 w-3.5" />
                         </Button>
                       </Link>
@@ -312,9 +336,9 @@ export default function DashboardHome() {
             href="/admin/attributes"
             ctaTitle="View All Attributes"
           >
-            {summaryData.attributes.recent.length > 0 ? (
+            {data && data?.attributes?.length > 0 ? (
               <div className="flex flex-col gap-3">
-                {summaryData.attributes.recent.map((attribute) => (
+                {data.attributes.map((attribute) => (
                   <div
                     key={attribute.id}
                     className="group flex items-center justify-between p-3 bg-background border border-border/40 hover:border-primary/20 hover:shadow-sm transition-all duration-300 rounded-xl"

@@ -10,7 +10,7 @@ import { SidebarGroup, SidebarMenu } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import CheckUserStatus from '@/components/account/check-user-status';
-import { SideBarMenu } from '../../../../data/sidebarMenu';
+import { SideBarMenu } from '@/data/sidebarMenu';
 import { SidebarItemRenderer } from './SidebarItem';
 
 type SidebarRole = string;

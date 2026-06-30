@@ -56,22 +56,77 @@ export interface DashboardProductAttributeDto {
   displayOrder: number;
 }
 
-export interface CategoryDistributionDto {
+export interface DistributionDto {
   name: string;
   count: number;
+  stock: number;
   percentage: number;
 }
 
+// export interface DashboardSummaryDto {
+//   products: {
+//     total: number;
+//     recent: DashboardProductDto[];
+//   };
+//   attributes: {
+//     total: number;
+//     recent: DashboardAttributeDto[];
+//   };
+//   todaySale: number;
+//   totalMonthSale: number;
+//   totalStock: number;
+//   productDistribution?: DistributionDto[];
+// }
+
+
 export interface DashboardSummaryDto {
-  products: {
-    total: number;
-    recent: DashboardProductDto[];
-  };
-  attributes: {
-    total: number;
-    recent: DashboardAttributeDto[];
-  };
-  todaySale: number;
-  totalMonthSale: number;
-  categoryDistribution?: CategoryDistributionDto[];
+  products: Products[]
+  attributes: Attributes[]
+  todaySale: number
+  totalMonthSale: number
+  productDistribution: ProductDistribution[]
+}
+
+export interface Products {
+  id: number
+  name: string
+  parentId?: number
+  categoryId: number
+  brandNameId: number
+  attributeId: number
+  slug: string
+  description?: string
+  price: number
+  cost: number
+  stock: number
+  lowStockThreshold: number
+  images: string[]
+  storeCode: string
+  status: string
+  displayOrder: number
+  createdAt: string
+  updatedAt: string
+  createdById: string
+  updatedById?: string
+}
+
+
+export interface Attributes {
+  id: number
+  name: string
+  unit?: string
+  storeCode: string
+  status: string
+  displayOrder?: number
+  createdAt: string
+  updatedAt: string
+}
+
+
+
+export interface ProductDistribution {
+  name: string
+  count: number
+  stock: number;
+  percentage: number
 }

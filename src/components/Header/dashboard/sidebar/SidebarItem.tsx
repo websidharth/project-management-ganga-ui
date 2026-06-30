@@ -20,11 +20,11 @@ export const SidebarItemRenderer: React.FC<SidebarItemRendererProps> = ({ item, 
   const pathname = usePathname();
   const isOpen = openIndex === index;
   // const router = useRouter();
-  // const hasChildren = !!item.submenu?.length;
+  const hasChildren = !!item.submenu?.length;
   const Icon = item.icon;
   const matchPath = pathname === item.url || item.submenu?.some((child) => pathname === child.url);
 
-  if (!item.url) {
+  if (!item.url && !item.submenu?.length) {
     return (
       <SidebarMenuSubItem key={item.id}>
         <SidebarMenuSubButton asChild isActive={false}>

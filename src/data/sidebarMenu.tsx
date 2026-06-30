@@ -62,37 +62,61 @@ export const SideBarMenu: SideBarMenuDto[] = [
     role: [Roles.ADMIN],
   },
   {
-    id: 'categories',
-    title: 'Categories',
-    icon: FolderTree,
-    url: '/admin/categories/',
+    id: "addproducts",
+    title: "Add Products",
+    icon: User,
+    url: "",
     role: [Roles.ADMIN],
-    isActive: false,
+    isActive: true,
+    submenu: [
+      {
+        id: 'brand-names',
+        title: 'Brand Names',
+        icon: Tags,
+        url: '/admin/brand-names/',
+        role: [Roles.ADMIN],
+        isActive: false,
+      }, {
+        id: 'attributes',
+        title: 'Attributes',
+        icon: Sliders,
+        url: '/admin/attributes/',
+        role: [Roles.ADMIN],
+        isActive: false,
+      },
+
+      {
+        id: 'categories',
+        title: 'Categories',
+        icon: FolderTree,
+        url: '/admin/categories/',
+        role: [Roles.ADMIN],
+        isActive: false,
+        // subsubmenu: [
+        //   {
+        //     id: "SendNewsletter2",
+        //     title: "Send Newsletter",
+        //     icon: FolderTree,
+        //     url: "/send-newsletter",
+        //     role: [Roles.ADMIN],
+        //     isActive: false,
+        //   }
+        // ]
+      },
+      {
+        id: 'products',
+        title: 'Products',
+        icon: Package,
+        url: '/admin/products/',
+        role: [Roles.ADMIN],
+        isActive: false,
+      },
+    ]
   },
-  {
-    id: 'brand-names',
-    title: 'Brand Names',
-    icon: Tags,
-    url: '/admin/brand-names/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
-  {
-    id: 'attributes',
-    title: 'Attributes',
-    icon: Sliders,
-    url: '/admin/attributes/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
-  {
-    id: 'products',
-    title: 'Products',
-    icon: Package,
-    url: '/admin/products/',
-    role: [Roles.ADMIN],
-    isActive: false,
-  },
+
+
+
+
   {
     id: 'orders',
     title: 'Orders',
@@ -119,9 +143,25 @@ export const SideBarMenu: SideBarMenuDto[] = [
   },
   {
     id: 'purchase',
-    title: 'Purchase',
+    title: 'POS (Sell)',
     icon: Receipt,
     url: '/admin/purchase/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'add-stock',
+    title: 'Add Stock',
+    icon: Receipt,
+    url: '/admin/receive-stock/',
+    role: [Roles.ADMIN],
+    isActive: false,
+  },
+  {
+    id: 'purchases-history',
+    title: 'Purchase History',
+    icon: List,
+    url: '/admin/purchases/',
     role: [Roles.ADMIN],
     isActive: false,
   },

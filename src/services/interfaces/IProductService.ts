@@ -11,5 +11,7 @@ export default interface IProductService {
     getById(id: number | string): Promise<AxiosResponse<Response<ProductDto>>>;
     update(id: number | string, model: UpdateProductModel): Promise<AxiosResponse<Response<ProductDto>>>;
     getLowStock(params?: ProductFilterParams): Promise<AxiosResponse<Response<ListResponseDto<ProductDto>>>>;
+    addStock(id: number | string, quantity: number, reason?: string): Promise<AxiosResponse<Response<ProductDto>>>;
+    getStockHistory(id: number | string, params?: { page?: number, recordPerPage?: number }): Promise<AxiosResponse<Response<ListResponseDto<any>>>>;
     delete(id: number | string): Promise<AxiosResponse<Response<void>>>;
 }
